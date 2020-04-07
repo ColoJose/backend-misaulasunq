@@ -18,7 +18,8 @@ cache:
 
 #Antes del scrip se instalan las dependencias de maven
 before_script:
-  - "mvn clean install -Dmaven.compiler.target=1.8 -Dmaven.compiler.source=1.8 -Dmaven.javadoc.skip=true -B -V"
+  - mvn -N io.takari:maven:wrapper
+  - mvn clean install -Dmaven.compiler.target=1.8 -Dmaven.compiler.source=1.8 -Dmaven.javadoc.skip=true -B -V
 
 #Se Ejecutan los test
 script:
