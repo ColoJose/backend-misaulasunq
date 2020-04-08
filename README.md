@@ -17,9 +17,9 @@ José Sanchez         |[@ColoJose](https://github.com/ColoJose)          |      
 ###### Travis:
 
 Back-End:
-- [![Build Status](https://travis-ci.com/ColoJose/backend-tip)](https://travis-ci.com/ColoJose/backend-tip) Back-End Master Branch
-- [![Build Status](https://travis-ci.com/ColoJose/backend-tip)](https://travis-ci.com/ColoJose/backend-tip) Back-End Develop Branch
+- [![Build Status](https://travis-ci.com/ColoJose/backend-tip.svg?branch=master)](https://travis-ci.com/ColoJose/backend-tip.svg?branch=master) Back-End Master Branch
+- [![Build Status](https://travis-ci.com/ColoJose/backend-tip.svg?branch=develop)](https://travis-ci.com/ColoJose/backend-tip.svg?branch=develop) Back-End Develop Branch
 
 Front-End:
-- [![Build Status](https://travis-ci.com/ColoJose/frontend-tip)](https://travis-ci.com/ColoJose/frontend-tip) Front-End Master Branch
-- [![Build Status](https://travis-ci.com/ColoJose/frontend-tip)](https://travis-ci.com/ColoJose/frontend-tip) Front-End Develop Branch
+- [![Build Status](https://travis-ci.com/ColoJose/frontend-tip.svg?branch=master)](https://travis-ci.com/ColoJose/frontend-tip.svg?branch=master) Front-End Master Branch
+- [![Build Status](https://travis-ci.com/ColoJose/frontend-tip.svg?branch=develop)](https://travis-ci.com/ColoJose/frontend-tip.svg?branch=develop) Front-End Develop Branch
