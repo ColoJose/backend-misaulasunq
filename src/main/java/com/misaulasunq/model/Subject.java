@@ -7,7 +7,7 @@ import java.util.List;
 public class Subject {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String name;// question: ¿se hara unico o se usara algun codigo para evitar duplicidad?
     @Transient //FIXME: se tiene definir el mapeo
