@@ -1,18 +1,26 @@
 ![](http://)
 
-# Mis Aulas UNQ (Posible Nombre)
+# Mis Aulas UNQ
 
-## Descripción
-Debido a la problematica recurrente sobre el desconocimiento de la ubicacion de las aulas (O la falta de una clara descripcion de la ubicacion de la misma), esta aplicacion busca facilitar una visualizacion de la la ubicacion del aula en la universidad y tambien las materias que se dictan en la misma.
+## Descripción:page_facing_up:
+Debido a la problemática recurrente sobre el desconocimiento de la ubicación de las aulas (O la falta de una clara descripción de la ubicación de la misma), esta aplicación busca facilitar una visualización de la la ubicación del aula en la universidad y también las materias que se dictan en la misma.
 
-## Integrantes
+## Integrantes:busts_in_silhouette:
 
    Nombre            |						Usuario						| Legajo UNQ |							Email
 ---------------------|--------------------------------------------------|------------|----------------------------------------------------------
 Victor Mariano Degano|[@VictorDegano](https://github.com/VictorDegano)  |    26106   | [flame.el22@gmail.com](mailto:flame.el22@gmail.com)
-José Sanchez         |[@ColoJose](https://github.com/ColoJose)          |       | [msanchez.jose.94@gmail.com](mailto:msanchez.jose.94@gmail.com)
+José Sanchez         |[@ColoJose](https://github.com/ColoJose)          | 28674 | [msanchez.jose.94@gmail.com](mailto:msanchez.jose.94@gmail.com)
 
-## Estado del Proyecto
+## Repositorios:package:
+
+:wrench: [Back-End](https://github.com/ColoJose/backend-tip)
+
+:globe_with_meridians:[Front-End](https://github.com/ColoJose/frontend-tip)
+
+:notebook:[Documentacion](https://github.com/ColoJose/documentation-tip)
+
+## Estado del Proyecto:traffic_light:
 
 ###### Travis:
 
