@@ -1,9 +1,9 @@
-package services;
+package com.misaulasunq.services;
 
-import model.Subject;
+import com.misaulasunq.model.Subject;
+import com.misaulasunq.repositories.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repositories.SubjectRepository;
 
 @Service
 public class SubjectService {

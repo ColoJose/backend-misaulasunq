@@ -1,7 +1,6 @@
-package repositories;
+package com.misaulasunq.repositories;
 
-import model.Subject;
-import org.springframework.context.annotation.Bean;
+import com.misaulasunq.model.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

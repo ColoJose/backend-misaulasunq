@@ -1,4 +1,4 @@
-package com.misaulasunq.app;
+package com.misaulasunq;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
