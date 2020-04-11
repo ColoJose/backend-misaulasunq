@@ -1,9 +1,6 @@
 package com.misaulasunq.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -13,7 +10,9 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;// question: ¿se hara unico o se usara algun codigo para evitar duplicidad?
+    @Transient //FIXME: se tiene definir el mapeo
     private List<Commission> commissions;
+    @Transient //FIXME: tiene que definirse el mapeo
     private Degree degree;
 
     public Subject() {}
