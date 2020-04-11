@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.restservice;
+package com.misaulasunq.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,5 +45,3 @@ public class GreetingControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(expected);
 	}
-
-}
