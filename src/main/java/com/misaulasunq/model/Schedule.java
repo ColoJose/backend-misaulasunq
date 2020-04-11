@@ -1,4 +1,4 @@
-package ar.edu.unq.miaulaunq.model;
+package com.misaulasunq.model;
 
 import java.time.LocalTime;
 
