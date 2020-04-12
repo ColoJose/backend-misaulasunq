@@ -1,18 +1,21 @@
 package com.misaulasunq.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-@Entity
+@Entity(name = "subject") // name when using HQL
 public class Subject {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;// question: ¿se hara unico o se usara algun codigo para evitar duplicidad?
-    @Transient //FIXME: se tiene definir el mapeo
-    private List<Commission> commissions;
-    @Transient //FIXME: tiene que definirse el mapeo
+    private String name;
+    private String subjectCode; // to avoid duplicate subjects
+    @OneToMany
+    private Set<Commission> commissions;
+    @ManyToMany(mappedBy = "subjects")
     private Degree degree;
 
     public Subject() {}
@@ -35,5 +38,16 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @ManyToMany(mappedBy = "subjects")
+    private Collection<Degree> degrees;
+
+    public Collection<Degree> getDegrees() {
+        return degrees;
+    }
+
+    public void setDegrees(Collection<Degree> degrees) {
+        this.degrees = degrees;
     }
 }

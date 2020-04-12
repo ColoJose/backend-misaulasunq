@@ -27,13 +27,18 @@ public class SubjectRepositoryTest {
     @Autowired
     private SubjectService subjectService;
 
+    @Before
+    public void setUp(){
+        subjectService.deleteAll();
+    }
+
     private Subject getSubject(){ return new Subject(); }
 
     @Test
     public void whenSaveSubjectFirstTimeIdShoueldBeOne(){
-//        subjectService.saveSubject(getSubject());
-//        Subject savedSubject = subjectService.findSubjectById(1);
-//        assertEquals(Optional.of(1),Optional.of(savedSubject.getId()));
+        subjectService.saveSubject(getSubject());
+        Subject savedSubject = subjectService.findSubjectById(1);
+        assertEquals(Optional.of(1),Optional.of(savedSubject.getId()));
     }
 
     @Test
