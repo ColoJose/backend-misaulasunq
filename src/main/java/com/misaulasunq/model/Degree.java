@@ -4,17 +4,18 @@ import javax.persistence.*;
 import java.util.Set;
 
 
-@Entity
+@Entity(name = "entity")
 public class Degree {
 
     @Id
+    @Column(name = "degree_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     @ManyToMany
     @JoinTable(name="degree_subject",
                joinColumns = @JoinColumn(name= "degree_id"),
-               inverseJoinColumns = @JoinColumn(name = "course_id"))
+               inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private Set<Subject> subjects;
 
     public Degree() { }
@@ -28,7 +29,6 @@ public class Degree {
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
-
 
     public Set<Subject> getSubjects() { return subjects; }
 

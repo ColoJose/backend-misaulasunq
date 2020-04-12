@@ -1,4 +1,4 @@
-package com.misaulasunq.repositories;
+package com.misaulasunq.service;
 
 import com.misaulasunq.model.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
