@@ -1,11 +1,9 @@
-package com.misaulasunq.repositories;
+package com.misaulasunq.service;
 
 
 import com.misaulasunq.RestServiceApplication;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.services.SubjectService;
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

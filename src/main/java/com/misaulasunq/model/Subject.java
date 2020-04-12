@@ -9,45 +9,35 @@ import java.util.Set;
 public class Subject {
 
     @Id
+    @Column(name = "subject_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String subjectCode; // to avoid duplicate subjects
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     private Set<Commission> commissions;
     @ManyToMany(mappedBy = "subjects")
-    private Degree degree;
+    private Set<Degree> degrees;
 
     public Subject() {}
 
-    public Subject(String name){
-        this.name = name;
-    }
+    public Integer getId() { return id; }
 
-    public Integer getId() {
-        return id;
-    }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
 
-    public String getName() {
-        return name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public Collection<Degree> getDegrees() { return degrees; }
 
-    @ManyToMany(mappedBy = "subjects")
-    private Collection<Degree> degrees;
+    public void setDegrees(Set<Degree> degrees) { this.degrees = degrees; }
 
-    public Collection<Degree> getDegrees() {
-        return degrees;
-    }
+    public String getSubjectCode() { return subjectCode; }
 
-    public void setDegrees(Collection<Degree> degrees) {
-        this.degrees = degrees;
-    }
+    public void setSubjectCode(String subjectCode) { this.subjectCode = subjectCode; }
+
+    public Set<Commission> getCommissions() { return commissions; }
+
+    public void setCommissions(Set<Commission> commissions) { this.commissions = commissions; }
 }
