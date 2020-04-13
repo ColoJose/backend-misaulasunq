@@ -3,7 +3,6 @@ package com.misaulasunq.service;
 import com.misaulasunq.RestServiceApplication;
 import com.misaulasunq.model.Degree;
 import com.misaulasunq.model.Subject;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestServiceApplication.class)
-public class DegreeRepository {
+public class DegreeRepositoryTest {
 
     @Autowired
     private DegreeRepository degreeRepository;
@@ -25,13 +24,14 @@ public class DegreeRepository {
         return subject;
     }
 
-    private Degree getDegree(){
+    private Degree getDegree() {
         Degree degree = new Degree();
         degree.setName("tpi");
         degree.setSubjects(Set.of(getSubject()));
         return degree;
     }
-//
-//    @Test
-//    public
+
+    @Test
+    public void test(){
+    }
 }
