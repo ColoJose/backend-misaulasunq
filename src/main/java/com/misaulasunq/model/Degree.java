@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 
-@Entity(name = "entity")
+@Entity(name = "degree")
 public class Degree {
 
     @Id
