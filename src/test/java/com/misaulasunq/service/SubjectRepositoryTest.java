@@ -11,12 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestServiceApplication.class)
@@ -25,10 +23,10 @@ public class SubjectRepositoryTest {
     @Autowired
     private SubjectService subjectService;
 
-    @Before
-    public void setUp(){
-        subjectService.deleteAll();
-    }
+//    @Before // FIXME esto está bien o se puede sacar?
+//    public void setUp(){
+//        subjectService.deleteAll();
+//    }
 
     private Subject getSubject(){ return new Subject(); }
 
@@ -54,5 +52,7 @@ public class SubjectRepositoryTest {
 
         List<String> expectedNamesSubjectRetrieved = Arrays.asList("pf","oop1","oop2");
         List<String> subjectNamesRetrieved = subjectService.getAll().stream().map(sub -> sub.getName()).collect(Collectors.toList());
+
+        assertEquals(expectedNamesSubjectRetrieved,subjectNamesRetrieved);
     }
 }
