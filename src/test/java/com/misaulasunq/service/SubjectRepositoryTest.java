@@ -1,15 +1,14 @@
 package com.misaulasunq.service;
 
-
-import com.misaulasunq.RestServiceApplication;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.services.SubjectService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +16,9 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestServiceApplication.class)
+@SpringBootTest
+@Rollback(true)
+@Transactional //Para que no commitee a la base!
 public class SubjectRepositoryTest {
 
     @Autowired

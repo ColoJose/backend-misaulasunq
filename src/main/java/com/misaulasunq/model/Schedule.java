@@ -1,16 +1,14 @@
 package com.misaulasunq.model;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalTime;
 
 @Entity(name ="schedule")
 public class Schedule {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
     private Commission commission;
     private LocalTime startTime;
