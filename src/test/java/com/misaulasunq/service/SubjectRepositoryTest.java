@@ -1,59 +1,93 @@
 package com.misaulasunq.service;
 
 import com.misaulasunq.model.Subject;
-import com.misaulasunq.services.SubjectService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.misaulasunq.utils.SubjectBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Rollback(true)
-@Transactional //Para que no commitee a la base!
+@Rollback
 public class SubjectRepositoryTest {
 
     @Autowired
-    private SubjectService subjectService;
-
-//    @Before // FIXME esto está bien o se puede sacar?
-//    public void setUp(){
-//        subjectService.deleteAll();
-//    }
-
-    private Subject getSubject(){ return new Subject(); }
+    private SubjectRepository subjectRepository;
 
     @Test
-    public void whenSaveSubjectFirstTimeIdShoueldBeOne(){
-        subjectService.saveSubject(getSubject());
-        Subject savedSubject = subjectService.findSubjectById(1);
-        assertEquals(Optional.of(1),Optional.of(savedSubject.getId()));
+    @Transactional //Para que no commitee a la base!
+    public void whenSaveSubjectTheIdShouldBeDistinctToZero(){
+        //Setup (Given)
+        Subject subjectToSUT = SubjectBuilder.buildASubject()
+                                            .withName("TIP")
+                                            .withSubjectCode("2020")
+                                            .build();
+
+        //Exercise (When)
+        subjectRepository.save(subjectToSUT);
+        Subject savedSubject = subjectRepository.getOne(subjectToSUT.getId());
+
+        //Test (Then)
+        assertNotNull(
+                "No tiene que ser null, tiene que haberle generado un id al insertarlo!",
+                savedSubject.getId()
+            );
+        assertEquals(
+                "Se altero el Nombre, no debe hacerlo",
+                "TIP",
+                savedSubject.getName()
+            );
+        assertEquals(
+                "Se altero el Codigo de materia, no debe hacerlo",
+                "2020",
+                savedSubject.getSubjectCode()
+            );
     }
 
     @Test
+    @Transactional //Para que no commitee a la base!s
     public void whenSaveSeveralSubjectInDbFindAllShouldRetrieveThisEntities(){
-        Subject sub1 = getSubject();
-        sub1.setName("pf");
-        Subject sub2 = new Subject();
-        sub2.setName("oop1");
-        Subject sub3 = new Subject();
-        sub3.setName("oop2");
+        //Setup (Given)
+        Subject FPSubject = SubjectBuilder.buildASubject()
+                                        .withName("Programacion Funcional")
+                                        .withSubjectCode("201")
+                                        .build();
+        Subject OOP1ProgSubject = SubjectBuilder.buildASubject()
+                                        .withName("Programacion Orientada A Objetos 1")
+                                        .withSubjectCode("1004")
+                                        .build();
+        Subject OOP2ProgSubject = SubjectBuilder.buildASubject()
+                                            .withName("Programacion Orientada A Objetos 2")
+                                            .withSubjectCode("1005")
+                                            .build();
+        List<Subject> subjectsToSave = List.of(FPSubject,OOP1ProgSubject,OOP2ProgSubject);
 
-        subjectService.saveSubject(sub1);
-        subjectService.saveSubject(sub2);
-        subjectService.saveSubject(sub3);
+        //Exercise (When)
+        subjectRepository.saveAll(subjectsToSave);
+        List<Subject> subjectsRetrieved = subjectRepository.findAll();
 
-        List<String> expectedNamesSubjectRetrieved = Arrays.asList("pf","oop1","oop2");
-        List<String> subjectNamesRetrieved = subjectService.getAll().stream().map(sub -> sub.getName()).collect(Collectors.toList());
-
-        assertEquals(expectedNamesSubjectRetrieved,subjectNamesRetrieved);
+        //Test (Then)
+        for (int i = 0; i < 3; i++) {
+            assertNotNull(
+                    "No tiene que ser null, tiene que haberle generado un id al insertarlo!",
+                    subjectsRetrieved.get(i).getId()
+            );
+            assertEquals(
+                    "Se altero el Nombre, no debe hacerlo",
+                    subjectsToSave.get(i).getName(),
+                    subjectsRetrieved.get(i).getName()
+            );
+            assertEquals(
+                    "Se altero el Codigo de materia, no debe hacerlo",
+                    subjectsToSave.get(i).getSubjectCode(),
+                    subjectsRetrieved.get(i).getSubjectCode()
+            );
+        }
     }
 }

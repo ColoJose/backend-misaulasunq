@@ -1,6 +1,8 @@
 package com.misaulasunq.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 
@@ -8,11 +10,13 @@ import java.util.Set;
 public class Degree {
 
     @Id
-    @Column(name = "degree_id")
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotBlank(message = "Name Is Mandatory")
     private String name;
-    @ManyToMany
+    @NotNull(message = "Subjects Cannot Be A Null Variable")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name="degree_subject",
                joinColumns = @JoinColumn(name= "degree_id"),
                inverseJoinColumns = @JoinColumn(name = "subject_id"))
