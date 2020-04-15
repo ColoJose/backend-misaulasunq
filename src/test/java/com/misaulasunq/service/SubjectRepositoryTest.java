@@ -70,7 +70,11 @@ public class SubjectRepositoryTest {
 
         //Exercise (When)
         subjectRepository.saveAll(subjectsToSave);
-        List<Subject> subjectsRetrieved = subjectRepository.findAll();
+        List<Subject> subjectsRetrieved = List.of(
+                subjectRepository.findById(FPSubject.getId()).get(),
+                subjectRepository.findById(OOP1ProgSubject.getId()).get(),
+                subjectRepository.findById(OOP2ProgSubject.getId()).get()
+        );
 
         //Test (Then)
         for (int i = 0; i < 3; i++) {
