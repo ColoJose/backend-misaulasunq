@@ -26,15 +26,13 @@ public class Subject {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Degree> degrees;
 
-    public Subject() {
-        this.initialize();
-    }
+    public Subject() {  this.initialize();  }
 
     protected void initialize(){
         this.name = "";
         this.subjectCode = "";
-        this.commissions = new HashSet<Commission>();
-        this.degrees = new HashSet<Degree>();
+        this.commissions = new HashSet<>();
+        this.degrees = new HashSet<>();
     }
 
     public Integer getId() { return id; }

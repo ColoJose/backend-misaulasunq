@@ -3,6 +3,7 @@ package com.misaulasunq.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -22,19 +23,19 @@ public class Degree {
                inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private Set<Subject> subjects;
 
-    public Degree() { }
+    public Degree() {   this.initialize();  }
 
-    // getters and setters
+    public void initialize(){
+        this.name ="";
+        this.subjects = new HashSet<>();
+    }
 
-    public Integer getId() { return id; }
+    public Integer getId() {    return id;  }
+    public void setId(Integer id) { this.id = id;   }
 
-    public void setId(Integer id) { this.id = id; }
+    public String getName() {   return name;    }
+    public void setName(String name) {  this.name = name;   }
 
-    public String getName() { return name; }
-
-    public void setName(String name) { this.name = name; }
-
-    public Set<Subject> getSubjects() { return subjects; }
-
-    public void setSubjects(Set<Subject> subjects) { this.subjects = subjects; }
+    public Set<Subject> getSubjects() { return subjects;    }
+    public void setSubjects(Set<Subject> subjects) {    this.subjects = subjects;   }
 }
