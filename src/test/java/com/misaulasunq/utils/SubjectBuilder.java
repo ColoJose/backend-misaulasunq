@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class SubjectBuilder {
 
-    private Subject subject;
+    private final Subject subject;
 
     private SubjectBuilder(){
         this.subject  = new Subject();
