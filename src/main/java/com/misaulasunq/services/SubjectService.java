@@ -2,7 +2,7 @@ package com.misaulasunq.services;
 
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Subject;
-import com.misaulasunq.service.SubjectRepository;
+import com.misaulasunq.persistance.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

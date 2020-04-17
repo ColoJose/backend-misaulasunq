@@ -1,4 +1,4 @@
-package com.misaulasunq.service;
+package com.misaulasunq.persistance;
 
 import com.misaulasunq.model.Degree;
 import org.springframework.data.jpa.repository.JpaRepository;

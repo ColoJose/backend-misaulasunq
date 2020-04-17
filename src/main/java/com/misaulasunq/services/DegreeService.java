@@ -2,7 +2,7 @@ package com.misaulasunq.services;
 
 import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.model.Degree;
-import com.misaulasunq.service.DegreeRepository;
+import com.misaulasunq.persistance.DegreeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

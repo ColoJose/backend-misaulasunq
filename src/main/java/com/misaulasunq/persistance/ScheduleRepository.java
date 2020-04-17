@@ -1,4 +1,4 @@
-package com.misaulasunq.service;
+package com.misaulasunq.persistance;
 
 import com.misaulasunq.model.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.misaulasunq.service;
+package com.misaulasunq.persistance;
 
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.utils.SubjectBuilder;

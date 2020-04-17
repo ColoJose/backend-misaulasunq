@@ -1,4 +1,4 @@
-package com.misaulasunq.service;
+package com.misaulasunq.persistance;
 
 import com.misaulasunq.RestServiceApplication;
 import com.misaulasunq.model.Classroom;
