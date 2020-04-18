@@ -29,6 +29,10 @@ public class Classroom {
         this.schedules = new ArrayList<>();
     }
 
+    public void addSchedule(Schedule schedule) {
+        this.getSchedules().add(schedule);
+    }
+
     public Integer getId() {    return id;  }
     public void setId(Integer id) { this.id = id;   }
 
@@ -42,4 +46,5 @@ public class Classroom {
 
     public List<Schedule> getSchedules() {  return schedules;   }
     public void setSchedules(List<Schedule> schedules) {    this.schedules = schedules; }
+
 }

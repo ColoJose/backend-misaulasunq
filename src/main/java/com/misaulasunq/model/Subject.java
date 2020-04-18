@@ -3,9 +3,7 @@ package com.misaulasunq.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name = "subject") // name when using HQL
 public class Subject {
@@ -21,18 +19,22 @@ public class Subject {
     private String subjectCode; // to avoid duplicate subjects
     @NotNull(message = "Commissions Cannot Be A Null Variable")
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subject")
-    private Set<Commission> commissions;
+    private List<Commission> commissions;
     @NotNull(message = "Degrees Cannot Be A Null Variable")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Degree> degrees;
+    private List<Degree> degrees;
 
     public Subject() {  this.initialize();  }
 
     protected void initialize(){
         this.name = "";
         this.subjectCode = "";
-        this.commissions = new HashSet<>();
-        this.degrees = new HashSet<>();
+        this.commissions = new ArrayList<>();
+        this.degrees = new ArrayList<>();
+    }
+
+    public void addCommission(Commission commission) {
+        this.getCommissions().add(commission);
     }
 
     public Integer getId() { return id; }
@@ -41,12 +43,12 @@ public class Subject {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public Collection<Degree> getDegrees() { return degrees; }
-    public void setDegrees(Set<Degree> degrees) { this.degrees = degrees; }
+    public List<Degree> getDegrees() { return degrees; }
+    public void setDegrees(List<Degree> degrees) { this.degrees = degrees; }
 
     public String getSubjectCode() { return subjectCode; }
     public void setSubjectCode(String subjectCode) { this.subjectCode = subjectCode; }
 
-    public Set<Commission> getCommissions() { return commissions; }
-    public void setCommissions(Set<Commission> commissions) { this.commissions = commissions; }
+    public List<Commission> getCommissions() { return commissions; }
+    public void setCommissions(List<Commission> commissions) { this.commissions = commissions; }
 }

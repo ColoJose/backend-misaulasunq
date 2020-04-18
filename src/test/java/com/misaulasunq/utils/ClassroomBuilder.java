@@ -2,9 +2,7 @@ package com.misaulasunq.utils;
 
 import com.misaulasunq.model.Classroom;
 import com.misaulasunq.model.Schedule;
-
 import java.util.List;
-import java.util.Set;
 
 public class ClassroomBuilder {
 

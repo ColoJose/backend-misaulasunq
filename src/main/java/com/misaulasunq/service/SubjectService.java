@@ -1,4 +1,4 @@
-package com.misaulasunq.services;
+package com.misaulasunq.service;
 
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Subject;
@@ -14,6 +14,17 @@ public class SubjectService {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    public List<Subject> retreiveSubjectsInClassroom(String classroomnumber){
+        List<Subject> subjects = subjectRepository.findSubjectThatAreInClassroom(classroomnumber);
+
+        if (subjects.isEmpty()){
+            throw new SubjectNotfoundException(classroomnumber);
+        }
+
+        return subjects;
+    }
+
+
     public void saveSubject(Subject subject) {
         subjectRepository.save(subject);
     }
@@ -27,4 +38,5 @@ public class SubjectService {
     }
 
     public void deleteAll() { subjectRepository.deleteAll(); }
+
 }

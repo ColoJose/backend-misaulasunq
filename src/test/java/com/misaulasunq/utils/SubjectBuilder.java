@@ -4,7 +4,7 @@ import com.misaulasunq.model.Commission;
 import com.misaulasunq.model.Degree;
 import com.misaulasunq.model.Subject;
 
-import java.util.Set;
+import java.util.List;
 
 public class SubjectBuilder {
 
@@ -23,7 +23,7 @@ public class SubjectBuilder {
         return this;
     }
 
-    public SubjectBuilder withDegrees(Set<Degree> degrees){
+    public SubjectBuilder withDegrees(List<Degree> degrees){
         this.subject.setDegrees(degrees);
         return this;
     }
@@ -33,7 +33,7 @@ public class SubjectBuilder {
         return this;
     }
 
-    public SubjectBuilder withCommissions(Set<Commission> commissions){
+    public SubjectBuilder withCommissions(List<Commission> commissions){
         this.subject.setCommissions(commissions);
         return this;
     }

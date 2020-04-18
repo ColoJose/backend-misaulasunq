@@ -137,11 +137,11 @@ public class BootstrapRunner implements ApplicationRunner {
         mateC1Jueves.setClassroom(room52);
 
         // Mapeo de horarios en comisiones
-        progObjetos3C1C1.setSchedules(Set.of(progObjetos3C1Viernes));
-        sistemasOpC1.setSchedules(Set.of(soC1Lunes));
-        matematica1C3.setSchedules(Set.of(mateC3Lunes,mateC3Miercoles));
-        matematica1C2.setSchedules(Set.of(mateC2Lunes,mateC2Miercoles));
-        matematica1C1.setSchedules(Set.of(mateC1martes,mateC1Jueves));
+        progObjetos3C1C1.setSchedules(List.of(progObjetos3C1Viernes));
+        sistemasOpC1.setSchedules(List.of(soC1Lunes));
+        matematica1C3.setSchedules(List.of(mateC3Lunes,mateC3Miercoles));
+        matematica1C2.setSchedules(List.of(mateC2Lunes,mateC2Miercoles));
+        matematica1C1.setSchedules(List.of(mateC1martes,mateC1Jueves));
 
         // Mapeo de materias en comisiones
         progObjetos3C1C1.setSubject(progObjectos3);
@@ -164,10 +164,10 @@ public class BootstrapRunner implements ApplicationRunner {
         room52.setSchedules(List.of(mateC2Lunes, mateC3Lunes, mateC3Miercoles));
         roomCyT1.setSchedules(List.of(mateC1martes, mateC1Jueves, mateC2Miercoles));
         //Mapeo de materias en la carrera y carrera en las materias
-        tpi.setSubjects(Set.of(matematica1, sistemasOperativos,progObjectos3));
-        matematica1.setDegrees(Set.of(tpi));
-        sistemasOperativos.setDegrees(Set.of(tpi));
-        progObjectos3.setDegrees(Set.of(tpi));
+        tpi.setSubjects(List.of(matematica1, sistemasOperativos,progObjectos3));
+        matematica1.setDegrees(List.of(tpi));
+        sistemasOperativos.setDegrees(List.of(tpi));
+        progObjectos3.setDegrees(List.of(tpi));
 
         //Se actualizan las relaciones
         degreeRepository.save(tpi);

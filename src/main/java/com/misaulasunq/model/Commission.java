@@ -3,8 +3,8 @@ package com.misaulasunq.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /** OBS: Se deberia agregar un campo para referenciar a que cuatrimestre corresponde (Enum primer/segundo/anual) y un campo para guardar a que año corresponde*/
 @Entity
@@ -20,13 +20,13 @@ public class Commission {
     private Subject subject;
     @NotNull(message = "Schedules Cannot Be A Null Variable")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,/* orphanRemoval = true, */mappedBy = "commission")
-    private Set<Schedule> schedules;
+    private List<Schedule> schedules;
 
     public Commission() {   this.initialize();  }
 
     private void initialize() {
         this.name = "";
-        this.schedules = new HashSet<>();
+        this.schedules = new ArrayList<>();
     }
 
     public Integer getId() {    return id;  }
@@ -38,6 +38,6 @@ public class Commission {
     public Subject getSubject() {   return subject; }
     public void setSubject(Subject subject) {   this.subject = subject; }
 
-    public Set<Schedule> getSchedules() {   return schedules;   }
-    public void setSchedules(Set<Schedule> schedules) { this.schedules = schedules; }
+    public List<Schedule> getSchedules() {   return schedules;   }
+    public void setSchedules(List<Schedule> schedules) { this.schedules = schedules; }
 }

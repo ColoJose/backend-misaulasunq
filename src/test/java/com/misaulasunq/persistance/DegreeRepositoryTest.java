@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
@@ -28,7 +30,7 @@ public class DegreeRepositoryTest {
     private Degree getDegree() {
         Degree degree = new Degree();
         degree.setName("tpi");
-        degree.setSubjects(Set.of(getSubject()));
+        degree.setSubjects(new ArrayList<>(List.of(getSubject())));
         return degree;
     }
 

@@ -1,4 +1,4 @@
-package com.misaulasunq.services;
+package com.misaulasunq.service;
 
 import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.model.Degree;

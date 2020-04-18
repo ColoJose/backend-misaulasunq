@@ -3,8 +3,8 @@ package com.misaulasunq.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity(name = "degree")
@@ -21,13 +21,17 @@ public class Degree {
     @JoinTable(name="degree_subject",
                joinColumns = @JoinColumn(name= "degree_id"),
                inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private Set<Subject> subjects;
+    private List<Subject> subjects;
 
     public Degree() {   this.initialize();  }
 
     public void initialize(){
         this.name ="";
-        this.subjects = new HashSet<>();
+        this.subjects = new ArrayList<>();
+    }
+
+    public void addSubject(Subject subject) {
+        this.getSubjects().add(subject);
     }
 
     public Integer getId() {    return id;  }
@@ -36,6 +40,7 @@ public class Degree {
     public String getName() {   return name;    }
     public void setName(String name) {  this.name = name;   }
 
-    public Set<Subject> getSubjects() { return subjects;    }
-    public void setSubjects(Set<Subject> subjects) {    this.subjects = subjects;   }
+    public List<Subject> getSubjects() { return subjects;    }
+    public void setSubjects(List<Subject> subjects) {    this.subjects = subjects;   }
+
 }
