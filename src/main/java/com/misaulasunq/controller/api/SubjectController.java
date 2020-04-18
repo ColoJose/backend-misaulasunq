@@ -1,13 +1,15 @@
 package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.SubjectDTO;
-import org.apache.tomcat.util.json.JSONParser;
+import com.misaulasunq.model.Subject;
+import com.misaulasunq.service.SubjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.websocket.server.PathParam;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin( //Se puede configurar para que sea a travez de una clase
         origins = "http://localhost:8090",
@@ -22,16 +24,17 @@ import javax.websocket.server.PathParam;
 //        produces = "application/json",
         method = {RequestMethod.GET}
     )
-public class SubjectController { //TODO: hay que agregar un aspecto para handlear los errores
+public class SubjectController {
 
-    @GetMapping("/byClassroomNumber/{subjectId}")
-    public String /*ResponseEntity<SubjectDTO>*/ getSubjectsByClassroomNumber(@PathVariable String subjectId ){
+    @Autowired
+    private SubjectService subjectService;
 
-        return "{ \"body\": \"Hello\"}";
-        //        try{
-//            return new ResponseEntity<>(new SubjectDTO(), HttpStatus.OK);
-//        }catch (Exception exception){
-//            return new ResponseEntity<>(HttpStatus.CONFLICT);
-//        }
+    @GetMapping("/byClassroomNumber/{classroomNumber}")
+    public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(@PathVariable String classroomNumber ){
+        List<Subject> subjectsFound = subjectService.retreiveSubjectsInClassroom(classroomNumber);
+
+        List<SubjectDTO> subjectDTOs = subjectsFound.stream().map(SubjectDTO::new).collect(Collectors.toList());
+
+        return new ResponseEntity<>(subjectDTOs, HttpStatus.OK);
     }
 }

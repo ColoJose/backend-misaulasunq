@@ -3,7 +3,6 @@ package com.misaulasunq.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity(name ="schedule")
 public class Schedule {

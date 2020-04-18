@@ -24,7 +24,7 @@ public class SubjectService {
         return subjects;
     }
 
-
+    //TODO: estos metodos pueden deprecarse
     public void saveSubject(Subject subject) {
         subjectRepository.save(subject);
     }

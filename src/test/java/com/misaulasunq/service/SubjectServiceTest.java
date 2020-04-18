@@ -4,7 +4,6 @@ import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.*;
 import com.misaulasunq.utils.*;
-import org.assertj.core.util.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
