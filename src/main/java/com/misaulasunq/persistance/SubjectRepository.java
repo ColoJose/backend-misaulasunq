@@ -19,4 +19,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
          + "WHERE classroom.number = :classroomNumber"
          )
     List<Subject> findSubjectThatAreInClassroom(@Param("classroomNumber") String classroomNumber);
+
+    List<Subject> findSubjectByName(@Param("name") String name);
 }

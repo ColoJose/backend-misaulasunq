@@ -4,6 +4,7 @@ import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.*;
 import com.misaulasunq.utils.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,8 @@ public class SubjectServiceTest {
     @Autowired
     public SubjectService subjectService;
 
-    @Test
-    public void ifHaveSubjectInClassroomFive_IfSearchWithClassroomNumber_WeGetOne() {
-        //Setup(Given)
+    @Before
+    public void setUp(){
         //Degree
         Degree testDegree = DegreeBuilder.buildADegree().withMockData().build();
 
@@ -76,6 +76,45 @@ public class SubjectServiceTest {
         concurrenteSchedule.setCommission(concurrenteC1);
         degreeRepository.save(testDegree);
 
+    }
+
+    @Test
+    public void ifTryToGetASubjectWithAName_AndThereIsOne_ItsRetrieved() {
+        //Setup(Given)
+
+        //exercise
+        List<Subject> subjects = subjectService.retreiveSubjectsWithName("Funcional");
+
+        //test
+        assertEquals("Debe tener solo una materia!",1,subjects.size());
+        assertEquals("No trajo la materia con el nombre 'Funcional'",
+                "Funcional",
+                subjects.get(0).getName());
+    }
+
+    @Test
+    public void ifTryToGetASubjectWithAName_AndThereIsNone_GetAClassroomNotFoundException(){
+        //Setup(Given)
+        String exceptionMessage = "";
+
+        //Exercise(When)
+        try {
+            subjectService.retreiveSubjectsWithName("Redes");
+        } catch (SubjectNotfoundException subjectNotfoundException){
+            exceptionMessage = subjectNotfoundException.getMessage();
+        }
+
+        //Test(Then)
+        assertEquals("No hubo excepcion de materias no encontradas por nombre!",
+                "No subjects with the Name Redes.",
+                exceptionMessage
+        );
+    }
+
+    @Test
+    public void ifHaveSubjectInClassroomFive_IfSearchWithClassroomNumber_WeGetOne() {
+        //Setup(Given)
+
         //exercise
         List<Subject> subjectsInClassroom5 = subjectService.retreiveSubjectsInClassroom("5");
 
@@ -93,7 +132,6 @@ public class SubjectServiceTest {
                 1,
                 subjectRetrieved.getCommissions().size());
 
-        // TODO: seria mejor un metodo "getClassroomsOfSchedules", pero al ser comprobaciones de test no tendria mucho sentido
         Classroom classroomOfSubject = subjectRetrieved.getCommissions()
                 .get(0).getSchedules()
                 .get(0).getClassroom();
@@ -117,6 +155,5 @@ public class SubjectServiceTest {
                 "No subjects in the classroom 666.",
                 exceptionMessage
         );
-
     }
 }
