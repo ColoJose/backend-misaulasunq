@@ -37,4 +37,13 @@ public class SubjectController {
 
         return new ResponseEntity<>(subjectDTOs, HttpStatus.OK);
     }
+
+    @GetMapping("/byName/{name}")
+    public ResponseEntity<List<SubjectDTO>> getSubjectsByName(@PathVariable String name) {
+        List<Subject> subjectsFound = subjectService.retreiveSubjectsWithName(name);
+
+        List<SubjectDTO> subjectDTOs = subjectsFound.stream().map(SubjectDTO::new).collect(Collectors.toList());
+
+        return new ResponseEntity<>(subjectDTOs, HttpStatus.OK);
+    }
 }

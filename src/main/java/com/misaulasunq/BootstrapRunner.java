@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 /** Clase encargada de proporsionar datos de prueba para la aplicacion*/
 @Component

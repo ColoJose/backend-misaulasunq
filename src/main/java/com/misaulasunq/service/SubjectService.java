@@ -14,11 +14,21 @@ public class SubjectService {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    public List<Subject> retreiveSubjectsWithName(String name) {
+        List<Subject> subjects = this.subjectRepository.findSubjectByName(name);
+
+        if(subjects.isEmpty()){
+            throw SubjectNotfoundException.SubjectNotFoundByName(name);
+        }
+
+        return subjects;
+    }
+
     public List<Subject> retreiveSubjectsInClassroom(String classroomnumber){
-        List<Subject> subjects = subjectRepository.findSubjectThatAreInClassroom(classroomnumber);
+        List<Subject> subjects = this.subjectRepository.findSubjectThatAreInClassroom(classroomnumber);
 
         if (subjects.isEmpty()){
-            throw new SubjectNotfoundException(classroomnumber);
+            throw SubjectNotfoundException.SubjectNotFoundByNumber(classroomnumber);
         }
 
         return subjects;

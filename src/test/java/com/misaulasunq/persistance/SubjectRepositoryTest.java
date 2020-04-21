@@ -1,7 +1,7 @@
 package com.misaulasunq.persistance;
 
-import com.misaulasunq.model.Subject;
-import com.misaulasunq.utils.SubjectBuilder;
+import com.misaulasunq.model.*;
+import com.misaulasunq.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -15,13 +15,50 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Rollback
+@Transactional //Para que no commitee a la base!
 public class SubjectRepositoryTest {
 
     @Autowired
     private SubjectRepository subjectRepository;
 
     @Test
-    @Transactional //Para que no commitee a la base!
+    public void ifHaveSubjectsWithNameLikeBase_TheirAreRetrievedWhenSerSubjectLike(){
+        //Setup(Given)
+        //Degree
+        Degree testDegree = DegreeBuilder.buildADegree().withMockData().build();
+
+        //Subjects
+        Subject matematica = SubjectBuilder.buildASubject().withName("Desarrollo de Aplicaciones")
+                .withSubjectCode("33")
+                .withDegrees(new ArrayList<>(List.of(testDegree)))
+                .build();
+
+        Subject pooI = SubjectBuilder.buildASubject().withName("Base De Datos")
+                .withSubjectCode("153")
+                .withDegrees(new ArrayList<>(List.of(testDegree)))
+                .build();
+        Subject pooII = SubjectBuilder.buildASubject().withName("Base de Datos II")
+                .withSubjectCode("333")
+                .withDegrees(new ArrayList<>(List.of(testDegree)))
+                .build();
+        testDegree.addSubject(pooI);
+        testDegree.addSubject(pooII);
+        testDegree.addSubject(matematica);
+
+        subjectRepository.saveAll(List.of(matematica,pooI,pooII));
+
+        // Exercise (When)
+        List<Subject> subjectsRetrieved = subjectRepository.findSubjectByName("Base De Datos");
+
+        // Test (then)
+        assertEquals("Solo existe una materia con el nombre exacto", 1, subjectsRetrieved.size());
+        assertEquals("Tiene que tener la materia Base De Datos. La query esta mal o el nombre del dato de prueba erroneo",
+                "Base De Datos",
+                subjectsRetrieved.get(0).getName());
+    }
+
+
+    @Test
     public void whenSaveSubjectTheIdShouldBeDistinctToZero(){
         //Setup (Given)
         Subject subjectToSUT = SubjectBuilder.buildASubject()
@@ -51,7 +88,6 @@ public class SubjectRepositoryTest {
     }
 
     @Test
-    @Transactional //Para que no commitee a la base!s
     public void whenSaveSeveralSubjectInDbFindAllShouldRetrieveThisEntities(){
         //Setup (Given)
         Subject FPSubject = SubjectBuilder.buildASubject()

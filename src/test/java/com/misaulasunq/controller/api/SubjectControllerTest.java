@@ -1,9 +1,11 @@
 package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.SubjectDTO;
+import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.DegreeRepository;
 import com.misaulasunq.utils.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +32,83 @@ public class SubjectControllerTest {
     private DegreeRepository degreeRepository;
 
     @Test
+    public void ifGetSubjectByName_getAGoodResponse(){
+        //Setup(Given)
+        ResponseEntity<List<SubjectDTO>> response;
+
+        //Exercise(When)
+        response = subjectController.getSubjectsByName("ASubject");
+
+        //Test(Then)
+        assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
+        assertEquals(
+                "No trajo ningun subject! Revisar el service o Repository",
+                1,
+                Objects.requireNonNull(response.getBody()).size()
+        );
+
+        SubjectDTO subejctDTOAnswered = response.getBody().get(0);
+
+        assertEquals("No trajo la materia correcta o no convirtio correctamente el nombre",
+                "ASubject",
+                subejctDTOAnswered.getName());
+        assertEquals("No trajo la materia correcta o no convirtio correctamente el codigo de materia",
+                "1",
+                subejctDTOAnswered.getSubjectCode());
+        assertEquals("No convirtio correctamente las comisiones de la materia",
+                1,
+                subejctDTOAnswered.getCommissions().size());
+    }
+
+    @Test
+    public void ifGetSubjectByAUnexistName_getAError(){
+        //Setup(Given)
+        String exceptionMessage = "";
+
+        //Exercise(When)
+        try {
+            subjectController.getSubjectsByName("Unreachable Name");
+        } catch (SubjectNotfoundException subjectNotfoundException){
+            exceptionMessage = subjectNotfoundException.getMessage();
+        }
+        //Test(Then)
+        assertEquals("No subjects with the Name Unreachable Name.", exceptionMessage);
+    }
+
+    @Test
     public void ifGetSubject_getAGoodResponse(){
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
+        //Exercise(When)
+        response = subjectController.getSubjectsByClassroomNumber("34");
+
+        //Test(Then)
+        assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
+        assertEquals(
+                "No trajo ningun subject! Revisar el service o Repository",
+                1,
+                Objects.requireNonNull(response.getBody()).size()
+            );
+    }
+
+    @Test
+    public void ifGetSubjectByAUnexistClassroomNumber_getAError(){
+        //Setup(Given)
+        String exceptionMessage = "";
+
+        //Exercise(When)
+        try {
+            subjectController.getSubjectsByClassroomNumber("999");
+        } catch (SubjectNotfoundException subjectNotfoundException){
+            exceptionMessage = subjectNotfoundException.getMessage();
+        }
+        //Test(Then)
+        assertEquals("No subjects in the classroom 999.", exceptionMessage);
+    }
+
+    @Before
+    public void setUp(){
         Degree aDegree = DegreeBuilder.buildADegree().withMockData().build();
         Subject aSubject = SubjectBuilder.buildASubject().withName("ASubject")
                 .withSubjectCode("1")
@@ -52,17 +127,6 @@ public class SubjectControllerTest {
         aSubject.addCommission(aCommission);
         aSchedule.setCommission(aCommission);
         degreeRepository.save(aDegree);
-
-        //Exercise(When)
-        response = subjectController.getSubjectsByClassroomNumber("34");
-
-        //Test(Then)
-        assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
-        assertEquals(
-                "No trajo ningun subject! Revisar el service o Repository",
-                1,
-                Objects.requireNonNull(response.getBody()).size()
-            );
     }
 
 }
