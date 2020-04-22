@@ -1,5 +1,7 @@
 package com.misaulasunq.exceptions;
 
+import java.time.LocalTime;
+
 public class SubjectNotfoundException extends RuntimeException {
 
     public static SubjectNotfoundException SubjectNotFoundByNumber(String classroomnumber){
@@ -8,6 +10,10 @@ public class SubjectNotfoundException extends RuntimeException {
 
     public static SubjectNotfoundException SubjectNotFoundByName(String name){
         return new SubjectNotfoundException(String.format("No subjects with the Name %s.", name));
+    }
+
+    public static SubjectNotfoundException SubjectNotFoundBetween(LocalTime startTime, LocalTime endtime){
+        return new SubjectNotfoundException(String.format("No subjects Between Hours %s - %s.", startTime, endtime));
     }
 
     public SubjectNotfoundException(Integer id){
