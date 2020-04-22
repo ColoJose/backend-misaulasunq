@@ -24,6 +24,16 @@ public class ScheduleBuilder {
         return this;
     }
 
+    public ScheduleBuilder withStartTime(LocalTime startTime){
+        this.schedule.setStartTime(startTime);
+        return this;
+    }
+
+    public ScheduleBuilder withEndTime(LocalTime endTime){
+        this.schedule.setEndTime(endTime);
+        return this;
+    }
+
     public ScheduleBuilder withClassroom(Classroom classroom) {
         this.schedule.setClassroom(classroom);
         return this;

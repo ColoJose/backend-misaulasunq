@@ -7,13 +7,16 @@ import com.misaulasunq.persistance.DegreeRepository;
 import com.misaulasunq.utils.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +31,6 @@ public class SubjectControllerTest {
 
     @Autowired
     private SubjectController subjectController;
-    @Autowired
-    private DegreeRepository degreeRepository;
 
     @Test
     public void ifGetSubjectByName_getAGoodResponse(){
@@ -37,7 +38,7 @@ public class SubjectControllerTest {
         ResponseEntity<List<SubjectDTO>> response;
 
         //Exercise(When)
-        response = subjectController.getSubjectsByName("ASubject");
+        response = subjectController.getSubjectsByName("Sistemas Operativos");
 
         //Test(Then)
         assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
@@ -50,10 +51,10 @@ public class SubjectControllerTest {
         SubjectDTO subejctDTOAnswered = response.getBody().get(0);
 
         assertEquals("No trajo la materia correcta o no convirtio correctamente el nombre",
-                "ASubject",
+                "Sistemas Operativos",
                 subejctDTOAnswered.getName());
         assertEquals("No trajo la materia correcta o no convirtio correctamente el codigo de materia",
-                "1",
+                "150",
                 subejctDTOAnswered.getSubjectCode());
         assertEquals("No convirtio correctamente las comisiones de la materia",
                 1,
@@ -81,7 +82,7 @@ public class SubjectControllerTest {
         ResponseEntity<List<SubjectDTO>> response;
 
         //Exercise(When)
-        response = subjectController.getSubjectsByClassroomNumber("34");
+        response = subjectController.getSubjectsByClassroomNumber("52");
 
         //Test(Then)
         assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
@@ -106,27 +107,4 @@ public class SubjectControllerTest {
         //Test(Then)
         assertEquals("No subjects in the classroom 999.", exceptionMessage);
     }
-
-    @Before
-    public void setUp(){
-        Degree aDegree = DegreeBuilder.buildADegree().withMockData().build();
-        Subject aSubject = SubjectBuilder.buildASubject().withName("ASubject")
-                .withSubjectCode("1")
-                .withDegrees(new ArrayList<>(List.of(aDegree)))
-                .build();
-        aDegree.addSubject(aSubject);
-        Classroom classroom34 = ClassroomBuilder.buildAClassroom().withName("34").build();
-        Schedule aSchedule = ScheduleBuilder.buildASchedule().withMockData()
-                .withClassroom(classroom34)
-                .build();
-        classroom34.addSchedule(aSchedule);
-        Commission aCommission = CommissionBuilder.buildACommission().withMockData()
-                .withSchedules(new ArrayList<>(List.of(aSchedule)))
-                .withSubject(aSubject)
-                .build();
-        aSubject.addCommission(aCommission);
-        aSchedule.setCommission(aCommission);
-        degreeRepository.save(aDegree);
-    }
-
 }

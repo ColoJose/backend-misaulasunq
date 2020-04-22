@@ -6,6 +6,7 @@ import com.misaulasunq.persistance.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -13,6 +14,16 @@ public class SubjectService {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
+    public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) {
+        List<Subject> subjects = this.subjectRepository.findSubjectsBetweenHours(startTime, endTime);
+
+        if(subjects.isEmpty()){
+            throw SubjectNotfoundException.SubjectNotFoundBetween(startTime,endTime);
+        }
+
+        return subjects;
+    }
 
     public List<Subject> retreiveSubjectsWithName(String name) {
         List<Subject> subjects = this.subjectRepository.findSubjectByName(name);
