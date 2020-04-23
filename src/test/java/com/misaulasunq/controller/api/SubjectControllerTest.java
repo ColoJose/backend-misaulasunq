@@ -2,23 +2,14 @@ package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
-import com.misaulasunq.model.*;
-import com.misaulasunq.persistance.DegreeRepository;
-import com.misaulasunq.utils.*;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,6 +22,38 @@ public class SubjectControllerTest {
 
     @Autowired
     private SubjectController subjectController;
+
+    @Test
+    public void ifGetSubjectASubjectBetweenHours_getAGoodResponse(){
+        //Setup(Given)
+        ResponseEntity<List<SubjectDTO>> response;
+
+        //Exercise(When)
+        response = subjectController.getSubjectsBetweenHours("09:00","13:00");
+
+        //Test(Then)
+        assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
+        assertEquals(
+                "No trajo ningun subject! Revisar el service o Repository",
+                1,
+                Objects.requireNonNull(response.getBody()).size()
+        );
+    }
+
+    @Test
+    public void ifGetSubjectsBetweenHoursAndDontHaveNoneOne_getAError(){
+        //Setup(Given)
+        String exceptionMessage = "";
+
+        //Exercise(When)
+        try {
+            subjectController.getSubjectsBetweenHours("00:00","01:00");
+        } catch (SubjectNotfoundException subjectNotfoundException){
+            exceptionMessage = subjectNotfoundException.getMessage();
+        }
+        //Test(Then)
+        assertEquals("No subjects Between Hours 00:00 - 01:00.", exceptionMessage);
+    }
 
     @Test
     public void ifGetSubjectByName_getAGoodResponse(){

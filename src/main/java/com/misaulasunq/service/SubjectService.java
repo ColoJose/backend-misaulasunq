@@ -16,32 +16,30 @@ public class SubjectService {
     private SubjectRepository subjectRepository;
 
     public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) {
-        List<Subject> subjects = this.subjectRepository.findSubjectsBetweenHours(startTime, endTime);
-
-        if(subjects.isEmpty()){
-            throw SubjectNotfoundException.SubjectNotFoundBetween(startTime,endTime);
-        }
-
-        return subjects;
+        return this.returnSubjectsOrExceptionIfEmpty(
+                this.subjectRepository.findSubjectsBetweenHours(startTime, endTime),
+                SubjectNotfoundException.SubjectNotFoundBetween(startTime,endTime)
+            );
     }
 
     public List<Subject> retreiveSubjectsWithName(String name) {
-        List<Subject> subjects = this.subjectRepository.findSubjectByName(name);
-
-        if(subjects.isEmpty()){
-            throw SubjectNotfoundException.SubjectNotFoundByName(name);
-        }
-
-        return subjects;
+        return this.returnSubjectsOrExceptionIfEmpty(
+                this.subjectRepository.findSubjectByName(name),
+                SubjectNotfoundException.SubjectNotFoundByName(name)
+            );
     }
 
     public List<Subject> retreiveSubjectsInClassroom(String classroomnumber){
-        List<Subject> subjects = this.subjectRepository.findSubjectThatAreInClassroom(classroomnumber);
+        return this.returnSubjectsOrExceptionIfEmpty(
+                this.subjectRepository.findSubjectThatAreInClassroom(classroomnumber),
+                SubjectNotfoundException.SubjectNotFoundByNumber(classroomnumber)
+            );
+    }
 
+    private List<Subject> returnSubjectsOrExceptionIfEmpty(List<Subject> subjects, SubjectNotfoundException exception){
         if (subjects.isEmpty()){
-            throw SubjectNotfoundException.SubjectNotFoundByNumber(classroomnumber);
+            throw exception;
         }
-
         return subjects;
     }
 
