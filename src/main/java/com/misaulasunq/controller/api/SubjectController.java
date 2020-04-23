@@ -1,6 +1,7 @@
 package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.SubjectDTO;
+import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,20 +36,35 @@ public class SubjectController {
 
     @GetMapping("/byClassroomNumber/{classroomNumber}")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(@PathVariable String classroomNumber ){
-        List<Subject> subjectsFound = subjectService.retreiveSubjectsInClassroom(classroomNumber);
-
-        List<SubjectDTO> subjectDTOs = subjectsFound.stream().map(SubjectDTO::new).collect(Collectors.toList());
-
-        return new ResponseEntity<>(subjectDTOs, HttpStatus.OK);
+        return this.makeResponseEntityWithGoodStatus(
+                this.subjectService.retreiveSubjectsInClassroom(classroomNumber)
+            );
     }
 
     @CrossOrigin("http://localhost:3000")
     @GetMapping("/byName/{name}")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByName(@PathVariable String name) {
-        List<Subject> subjectsFound = subjectService.retreiveSubjectsWithName(name);
+        return this.makeResponseEntityWithGoodStatus(
+                this.subjectService.retreiveSubjectsWithName(name)
+            );
+    }
 
-        List<SubjectDTO> subjectDTOs = subjectsFound.stream().map(SubjectDTO::new).collect(Collectors.toList());
+    @GetMapping("/betweenHours/{start}/{end}")
+    public ResponseEntity<List<SubjectDTO>> getSubjectsBetweenHours(@PathVariable String start, @PathVariable String end) {
+        LocalTime startTime = LocalTime.parse(start, DateTimeFormatter.ISO_LOCAL_TIME);
+        LocalTime endTime = LocalTime.parse(end, DateTimeFormatter.ISO_LOCAL_TIME);
 
-        return new ResponseEntity<>(subjectDTOs, HttpStatus.OK);
+        return this.makeResponseEntityWithGoodStatus(
+                this.subjectService.retreiveSubjectsWithSchedulesBetween(startTime, endTime)
+            );
+    }
+
+    private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){
+        return new ResponseEntity<>(
+                subjects.stream()
+                        .map(SubjectDTO::new)
+                        .collect(Collectors.toList()),
+                HttpStatus.OK
+            );
     }
 }
