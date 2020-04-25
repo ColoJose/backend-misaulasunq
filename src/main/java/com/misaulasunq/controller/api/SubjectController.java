@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @CrossOrigin( //Se puede configurar para que sea a travez de una clase
-        origins = "http://localhost:8090",
+        origins = "http://localhost:3000",
         methods = RequestMethod.GET,
         maxAge = 60
 )
@@ -29,6 +29,7 @@ public class SubjectController {
     @Autowired
     private SubjectService subjectService;
 
+
     @GetMapping("/byClassroomNumber/{classroomNumber}")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(@PathVariable String classroomNumber ){
         List<Subject> subjectsFound = subjectService.retreiveSubjectsInClassroom(classroomNumber);
@@ -38,6 +39,7 @@ public class SubjectController {
         return new ResponseEntity<>(subjectDTOs, HttpStatus.OK);
     }
 
+    @CrossOrigin("http://localhost:3000")
     @GetMapping("/byName/{name}")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByName(@PathVariable String name) {
         List<Subject> subjectsFound = subjectService.retreiveSubjectsWithName(name);
