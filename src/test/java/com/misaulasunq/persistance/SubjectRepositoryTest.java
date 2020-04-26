@@ -25,6 +25,32 @@ public class SubjectRepositoryTest {
     private SubjectRepository subjectRepository;
 
     @Test
+    public void ifHaveSubjectsWithHoursBetween8HoursAnd22Hours_TheirAreRetrieved(){
+        //Setup(Given)
+        LocalTime startTimeToSearch = LocalTime.of(8,0);
+        LocalTime endTimeToSearch = LocalTime.of(22,0);
+
+        // Exercise (When)
+        List<Subject> subjectsRetrieved = subjectRepository.findSubjectsBetweenHours(
+                startTimeToSearch,
+                endTimeToSearch
+        );
+
+        // Test (then)
+        assertEquals("Tiene que haber solo dos materias entre esos horarios!", 4, subjectsRetrieved.size());
+        LocalTime startTime;
+        LocalTime endTime;
+        for (Subject each : subjectsRetrieved){
+            startTime = each.getCommissions().get(0).getSchedules().get(0).getStartTime();
+            endTime = each.getCommissions().get(0).getSchedules().get(0).getEndTime();
+            assertTrue("No esta entre los horarios de la Query!",
+                    (startTime.isAfter(startTimeToSearch) && startTime.isBefore(endTimeToSearch))
+                            || (endTime.isAfter(startTimeToSearch) && endTime.isBefore(endTimeToSearch))
+            );
+        }
+    }
+
+    @Test
     public void ifHaveSubjectsWithHoursBetween19HoursAnd23Hours_TheirAreRetrieved(){
         //Setup(Given)
         LocalTime startTimeToSearch = LocalTime.of(1,0);

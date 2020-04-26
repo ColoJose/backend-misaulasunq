@@ -29,6 +29,10 @@ public class Commission {
         this.schedules = new ArrayList<>();
     }
 
+    public void addSchudule(Schedule aSchudule) {
+        this.getSchedules().add(aSchudule);
+    }
+
     public Integer getId() {    return id;  }
     public void setId(Integer id) { this.id = id;   }
 
@@ -40,4 +44,5 @@ public class Commission {
 
     public List<Schedule> getSchedules() {   return schedules;   }
     public void setSchedules(List<Schedule> schedules) { this.schedules = schedules; }
+
 }

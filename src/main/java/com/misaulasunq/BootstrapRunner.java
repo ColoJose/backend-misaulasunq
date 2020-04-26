@@ -8,7 +8,9 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Clase encargada de proporsionar datos de prueba para la aplicacion*/
 @Component
@@ -17,23 +19,10 @@ public class BootstrapRunner implements ApplicationRunner {
     @Autowired
     private DegreeRepository degreeRepository;
 
-    @Autowired
-    private ClassroomRepository classroomRepository;
-
-    @Autowired
-    private SubjectRepository subjectRepository;
-
-    @Autowired
-    private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private CommissionRepository commissionRepository;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         this.loadSampleData();
     }
-
 
     private void loadSampleData() {
         //Creacion de Carrera
@@ -41,135 +30,130 @@ public class BootstrapRunner implements ApplicationRunner {
         tpi.setName("Tecnicatura Universitaria en Programacion Informatica");
 
         // Creacion de aulas
+        Map<String, Classroom> classroomByNumber = new HashMap<>();
         Classroom room52 = new Classroom();
         room52.setNumber("52");
         room52.setImageClassRoomBase64("https://miro.medium.com/max/11344/1*32h8ts3A-7XNr6A4Js87ng.jpeg");
+        classroomByNumber.put(room52.getNumber(),room52);
 
         Classroom roomCyT1 = new Classroom();
         roomCyT1.setNumber("CyT-1");
         roomCyT1.setImageClassRoomBase64("https://filedn.com/ltOdFv1aqz1YIFhf4gTY8D7/ingus-info/BLOGS/Photography-stocks3/stock-photography-slider.jpg");
+        classroomByNumber.put(roomCyT1.getNumber(),roomCyT1);
 
         //Creacion de materias
-        Subject matematica1 = new Subject();
-        matematica1.setName("Matematica I");
-        matematica1.setSubjectCode("223");
+        this.createMatematica(tpi, classroomByNumber);
+        this.createSistemasOperativos(tpi, classroomByNumber);
+        this.createProgramacionObjetos3(tpi, classroomByNumber);
 
-        Schedule mateC1martes = new Schedule();
-        mateC1martes.setDay(Day.MARTES);
-        mateC1martes.setStartTime(LocalTime.of(9,0));
-        mateC1martes.setEndTime(LocalTime.of(13,0));
-
-        Schedule mateC1Jueves = new Schedule();
-        mateC1Jueves.setDay(Day.JUEVES);
-        mateC1Jueves.setStartTime(LocalTime.of(9,0));
-        mateC1Jueves.setEndTime(LocalTime.of(13,0));
-
-        Commission matematica1C1 = new Commission();
-        matematica1C1.setName("Comision 1");
-
-        Schedule mateC2Lunes = new Schedule();
-        mateC2Lunes.setDay(Day.LUNES);
-        mateC2Lunes.setStartTime(LocalTime.of(18,0));
-        mateC2Lunes.setEndTime(LocalTime.of(22,0));
-
-        Schedule mateC2Miercoles = new Schedule();
-        mateC2Miercoles.setDay(Day.MIERCOLES);
-        mateC2Miercoles.setStartTime(LocalTime.of(18,0));
-        mateC2Miercoles.setEndTime(LocalTime.of(22,0));
-
-        Commission matematica1C2 = new Commission();
-        matematica1C2.setName("Comision 2");
-
-        Schedule mateC3Lunes = new Schedule();
-        mateC3Lunes.setDay(Day.LUNES);
-        mateC3Lunes.setStartTime(LocalTime.of(9,0));
-        mateC3Lunes.setEndTime(LocalTime.of(13,0));
-
-        Schedule mateC3Miercoles = new Schedule();
-        mateC3Miercoles.setDay(Day.MIERCOLES);
-        mateC3Miercoles.setStartTime(LocalTime.of(9,0));
-        mateC3Miercoles.setEndTime(LocalTime.of(13,0));
-
-        Commission matematica1C3 = new Commission();
-        matematica1C3.setName("Comision 3");
-
-        //Creacion de materias 2
-        Subject sistemasOperativos = new Subject();
-        sistemasOperativos.setName("Sistemas Operativos");
-        sistemasOperativos.setSubjectCode("150");
-
-        Schedule soC1Lunes = new Schedule();
-        soC1Lunes.setDay(Day.LUNES);
-        soC1Lunes.setStartTime(LocalTime.of(16,0));
-        soC1Lunes.setEndTime(LocalTime.of(22,0));
-
-        Commission sistemasOpC1 = new Commission();
-        sistemasOpC1.setName("Comision I");
-
-        // Creaacion de materias 3
-        Subject progObjectos3 = new Subject();
-        progObjectos3.setName("Programacion Orientada a Objetos 3");
-        progObjectos3.setSubjectCode("15");
-
-        Schedule progObjetos3C1Viernes = new Schedule();
-        progObjetos3C1Viernes.setDay(Day.VIERNES);
-        progObjetos3C1Viernes.setStartTime(LocalTime.of(16,0));
-        progObjetos3C1Viernes.setEndTime(LocalTime.of(22,0));
-
-        Commission progObjetos3C1C1 = new Commission();
-        progObjetos3C1C1.setName("Comision I");
-
-        commissionRepository.saveAll(List.of(progObjetos3C1C1,sistemasOpC1,matematica1C3,matematica1C2,matematica1C1));
-        scheduleRepository.saveAll(List.of(mateC2Lunes, mateC3Lunes, mateC3Miercoles,mateC1martes, mateC1Jueves, mateC2Miercoles));
-        subjectRepository.saveAll(List.of(matematica1, sistemasOperativos,progObjectos3));
         degreeRepository.save(tpi);
-        classroomRepository.saveAll(List.of(room52,roomCyT1));
+    }
 
-        //Mapeo de comisiones en aulas
-        progObjetos3C1Viernes.setClassroom(roomCyT1);
-        soC1Lunes.setClassroom(roomCyT1);
-        mateC3Lunes.setClassroom(roomCyT1);
-        mateC3Miercoles.setClassroom(roomCyT1);
-        mateC2Lunes.setClassroom(roomCyT1);
-        mateC2Miercoles.setClassroom(room52);
-        mateC1martes.setClassroom(room52);
-        mateC1Jueves.setClassroom(room52);
+    private void createProgramacionObjetos3(Degree aDegree, Map<String, Classroom> classroomByNumber) {
+        Subject progObjectos3 = this.createSubject(aDegree, "Programacion Orientada a Objetos 3", "15");
+        Commission progObjetos3C1Viernes = this.createCommission(progObjectos3, "Comision 1");
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                progObjetos3C1Viernes,
+                Day.VIERNES,
+                LocalTime.of(16,0),
+                LocalTime.of(22,0)
+        );
+    }
 
-        // Mapeo de horarios en comisiones
-        progObjetos3C1C1.setSchedules(List.of(progObjetos3C1Viernes));
-        sistemasOpC1.setSchedules(List.of(soC1Lunes));
-        matematica1C3.setSchedules(List.of(mateC3Lunes,mateC3Miercoles));
-        matematica1C2.setSchedules(List.of(mateC2Lunes,mateC2Miercoles));
-        matematica1C1.setSchedules(List.of(mateC1martes,mateC1Jueves));
+    public void createSistemasOperativos(Degree aDegree, Map<String,Classroom> classroomByNumber){
+        Subject sistemasOperativos = this.createSubject(aDegree, "Sistemas Operativos", "150");
+        Commission sistemasOpC1 = this.createCommission(sistemasOperativos, "Comision 1");
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                sistemasOpC1,
+                Day.LUNES,
+                LocalTime.of(16,0),
+                LocalTime.of(22,0)
+        );
+    }
 
-        // Mapeo de materias en comisiones
-        progObjetos3C1C1.setSubject(progObjectos3);
-        sistemasOpC1.setSubject(sistemasOperativos);
-        matematica1C3.setSubject(matematica1);
-        matematica1C2.setSubject(matematica1);
-        matematica1C1.setSubject(matematica1);
+    public void createMatematica(Degree aDegree, Map<String,Classroom> classroomByNumber){
+        Subject matematica1 = this.createSubject(aDegree,"Matematica I", "223");
 
-        //Mapeo de comisiones en horarios
-        progObjetos3C1Viernes.setCommission(progObjetos3C1C1);
-        soC1Lunes.setCommission(sistemasOpC1);
-        mateC3Lunes.setCommission(matematica1C2);
-        mateC3Miercoles.setCommission(matematica1C2);
-        mateC2Lunes.setCommission(matematica1C2);
-        mateC2Miercoles.setCommission(matematica1C2);
-        mateC1martes.setCommission(matematica1C1);
-        mateC1Jueves.setCommission(matematica1C1);
+        //COMISION 1
+        Commission matematica1C1 = this.createCommission(matematica1, "Comision 1");
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                matematica1C1,
+                Day.MARTES,
+                LocalTime.of(9,0),
+                LocalTime.of(13,0)
+            );
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                matematica1C1,
+                Day.JUEVES,
+                LocalTime.of(9,0),
+                LocalTime.of(13,0)
+            );
 
-        //Mapeo de comisiones en aulass
-        room52.setSchedules(List.of(mateC2Lunes, mateC3Lunes, mateC3Miercoles));
-        roomCyT1.setSchedules(List.of(mateC1martes, mateC1Jueves, mateC2Miercoles));
-        //Mapeo de materias en la carrera y carrera en las materias
-        tpi.setSubjects(List.of(matematica1, sistemasOperativos,progObjectos3));
-        matematica1.setDegrees(List.of(tpi));
-        sistemasOperativos.setDegrees(List.of(tpi));
-        progObjectos3.setDegrees(List.of(tpi));
+        //COMISION 2
+        Commission matematica1C2 = this.createCommission(matematica1, "Comision 2");
+        this.createSchedule(
+                classroomByNumber.get("52"),
+                matematica1C2,
+                Day.LUNES,
+                LocalTime.of(18,0),
+                LocalTime.of(22,0)
+        );
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                matematica1C2,
+                Day.MIERCOLES,
+                LocalTime.of(18,0),
+                LocalTime.of(22,0)
+            );
 
-        //Se actualizan las relaciones
-        degreeRepository.save(tpi);
-        commissionRepository.saveAll(List.of(progObjetos3C1C1,sistemasOpC1,matematica1C3,matematica1C2,matematica1C1));
+        //COMISION 3
+        Commission matematica1C3 = this.createCommission(matematica1, "Comision 3");
+        this.createSchedule(
+                classroomByNumber.get("52"),
+                matematica1C3,
+                Day.LUNES,
+                LocalTime.of(9,0),
+                LocalTime.of(13,0)
+            );
+        this.createSchedule(
+                classroomByNumber.get("52"),
+                matematica1C3,
+                Day.MIERCOLES,
+                LocalTime.of(9,0),
+                LocalTime.of(13,0)
+            );
+    }
+
+    private Subject createSubject(Degree aDegree, String name, String code){
+        Subject subject = new Subject();
+        subject.setName(name);
+        subject.setSubjectCode(code);
+        subject.addDegree(aDegree);
+        aDegree.addSubject(subject);
+        return subject;
+    }
+
+    private Schedule createSchedule(Classroom aClassroom, Commission aCommission, Day aday, LocalTime startTime, LocalTime endTime){
+        Schedule aSchudule = new Schedule();
+        aSchudule.setDay(aday);
+        aSchudule.setStartTime(startTime);
+        aSchudule.setEndTime(endTime);
+        aSchudule.setClassroom(aClassroom);
+        aSchudule.setCommission(aCommission);
+        aClassroom.addSchedule(aSchudule);
+        aCommission.addSchudule(aSchudule);
+        return aSchudule;
+    }
+
+    private Commission createCommission(Subject aSubject, String name){
+        Commission aCommission = new Commission();
+        aCommission.setName(name);
+        aCommission.setSubject(aSubject);
+        aSubject.addCommission(aCommission);
+        return aCommission;
     }
 }

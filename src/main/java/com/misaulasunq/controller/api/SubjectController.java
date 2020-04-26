@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin( //Se puede configurar para que sea a travez de una clase
+@CrossOrigin(//Se puede configurar para que sea a travez de una clase
         origins = "http://localhost:3000",
         methods = RequestMethod.GET,
         maxAge = 60
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping(
         name="SubjectAPI",
         value = "/subjectAPI",
-//        produces = "application/json",
+        produces = "application/json",
         method = {RequestMethod.GET}
     )
 public class SubjectController {
@@ -41,7 +41,6 @@ public class SubjectController {
             );
     }
 
-    @CrossOrigin("http://localhost:3000")
     @GetMapping("/byName/{name}")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByName(@PathVariable String name) {
         return this.makeResponseEntityWithGoodStatus(
