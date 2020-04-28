@@ -42,20 +42,4 @@ public class SubjectService {
         }
         return subjects;
     }
-
-    //TODO: estos metodos pueden deprecarse
-    public void saveSubject(Subject subject) {
-        subjectRepository.save(subject);
-    }
-
-    public Subject findSubjectById(Integer id) {
-        return subjectRepository.findById(id).orElseThrow(() -> new SubjectNotfoundException(id));
-    }
-
-    public List<Subject> getAll() {
-        return subjectRepository.findAll();
-    }
-
-    public void deleteAll() { subjectRepository.deleteAll(); }
-
 }

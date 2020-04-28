@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/** OBS: Se deberia agregar un campo para referenciar a que cuatrimestre corresponde (Enum primer/segundo/anual) y un campo para guardar a que año corresponde*/
 @Entity
 public class Commission {
 
@@ -16,10 +15,15 @@ public class Commission {
     private Integer id;
     @NotBlank(message = "Name Is Mandatory")
     private String name;
+    @NotNull(message = "The Year Is Mandatory")
+    private Integer year;
+    @NotNull(message = "The Semester Should Be Put It")
+    @Enumerated(EnumType.STRING)
+    private Semester semester;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Subject subject;
     @NotNull(message = "Schedules Cannot Be A Null Variable")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,/* orphanRemoval = true, */mappedBy = "commission")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "commission")
     private List<Schedule> schedules;
 
     public Commission() {   this.initialize();  }
@@ -27,6 +31,7 @@ public class Commission {
     private void initialize() {
         this.name = "";
         this.schedules = new ArrayList<>();
+        this.year = 0;
     }
 
     public void addSchudule(Schedule aSchudule) {
@@ -45,4 +50,9 @@ public class Commission {
     public List<Schedule> getSchedules() {   return schedules;   }
     public void setSchedules(List<Schedule> schedules) { this.schedules = schedules; }
 
+    public Integer getYear() {  return year;    }
+    public void setYear(Integer year) { this.year = year;   }
+
+    public Semester getSemester() { return semester;    }
+    public void setSemester(Semester semester) {    this.semester = semester;   }
 }
