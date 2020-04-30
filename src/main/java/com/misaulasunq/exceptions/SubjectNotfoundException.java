@@ -23,4 +23,8 @@ public class SubjectNotfoundException extends RuntimeException {
     public SubjectNotfoundException(String message){
         super(message);
     }
+
+    public static SubjectNotfoundException SubjectNotFoundCurrentDay() {
+        return new SubjectNotfoundException(String.format("No subjects in the current day"));
+    }
 }

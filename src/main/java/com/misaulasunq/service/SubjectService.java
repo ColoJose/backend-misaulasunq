@@ -6,6 +6,7 @@ import com.misaulasunq.persistance.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -58,4 +59,10 @@ public class SubjectService {
 
     public void deleteAll() { subjectRepository.deleteAll(); }
 
+    public List<Subject> retreiveSubjectsCurrentDay(DayOfWeek currentDay) {
+        return this.returnSubjectsOrExceptionIfEmpty(
+                this.subjectRepository.findCurrentDaySubjects(currentDay),
+                SubjectNotfoundException.SubjectNotFoundCurrentDay()
+        );
+    }
 }
