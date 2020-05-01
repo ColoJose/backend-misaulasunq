@@ -3,12 +3,15 @@ package com.misaulasunq.persistance;
 import com.misaulasunq.model.*;
 import com.misaulasunq.utils.*;
 import org.junit.Before;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import org.junit.Test;
@@ -232,5 +235,52 @@ public class SubjectRepositoryTest {
         BDDIISchedule.setCommission(BDDIIC1);
 
         subjectRepository.saveAll(List.of(desap,BBD,BDDII));
+    }
+
+    @Test
+    public void whenRequestForSubjectsForTheCurrentDayTheseSubjectShouldBeBrought() {
+
+        Day currentDAy = DayConverter.getDay(LocalDate.now().getDayOfWeek());
+
+        // degree
+        Degree testDegree = DegreeBuilder.buildADegree().withMockData().build();
+
+        //Subjects
+        Subject concurrente = SubjectBuilder.buildASubject().withName("Programación concurrente")
+                .withSubjectCode("33")
+                .withDegrees(new ArrayList<>(List.of(testDegree)))
+                .build();
+
+        testDegree.addSubject(concurrente);
+
+        // classroom
+        Classroom aula60 = ClassroomBuilder.buildAClassroom().withName("60").build();
+
+        // schedule
+        Schedule concurrenteSchedule = ScheduleBuilder.buildASchedule().withMockData()
+                .withClassroom(aula60)
+                .withStartTime(LocalTime.of(1,30))
+                .withEndTime(LocalTime.of(4,30))
+                .withDay(currentDAy)
+                .build();
+
+        aula60.addSchedule(concurrenteSchedule);
+
+        // Commissions
+        Commission concurrenteC1 = CommissionBuilder.buildACommission().withMockData()
+                .withSchedules(new ArrayList<>(List.of(concurrenteSchedule)))
+                .withSubject(concurrente)
+                .build();
+
+        concurrente.addCommission(concurrenteC1);
+        concurrenteSchedule.setCommission(concurrenteC1);
+
+        // exrcise
+        subjectRepository.save(concurrente);
+        List<Subject> currentDaySubjects = this.subjectRepository.findCurrentDaySubjects(currentDAy);
+
+        assertEquals("Programacion Orientada a Objetos 3",currentDaySubjects.get(0).getName());
+//        assertEquals("Programación concurrente",currentDaySubjects.get(1).getName());
+
     }
 }

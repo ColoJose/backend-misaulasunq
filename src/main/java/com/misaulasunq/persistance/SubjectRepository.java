@@ -1,5 +1,6 @@
 package com.misaulasunq.persistance;
 
+import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.utils.DayConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,7 @@ import java.util.List;
 
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Integer> {
-
-    @Autowired
-    private Subject sub;
-
+    
     @Query("SELECT subject "
          + "FROM subject subject "
          + "JOIN subject.commissions AS commisions "
@@ -42,7 +40,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
         + "FROM subject subject "
         + "JOIN subject.commissions AS commissions "
         + "JOIN commissions.schedules AS schedule "
-        + "WHERE schedule.day=" + DayConverter.
+        + "WHERE schedule.day=:currentDay"
      )
-    List<Subject> findCurrentDaySubjects(DayOfWeek currentDay);
+    List<Subject> findCurrentDaySubjects(@Param("currentDay") Day currentDay);
 }
