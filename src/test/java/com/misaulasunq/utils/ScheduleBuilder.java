@@ -39,6 +39,11 @@ public class ScheduleBuilder {
         return this;
     }
 
+    public ScheduleBuilder withDay(Day day) {
+        this.schedule.setDay(day);
+        return this;
+    }
+
     public Schedule build(){
         return this.schedule;
     }
