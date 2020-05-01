@@ -63,13 +63,8 @@ public class SubjectService {
 
     public List<Subject> retreiveSubjectsCurrentDay(DayOfWeek currentDay) {
         return this.returnSubjectsOrExceptionIfEmpty(
-                this.subjectRepository.findCurrentDaySubjects(convertDay(currentDay)),
+                this.subjectRepository.findCurrentDaySubjects(DayConverter.getDay(currentDay)),
                 SubjectNotfoundException.SubjectNotFoundCurrentDay()
         );
     }
-
-    private Day convertDay(DayOfWeek currentDay) {
-        return DayConverter.getDay(currentDay);
-    }
-
 }
