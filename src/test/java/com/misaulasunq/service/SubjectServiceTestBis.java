@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class SubjectServiceTestBis {
     public void whenAskServiceForSubjectOfTheCurrentDayItShoueldRetrieveIt(){
 
         // exercise
-        List<Subject> currentDaySubject = subjectRepository.findCurrentDaySubjects(Day.LUNES);
+        List<Subject> currentDaySubject = subjectService.retreiveSubjectsCurrentDay(LocalDate.now().getDayOfWeek());
         Assert.assertEquals("objetos 1",currentDaySubject.get(0).getName());
     }
 }
