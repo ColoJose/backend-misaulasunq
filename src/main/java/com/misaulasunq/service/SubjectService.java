@@ -1,11 +1,14 @@
 package com.misaulasunq.service;
 
 import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.persistance.SubjectRepository;
+import com.misaulasunq.utils.DayConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -41,5 +44,27 @@ public class SubjectService {
             throw exception;
         }
         return subjects;
+    }
+
+    //TODO: estos metodos pueden deprecarse
+    public void saveSubject(Subject subject) {
+        subjectRepository.save(subject);
+    }
+
+    public Subject findSubjectById(Integer id) {
+        return subjectRepository.findById(id).orElseThrow(() -> new SubjectNotfoundException(id));
+    }
+
+    public List<Subject> getAll() {
+        return subjectRepository.findAll();
+    }
+
+    public void deleteAll() { subjectRepository.deleteAll(); }
+
+    public List<Subject> retreiveSubjectsCurrentDay(DayOfWeek currentDay) {
+        return this.returnSubjectsOrExceptionIfEmpty(
+                this.subjectRepository.findCurrentDaySubjects(DayConverter.getDay(currentDay)),
+                SubjectNotfoundException.SubjectNotFoundCurrentDay()
+        );
     }
 }

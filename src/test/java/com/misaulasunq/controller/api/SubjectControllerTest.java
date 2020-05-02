@@ -35,7 +35,7 @@ public class SubjectControllerTest {
         assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
         assertEquals(
                 "No trajo ningun subject! Revisar el service o Repository",
-                1,
+                3,
                 Objects.requireNonNull(response.getBody()).size()
         );
     }
@@ -111,7 +111,7 @@ public class SubjectControllerTest {
         assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
         assertEquals(
                 "No trajo ningun subject! Revisar el service o Repository",
-                1,
+                2,
                 Objects.requireNonNull(response.getBody()).size()
             );
     }

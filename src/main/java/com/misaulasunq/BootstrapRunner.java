@@ -44,6 +44,8 @@ public class BootstrapRunner implements ApplicationRunner {
         this.createMatematica(tpi, classroomByNumber);
         this.createSistemasOperativos(tpi, classroomByNumber);
         this.createProgramacionObjetos3(tpi, classroomByNumber);
+        this.createSeguridadInformatica(tpi, classroomByNumber);
+        this.createTIP(tpi,classroomByNumber);
 
         degreeRepository.save(tpi);
     }
@@ -69,6 +71,28 @@ public class BootstrapRunner implements ApplicationRunner {
                 Day.LUNES,
                 LocalTime.of(16,0),
                 LocalTime.of(22,0)
+        );
+    }
+
+    public void createSeguridadInformatica(Degree degree, Map<String, Classroom> classroomByNumber) {
+        Subject seguridadInformatica = this.createSubject(degree, "Seguridad Informática", "420");
+        Commission seguridadC1 = this.createCommission(seguridadInformatica,"Comision 1",2019,Semester.PRIMER);
+        this.createSchedule(classroomByNumber.get("CyT-1"),
+                seguridadC1,
+                Day.SABADO,
+                LocalTime.of(9,0),
+                LocalTime.of(13,0)
+        );
+    }
+
+    public void createTIP(Degree degree, Map<String, Classroom> clasroomByNumber) {
+        Subject tip = this.createSubject(degree, "TIP", "231");
+        Commission seguridadC1 = this.createCommission(tip,"Comision 1",2019,Semester.PRIMER);
+        this.createSchedule(clasroomByNumber.get("52"),
+                seguridadC1,
+                Day.SABADO,
+                LocalTime.of(8,0),
+                LocalTime.of(13,0)
         );
     }
 

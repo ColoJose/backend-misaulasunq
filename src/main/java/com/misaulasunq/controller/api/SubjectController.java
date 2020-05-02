@@ -1,7 +1,6 @@
 package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.SubjectDTO;
-import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -34,6 +35,7 @@ public class SubjectController {
     private SubjectService subjectService;
 
 
+
     @GetMapping("/byClassroomNumber/{classroomNumber}")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(@PathVariable String classroomNumber ){
         return this.makeResponseEntityWithGoodStatus(
@@ -55,6 +57,14 @@ public class SubjectController {
 
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsWithSchedulesBetween(startTime, endTime)
+            );
+    }
+
+    @GetMapping("/currentDaySubjects")
+    public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay(){
+        DayOfWeek currentDay =  LocalDate.now().getDayOfWeek();
+            return this.makeResponseEntityWithGoodStatus(
+                    this.subjectService.retreiveSubjectsCurrentDay(currentDay)
             );
     }
 
