@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /** Clase encargada de proporsionar datos de prueba para la aplicacion*/
@@ -53,7 +52,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createProgramacionObjetos3(Degree aDegree, Map<String, Classroom> classroomByNumber) {
         Subject progObjectos3 = this.createSubject(aDegree, "Programacion Orientada a Objetos 3", "15");
-        Commission progObjetos3C1Viernes = this.createCommission(progObjectos3, "Comision 1");
+        Commission progObjetos3C1Viernes = this.createCommission(progObjectos3, "Comision 1",2019,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 progObjetos3C1Viernes,
@@ -65,7 +64,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     public void createSistemasOperativos(Degree aDegree, Map<String,Classroom> classroomByNumber){
         Subject sistemasOperativos = this.createSubject(aDegree, "Sistemas Operativos", "150");
-        Commission sistemasOpC1 = this.createCommission(sistemasOperativos, "Comision 1");
+        Commission sistemasOpC1 = this.createCommission(sistemasOperativos, "Comision 1",2019,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 sistemasOpC1,
@@ -77,7 +76,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     public void createSeguridadInformatica(Degree degree, Map<String, Classroom> classroomByNumber) {
         Subject seguridadInformatica = this.createSubject(degree, "Seguridad Informática", "420");
-        Commission seguridadC1 = this.createCommission(seguridadInformatica,"Comision 1");
+        Commission seguridadC1 = this.createCommission(seguridadInformatica,"Comision 1",2019,Semester.PRIMER);
         this.createSchedule(classroomByNumber.get("CyT-1"),
                 seguridadC1,
                 Day.SABADO,
@@ -88,7 +87,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     public void createTIP(Degree degree, Map<String, Classroom> clasroomByNumber) {
         Subject tip = this.createSubject(degree, "TIP", "231");
-        Commission seguridadC1 = this.createCommission(tip,"Comision 1");
+        Commission seguridadC1 = this.createCommission(tip,"Comision 1",2019,Semester.PRIMER);
         this.createSchedule(clasroomByNumber.get("52"),
                 seguridadC1,
                 Day.SABADO,
@@ -101,7 +100,7 @@ public class BootstrapRunner implements ApplicationRunner {
         Subject matematica1 = this.createSubject(aDegree,"Matematica I", "223");
 
         //COMISION 1
-        Commission matematica1C1 = this.createCommission(matematica1, "Comision 1");
+        Commission matematica1C1 = this.createCommission(matematica1, "Comision 1",2019,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 matematica1C1,
@@ -118,7 +117,7 @@ public class BootstrapRunner implements ApplicationRunner {
             );
 
         //COMISION 2
-        Commission matematica1C2 = this.createCommission(matematica1, "Comision 2");
+        Commission matematica1C2 = this.createCommission(matematica1, "Comision 2",2019,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
                 matematica1C2,
@@ -135,7 +134,7 @@ public class BootstrapRunner implements ApplicationRunner {
             );
 
         //COMISION 3
-        Commission matematica1C3 = this.createCommission(matematica1, "Comision 3");
+        Commission matematica1C3 = this.createCommission(matematica1, "Comision 3",2019,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
                 matematica1C3,
@@ -173,8 +172,10 @@ public class BootstrapRunner implements ApplicationRunner {
         return aSchudule;
     }
 
-    private Commission createCommission(Subject aSubject, String name){
+    private Commission createCommission(Subject aSubject, String name, Integer aYear, Semester aSemester){
         Commission aCommission = new Commission();
+        aCommission.setSemester(aSemester);
+        aCommission.setYear(aYear);
         aCommission.setName(name);
         aCommission.setSubject(aSubject);
         aSubject.addCommission(aCommission);

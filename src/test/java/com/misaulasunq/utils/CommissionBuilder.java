@@ -1,9 +1,7 @@
 package com.misaulasunq.utils;
 
 import com.misaulasunq.model.*;
-
 import java.util.List;
-import java.util.Set;
 
 public class CommissionBuilder {
 
@@ -19,6 +17,7 @@ public class CommissionBuilder {
 
     public CommissionBuilder withMockData(){
         this.commission.setName("No Sense Commission");
+        this.commission.setSemester(Semester.ANUAL);
         return this;
     }
 
