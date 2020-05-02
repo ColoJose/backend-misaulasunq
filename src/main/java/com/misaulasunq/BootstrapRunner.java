@@ -87,7 +87,7 @@ public class BootstrapRunner implements ApplicationRunner {
     }
 
     public void createTIP(Degree degree, Map<String, Classroom> clasroomByNumber) {
-        Subject tip = this.createSubject(degree, "Seguridad Informática", "231");
+        Subject tip = this.createSubject(degree, "TIP", "231");
         Commission seguridadC1 = this.createCommission(tip,"Comision 1");
         this.createSchedule(clasroomByNumber.get("52"),
                 seguridadC1,
