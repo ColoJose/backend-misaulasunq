@@ -3,6 +3,7 @@ package com.misaulasunq.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Commission {
     private Semester semester;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Subject subject;
-    @NotNull(message = "Schedules should be set")
+    @Size(min= 1, message = "You have to add a schedule at least")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "commission")
     private List<Schedule> schedules;
 

@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolation;
@@ -16,7 +18,6 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 public class SubjectTests {
 
-    private Subject subject;
     private ValidatorFactory factory;
     private Validator validator;
     @Before
@@ -30,6 +31,9 @@ public class SubjectTests {
 
         // given
         Subject subject = new Subject();
+        subject.setSubjectCode("code");
+        subject.addCommission(Mockito.any(Commission.class));
+        subject.addDegree(Mockito.any(Degree.class));
         subject.setName("");
 
         // when
@@ -44,7 +48,9 @@ public class SubjectTests {
     public void  whenCreatingSubjectWithNoSubjectCodeShouldRaiseExceptionSubjectIsMandatory(){
         // given
         Subject subject = new Subject();
-        subject.setName("bioteclogia");
+        subject.setName("name");
+        subject.addCommission(Mockito.any(Commission.class));
+        subject.addDegree(Mockito.any(Degree.class));
         subject.setSubjectCode("");
 
         // when
@@ -56,12 +62,13 @@ public class SubjectTests {
     }
 
     @Test
-    public void whenCreatingSubjectCommissionsShouldRaiseEceptionYouNeedToAddAtLeastACommission(){
+    public void whenCreatingSubjectWithNoCommissionShouldRaiseExceptionYouNeedToAddACommissionAtLeast(){
         // given
         Subject subject = new Subject();
-        subject.setName("tpi");
-        subject.setSubjectCode("tpi001");
-        subject.setCommissions(null);
+        subject.setName("name");
+        subject.setSubjectCode("code");
+        subject.addDegree(Mockito.any(Degree.class));
+        // no commission is added
 
         // when
         Set<ConstraintViolation<Subject>> violations = validator.validate(subject);
@@ -73,13 +80,13 @@ public class SubjectTests {
     }
 
     @Test
-    public  void whenCreatingSubjectWithNoDegreeShoueldRaiseExpcetionYouNeedToAddADegreeAtLesat() {
+    public  void whenCreatingSubjectWithNoDegreeShouldRaiseExceptionYouNeedToAddADegreeAtLeast() {
 
         // given
         Subject subject = new Subject();
         subject.setName("tpi");
-        subject.setSubjectCode("tpi001");
-        subject.setDegrees(null);
+        subject.setSubjectCode("code");
+        subject.addCommission(Mockito.any(Commission.class));
 
         // when
         Set<ConstraintViolation<Subject>> violations = validator.validate(subject);

@@ -1,8 +1,10 @@
 package com.misaulasunq.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity(name = "subject") // name when using HQL
@@ -17,10 +19,10 @@ public class Subject {
     @NotBlank(message = "Subject is mandatory")
     @Column(unique = true, length = 10)
     private String subjectCode; // to avoid duplicate subjects
-    @NotNull(message = "You need to add a commission at least")
+    @Size(min = 1,message = "You need to add a commission at least")
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subject")
     private List<Commission> commissions;
-    @NotNull(message = "You need to add a degree at least")
+    @Size(min=1,message = "You need to add a degree at least")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Degree> degrees;
 
