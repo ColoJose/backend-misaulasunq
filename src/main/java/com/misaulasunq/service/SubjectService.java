@@ -18,28 +18,28 @@ public class SubjectService {
     @Autowired
     private SubjectRepository subjectRepository;
 
-    public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) {
+    public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) throws SubjectNotfoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectsBetweenHours(startTime, endTime),
                 SubjectNotfoundException.SubjectNotFoundBetween(startTime,endTime)
             );
     }
 
-    public List<Subject> retreiveSubjectsWithName(String name) {
+    public List<Subject> retreiveSubjectsWithName(String name) throws SubjectNotfoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectByName(name),
                 SubjectNotfoundException.SubjectNotFoundByName(name)
             );
     }
 
-    public List<Subject> retreiveSubjectsInClassroom(String classroomnumber){
+    public List<Subject> retreiveSubjectsInClassroom(String classroomnumber) throws SubjectNotfoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectThatAreInClassroom(classroomnumber),
                 SubjectNotfoundException.SubjectNotFoundByNumber(classroomnumber)
             );
     }
 
-    private List<Subject> returnSubjectsOrExceptionIfEmpty(List<Subject> subjects, SubjectNotfoundException exception){
+    private List<Subject> returnSubjectsOrExceptionIfEmpty(List<Subject> subjects, SubjectNotfoundException exception) throws SubjectNotfoundException {
         if (subjects.isEmpty()){
             throw exception;
         }
@@ -51,7 +51,7 @@ public class SubjectService {
         subjectRepository.save(subject);
     }
 
-    public Subject findSubjectById(Integer id) {
+    public Subject findSubjectById(Integer id) throws SubjectNotfoundException {
         return subjectRepository.findById(id).orElseThrow(() -> new SubjectNotfoundException(id));
     }
 
@@ -61,7 +61,7 @@ public class SubjectService {
 
     public void deleteAll() { subjectRepository.deleteAll(); }
 
-    public List<Subject> retreiveSubjectsCurrentDay(DayOfWeek currentDay) {
+    public List<Subject> retreiveSubjectsCurrentDay(DayOfWeek currentDay) throws SubjectNotfoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findCurrentDaySubjects(DayConverter.getDay(currentDay)),
                 SubjectNotfoundException.SubjectNotFoundCurrentDay()

@@ -7,7 +7,8 @@ public enum Day {
     MIERCOLES("Miercoles"),
     JUEVES("Jueves"),
     VIERNES("Viernes"),
-    SABADO("Sabado")
+    SABADO("Sabado"),
+    DOMINGO("Domingo")
     ;
 
     private final String day;

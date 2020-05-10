@@ -16,7 +16,7 @@ public class DegreeService {
 
     public void save(Degree degree) { this.degreeRepository.save(degree); }
 
-    public Degree findDegreeById(Integer id) {
+    public Degree findDegreeById(Integer id) throws DegreeNotFoundException {
         return this.degreeRepository.findById(id)
                                     .orElseThrow( () -> new DegreeNotFoundException(id));
     }

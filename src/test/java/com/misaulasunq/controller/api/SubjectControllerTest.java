@@ -24,7 +24,7 @@ public class SubjectControllerTest {
     private SubjectController subjectController;
 
     @Test
-    public void ifGetSubjectASubjectBetweenHours_getAGoodResponse(){
+    public void ifGetSubjectASubjectBetweenHours_getAGoodResponse() throws SubjectNotfoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -56,7 +56,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectByName_getAGoodResponse(){
+    public void ifGetSubjectByName_getAGoodResponse() throws SubjectNotfoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -100,7 +100,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubject_getAGoodResponse(){
+    public void ifGetSubject_getAGoodResponse() throws SubjectNotfoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
