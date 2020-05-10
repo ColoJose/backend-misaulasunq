@@ -2,7 +2,7 @@ package com.misaulasunq.exceptions;
 
 import java.time.LocalTime;
 
-public class SubjectNotfoundException extends RuntimeException {
+public class SubjectNotfoundException extends Exception {
 
     public static SubjectNotfoundException SubjectNotFoundByNumber(String classroomnumber){
         return new SubjectNotfoundException(String.format("No subjects in the classroom %s.", classroomnumber));

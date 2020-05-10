@@ -21,6 +21,8 @@ public final class DayConverter {
                          break;
             case SATURDAY: day = Day.SABADO;
                          break;
+            default: day = Day.DOMINGO;
+                
         }
         return day;
     }

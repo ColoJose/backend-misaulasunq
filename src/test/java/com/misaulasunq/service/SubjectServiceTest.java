@@ -31,7 +31,7 @@ public class SubjectServiceTest {
     public SubjectService subjectService;
 
     @Test
-    public void ifTryToGetASubjectBetweenAnHours_AndThereIsOne_ItsRetrieved() {
+    public void ifTryToGetASubjectBetweenAnHours_AndThereIsOne_ItsRetrieved() throws SubjectNotfoundException {
         //Setup(Given)
         LocalTime start = LocalTime.of(2,0);
         LocalTime end = LocalTime.of(5,0);
@@ -75,7 +75,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToGetASubjectWithAName_AndThereIsOne_ItsRetrieved() {
+    public void ifTryToGetASubjectWithAName_AndThereIsOne_ItsRetrieved() throws SubjectNotfoundException {
         //Setup(Given)
 
         //exercise
@@ -108,7 +108,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifHaveSubjectInClassroomFive_IfSearchWithClassroomNumber_WeGetOne() {
+    public void ifHaveSubjectInClassroomFive_IfSearchWithClassroomNumber_WeGetOne() throws SubjectNotfoundException {
         //Setup(Given)
 
         //exercise

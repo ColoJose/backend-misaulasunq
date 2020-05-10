@@ -1,6 +1,7 @@
 package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.SubjectDTO;
+import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,21 +39,21 @@ public class SubjectController {
 
 
     @GetMapping("/byClassroomNumber/{classroomNumber}")
-    public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(@PathVariable String classroomNumber ){
+    public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(@PathVariable String classroomNumber ) throws SubjectNotfoundException {
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsInClassroom(classroomNumber)
             );
     }
 
     @GetMapping("/byName/{name}")
-    public ResponseEntity<List<SubjectDTO>> getSubjectsByName(@PathVariable String name) {
+    public ResponseEntity<List<SubjectDTO>> getSubjectsByName(@PathVariable String name) throws SubjectNotfoundException {
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsWithName(name)
             );
     }
 
     @GetMapping("/betweenHours/{start}/{end}")
-    public ResponseEntity<List<SubjectDTO>> getSubjectsBetweenHours(@PathVariable String start, @PathVariable String end) {
+    public ResponseEntity<List<SubjectDTO>> getSubjectsBetweenHours(@PathVariable String start, @PathVariable String end) throws SubjectNotfoundException {
         LocalTime startTime = LocalTime.parse(start, DateTimeFormatter.ISO_LOCAL_TIME);
         LocalTime endTime = LocalTime.parse(end, DateTimeFormatter.ISO_LOCAL_TIME);
 
@@ -62,7 +63,7 @@ public class SubjectController {
     }
 
     @GetMapping("/currentDaySubjects")
-    public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay(){
+    public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay() throws SubjectNotfoundException {
         DayOfWeek currentDay =  LocalDate.now().getDayOfWeek();
             return this.makeResponseEntityWithGoodStatus(
                     this.subjectService.retreiveSubjectsCurrentDay(currentDay)
