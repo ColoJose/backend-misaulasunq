@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -66,6 +67,12 @@ public class SubjectController {
             return this.makeResponseEntityWithGoodStatus(
                     this.subjectService.retreiveSubjectsCurrentDay(currentDay)
             );
+    }
+
+    @PostMapping
+    public ResponseEntity createNewSubject(@RequestBody @Valid Subject subject) {
+
+        return ResponseEntity.ok("subject successfully created");
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){

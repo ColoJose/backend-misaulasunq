@@ -22,16 +22,14 @@ public class Commission {
     private Semester semester;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Subject subject;
-    @NotNull(message = "Schedules Cannot Be A Null Variable")
+    @NotNull(message = "Schedules should be set")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "commission")
     private List<Schedule> schedules;
 
     public Commission() {   this.initialize();  }
 
     private void initialize() {
-        this.name = "";
         this.schedules = new ArrayList<>();
-        this.year = 0;
     }
 
     public void addSchudule(Schedule aSchudule) {

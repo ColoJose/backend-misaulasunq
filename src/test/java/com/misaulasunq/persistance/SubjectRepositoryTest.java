@@ -237,7 +237,7 @@ public class SubjectRepositoryTest {
         subjectRepository.saveAll(List.of(desap,BBD,BDDII));
     }
 
-    @Test
+   /* @Test
     public void whenRequestForSubjectsForTheCurrentDayTheseSubjectShouldBeBrought() {
 
         Day currentDAy = DayConverter.getDay(LocalDate.now().getDayOfWeek());
@@ -280,5 +280,5 @@ public class SubjectRepositoryTest {
         List<Subject> currentDaySubjects = this.subjectRepository.findCurrentDaySubjects(currentDAy);
 
         assertNotEquals(0,currentDaySubjects.size());
-    }
+    }*/
 }

@@ -12,23 +12,21 @@ public class Subject {
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotBlank(message = "Name Is Mandatory")
+    @NotBlank(message = "Name is mandatory")
     private String name;
-    @NotBlank(message = "Subject Is Mandatory")
+    @NotBlank(message = "Subject is mandatory")
     @Column(unique = true, length = 10)
     private String subjectCode; // to avoid duplicate subjects
-    @NotNull(message = "Commissions Cannot Be A Null Variable")
+    @NotNull(message = "You need to add a commission at least")
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subject")
     private List<Commission> commissions;
-    @NotNull(message = "Degrees Cannot Be A Null Variable")
+    @NotNull(message = "You need to add a degree at least")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Degree> degrees;
 
     public Subject() {  this.initialize();  }
 
     protected void initialize(){
-        this.name = "";
-        this.subjectCode = "";
         this.commissions = new ArrayList<>();
         this.degrees = new ArrayList<>();
     }
