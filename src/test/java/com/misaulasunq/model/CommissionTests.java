@@ -30,7 +30,7 @@ public class CommissionTests {
         this.commission = new Commission();
         this.commission.setYear(Mockito.anyInt());
         commission.setSemester(Semester.PRIMER);
-        commission.addSchudule(Mockito.any(Schedule.class));
+        commission.addSchedule(Mockito.any(Schedule.class));
         commission.setName("");
 
         // when
@@ -47,7 +47,7 @@ public class CommissionTests {
         this.commission = new Commission();
         commission.setSemester(Semester.PRIMER);
         commission.setName("comision 1");
-        commission.addSchudule(Mockito.any(Schedule.class));
+        commission.addSchedule(Mockito.any(Schedule.class));
 
         // when
         Set<ConstraintViolation<Commission>> violations = this.validator.validate(commission);
@@ -63,7 +63,7 @@ public class CommissionTests {
         this.commission = new Commission();
         this.commission.setName("comison 1");
         this.commission.setYear(Mockito.anyInt());
-        this.commission.addSchudule(Mockito.any(Schedule.class));
+        this.commission.addSchedule(Mockito.any(Schedule.class));
 
         // when
         Set<ConstraintViolation<Commission>> violations = this.validator.validate(commission);

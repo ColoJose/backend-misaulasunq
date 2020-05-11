@@ -168,7 +168,7 @@ public class BootstrapRunner implements ApplicationRunner {
         aSchudule.setClassroom(aClassroom);
         aSchudule.setCommission(aCommission);
         aClassroom.addSchedule(aSchudule);
-        aCommission.addSchudule(aSchudule);
+        aCommission.addSchedule(aSchudule);
         return aSchudule;
     }
 

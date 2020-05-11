@@ -1,27 +1,45 @@
 package com.misaulasunq.controller.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.model.*;
+import com.misaulasunq.service.SubjectService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@WebMvcTest(controllers = SubjectController.class)
 @Rollback
 public class SubjectControllerTest {
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private SubjectController subjectController;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+
 
     @Test
     public void ifGetSubjectASubjectBetweenHours_getAGoodResponse(){
@@ -130,4 +148,58 @@ public class SubjectControllerTest {
         //Test(Then)
         assertEquals("No subjects in the classroom 999.", exceptionMessage);
     }
+
+    @Test
+    public void whenRequestToCreateNewSubjectWithAValidOne_getStatusOk() throws Exception{
+
+        Subject subject = this.validSubject();
+        String serializedSubject = objectMapper.writeValueAsString(subject);
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders
+                        .post("subjectAPI/newrequest")
+                        .contentType("application/json")
+                        .content(serializedSubject))
+                        .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenReceivingAValidSubject_shouldRetrieveHttpStatusOk() {
+
+    }
+
+    // auxiliary methods
+
+    private Subject validSubject() {
+
+        // valid schedule
+        Schedule schedule = new Schedule();
+        schedule.setStartTime(LocalTime.now());
+        schedule.setEndTime(LocalTime.now());
+        schedule.setDay(Day.LUNES);
+
+        // valid commission
+        Commission commission = new Commission();
+        commission.setName("com 1");
+        commission.setYear(2020);
+        commission.setSemester(Semester.PRIMER);
+        commission.addSchedule(schedule);
+
+        // valid degree
+        Degree degree = new Degree();
+        degree.setName("tpi");
+
+        // set up valid subject
+        Subject validSubject = new Subject();
+        validSubject.setName("so");
+        validSubject.setSubjectCode("so007");
+        validSubject.addCommission(commission);
+        validSubject.addDegree(degree);
+
+        degree.addSubject(validSubject);
+
+        return validSubject;
+    }
+
+
 }

@@ -33,7 +33,7 @@ public class Commission {
         this.schedules = new ArrayList<>();
     }
 
-    public void addSchudule(Schedule aSchudule) {
+    public void addSchedule(Schedule aSchudule) {
         this.getSchedules().add(aSchudule);
     }
 

@@ -69,8 +69,8 @@ public class SubjectController {
             );
     }
 
-    @PostMapping
-    public ResponseEntity createNewSubject(@RequestBody @Valid Subject subject) {
+    @PostMapping("/newsubject")
+    public ResponseEntity createNewSubject(@Valid @RequestBody Subject subject) {
 
         return ResponseEntity.ok("subject successfully created");
     }
