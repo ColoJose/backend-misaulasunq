@@ -96,10 +96,18 @@ public class SubjectRepositoryTest {
     @Test
     public void whenSaveSubjectTheIdShouldBeDistinctToZero(){
         //Setup (Given)
+        Degree aDegree = DegreeBuilder.buildADegree().withMockData().build();
+        Commission aCommission = CommissionBuilder.buildACommission().withMockData().build();
+        Schedule aSchedule = ScheduleBuilder.buildASchedule().withMockData().withCommission(aCommission).build();
+        aCommission.addSchedule(aSchedule);
         Subject subjectToSUT = SubjectBuilder.buildASubject()
                                             .withName("TIP")
                                             .withSubjectCode("2020")
                                             .build();
+        subjectToSUT.addDegree(aDegree);
+        subjectToSUT.addCommission(aCommission);
+        aCommission.setSubject(subjectToSUT);
+        aDegree.addSubject(subjectToSUT);
 
         //Exercise (When)
         subjectRepository.save(subjectToSUT);
@@ -125,18 +133,43 @@ public class SubjectRepositoryTest {
     @Test
     public void whenSaveSeveralSubjectInDbFindAllShouldRetrieveThisEntities(){
         //Setup (Given)
+        Degree aDegree = DegreeBuilder.buildADegree().withMockData().build();
+        Commission aCommission = CommissionBuilder.buildACommission().withMockData().build();
+        Schedule aSchedule = ScheduleBuilder.buildASchedule().withMockData().withCommission(aCommission).build();
+        aCommission.addSchedule(aSchedule);
         Subject FPSubject = SubjectBuilder.buildASubject()
                                         .withName("Programacion Funcional")
                                         .withSubjectCode("201")
                                         .build();
+        FPSubject.addDegree(aDegree);
+        FPSubject.addCommission(aCommission);
+        aCommission.setSubject(FPSubject);
+        aDegree.addSubject(FPSubject);
+
+        Commission aCommission1 = CommissionBuilder.buildACommission().withMockData().build();
+        Schedule aSchedule1 = ScheduleBuilder.buildASchedule().withMockData().withCommission(aCommission1).build();
+        aCommission1.addSchedule(aSchedule1);
         Subject OOP1ProgSubject = SubjectBuilder.buildASubject()
                                         .withName("Programacion Orientada A Objetos 1")
                                         .withSubjectCode("1004")
                                         .build();
+        OOP1ProgSubject.addDegree(aDegree);
+        OOP1ProgSubject.addCommission(aCommission1);
+        aCommission1.setSubject(OOP1ProgSubject);
+        aDegree.addSubject(OOP1ProgSubject);
+
+        Commission aCommission2 = CommissionBuilder.buildACommission().withMockData().build();
+        Schedule aSchedule2 = ScheduleBuilder.buildASchedule().withMockData().withCommission(aCommission2).build();
+        aCommission2.addSchedule(aSchedule2);
         Subject OOP2ProgSubject = SubjectBuilder.buildASubject()
                                             .withName("Programacion Orientada A Objetos 2")
                                             .withSubjectCode("1005")
                                             .build();
+        OOP2ProgSubject.addDegree(aDegree);
+        OOP2ProgSubject.addCommission(aCommission2);
+        aCommission2.setSubject(OOP2ProgSubject);
+        aDegree.addSubject(OOP2ProgSubject);
+
         List<Subject> subjectsToSave = List.of(FPSubject,OOP1ProgSubject,OOP2ProgSubject);
 
         //Exercise (When)

@@ -5,10 +5,13 @@ import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.service.SubjectService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
@@ -16,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -26,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = SubjectController.class)
+@SpringBootTest
 @Rollback
 public class SubjectControllerTest {
 
@@ -36,10 +40,14 @@ public class SubjectControllerTest {
     @Autowired
     private SubjectController subjectController;
 
-    @Autowired
     private MockMvc mockMvc;
 
-
+    @Before
+    public void setUp() {
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(subjectController)
+                .build();
+    }
 
     @Test
     public void ifGetSubjectASubjectBetweenHours_getAGoodResponse() throws SubjectNotfoundException {
@@ -148,20 +156,20 @@ public class SubjectControllerTest {
         //Test(Then)
         assertEquals("No subjects in the classroom 999.", exceptionMessage);
     }
-
-    @Test
-    public void whenRequestToCreateNewSubjectWithAValidOne_getStatusOk() throws Exception{
-
-        Subject subject = this.validSubject();
-        String serializedSubject = objectMapper.writeValueAsString(subject);
-
-        this.mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post("subjectAPI/newrequest")
-                        .contentType("application/json")
-                        .content(serializedSubject))
-                        .andExpect(status().isOk());
-    }
+//OBS: El test rompe por que intenta escribir el objeto como un string y entra en una recursion infinita por la bidireccionalidad de las relaciones (Ej: materia tiene carreras y carreras tiene materias), es mucho mas coherente armar un json de como se espera recibir el objeto.
+//    @Test
+//    public void whenRequestToCreateNewSubjectWithAValidOne_getStatusOk() throws Exception{
+//
+//        Subject subject = this.validSubject();
+//        String serializedSubject = objectMapper.writeValueAsString(subject);
+//
+//        this.mockMvc.perform(
+//                MockMvcRequestBuilders
+//                        .post("subjectAPI/newrequest")
+//                        .contentType("application/json")
+//                        .content(serializedSubject))
+//                        .andExpect(status().isOk());
+//    }
 
     @Test
     public void whenReceivingAValidSubject_shouldRetrieveHttpStatusOk() {

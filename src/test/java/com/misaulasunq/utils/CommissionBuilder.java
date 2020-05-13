@@ -1,6 +1,8 @@
 package com.misaulasunq.utils;
 
 import com.misaulasunq.model.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public class CommissionBuilder {
@@ -18,6 +20,7 @@ public class CommissionBuilder {
     public CommissionBuilder withMockData(){
         this.commission.setName("No Sense Commission");
         this.commission.setSemester(Semester.ANUAL);
+        this.commission.setYear(LocalDate.now().getYear());
         return this;
     }
 

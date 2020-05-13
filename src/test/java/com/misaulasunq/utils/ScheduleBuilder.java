@@ -1,6 +1,7 @@
 package com.misaulasunq.utils;
 
 import com.misaulasunq.model.Classroom;
+import com.misaulasunq.model.Commission;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Schedule;
 import java.time.LocalTime;
@@ -36,6 +37,11 @@ public class ScheduleBuilder {
 
     public ScheduleBuilder withClassroom(Classroom classroom) {
         this.schedule.setClassroom(classroom);
+        return this;
+    }
+
+    public ScheduleBuilder withCommission(Commission commission) {
+        this.schedule.setCommission(commission);
         return this;
     }
 
