@@ -28,6 +28,7 @@ addons:
       - mysql-server
 
 before_install:
+  - sudo systemsetup -settimezone America/Argentina/Buenos_Aires
   - mysql -e 'CREATE DATABASE misaulasunq;'
  
 before_script:
