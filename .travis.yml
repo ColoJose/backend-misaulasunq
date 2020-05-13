@@ -10,19 +10,31 @@ notifications:
 #Definicion de lenguaje y version de VM
 language: java
 jdk: openjdk11
-#Para que utilice Mysql
-services:
-  - mysql
 
 #Se Define guardar en cache la carpeta de maven
 cache:
   directories:
     - $HOME/.m2
 
+#Para que utilice Mysql
+services:
+  - mysql
+
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+
 before_install:
   - mysql -e 'CREATE DATABASE misaulasunq;'
-#Antes del scrip se instalan las dependencias de maven
+
 before_script:
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('jose') where User='jose'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - sudo mysql_upgrade
+  - sudo service mysql restart
+  #Antes del script se instalan las dependencias de maven
   - mvn clean install -Dmaven.compiler.target=1.8 -Dmaven.compiler.source=1.8 -Dmaven.javadoc.skip=true -B -V
 
 #Se Ejecutan los test
