@@ -31,6 +31,15 @@ public class SubjectServiceTest {
     public SubjectService subjectService;
 
     @Test
+    public void ifHaveSubjectInTheDataBase_TheirNameAreRetrieved(){
+        //Setup(Given)
+        //Exercise(When)
+        //Test(Then)
+        assertFalse("Tiene que traer algunos nombres de materias!",
+                subjectService.retrieveSubjectsSuggestions().isEmpty());
+    }
+
+    @Test
     public void ifTryToGetASubjectBetweenAnHours_AndThereIsOne_ItsRetrieved() throws SubjectNotfoundException {
         //Setup(Given)
         LocalTime start = LocalTime.of(2,0);

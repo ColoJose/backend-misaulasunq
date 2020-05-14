@@ -18,6 +18,10 @@ public class SubjectService {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    public List<String> retrieveSubjectsSuggestions() {
+        return this.subjectRepository.getAllSubjectsNames();
+    }
+
     public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) throws SubjectNotfoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectsBetweenHours(startTime, endTime),

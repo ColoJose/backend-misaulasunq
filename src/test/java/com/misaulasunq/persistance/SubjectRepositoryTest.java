@@ -28,6 +28,36 @@ public class SubjectRepositoryTest {
     private SubjectRepository subjectRepository;
 
     @Test
+    public void ifDontHaveSubjectInTheDataBase_GetAEmptyList(){
+        //Setup(Given)
+        subjectRepository.deleteAll();
+
+        //Exercise(When)
+        List<String> subjectsName = subjectRepository.getAllSubjectsNames();
+
+        //Test(Then)
+        assertTrue("No tiene que haber materias para traer los nombres",subjectsName.isEmpty());
+    }
+
+    @Test
+    public void ifHaveSubjectInTheDataBase_TheirNameAreRetrieved(){
+        //Setup(Given)
+
+        //Exercise(When)
+        List<String> subjectsName = subjectRepository.getAllSubjectsNames();
+
+        //Test(Then)
+        assertFalse("Tiene que traer algunos nombres de materias!",
+                subjectsName.isEmpty());
+        assertTrue("Tiene que contener el nombre de la materia",
+                subjectsName.contains("Matematica I"));
+        assertTrue("Tiene que contener el nombre de la materia",
+                subjectsName.contains("TIP"));
+        assertFalse("No tiene que contener un numero de aula",
+                subjectsName.contains("CyT-1"));
+    }
+
+    @Test
     public void ifHaveSubjectsWithHoursBetween8HoursAnd22Hours_TheirAreRetrieved(){
         //Setup(Given)
         LocalTime startTimeToSearch = LocalTime.of(8,0);
