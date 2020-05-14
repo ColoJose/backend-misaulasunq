@@ -28,8 +28,10 @@ addons:
       - mysql-server
 
 before_install:
+  - export TZ=America/Argentina/Buenos_Aires
   #- sudo systemsetup -settimezone America/Argentina/Buenos_Aires
-  - sudo timedatectl set-timezone America/Argentina/Buenos_Aires
+  #- sudo timedatectl set-timezone America/Argentina/Buenos_Aires
+  - date
   - mysql -e 'CREATE DATABASE misaulasunq;'
  
 before_script:
