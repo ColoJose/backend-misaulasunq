@@ -34,6 +34,7 @@ before_install:
  
 before_script:
   - sudo mysql -e "use misaulasunq; create user 'jose'@'*' identified by 'jose';grant all privileges on misaulasunq.* to 'jose'@'%' identified by 'jose' with grant option;flush privileges;"
+  - sudo mysql -e "SET GLOBAL time_zone = ‘-3:00’;"
   - sudo mysql_upgrade
   - sudo service mysql restart
   #Antes del script se instalan las dependencias de maven
