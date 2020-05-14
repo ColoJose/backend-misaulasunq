@@ -15,6 +15,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,10 @@ public class SubjectController {
     @Autowired
     private SubjectService subjectService;
 
-
+    @GetMapping("/suggestions")
+    public ResponseEntity<List<String>> getSuggestions(){
+        return new ResponseEntity<List<String>>(this.subjectService.retrieveSubjectsSuggestions(),HttpStatus.OK);
+    }
 
     @GetMapping("/byClassroomNumber/{classroomNumber}")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(@PathVariable String classroomNumber ) throws SubjectNotfoundException {

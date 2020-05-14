@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -16,14 +17,41 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestServiceApplication.class)
+@Rollback
+@Transactional
 public class ClassroomRepositoryTest {
-
 
     @Autowired
     private ClassroomRepository classroomRepository;
 
     @Test
-    @Transactional
+    public void ifDontHaveClassroomInTheDataBase_GetAEmptyList(){
+        //Setup(Given)
+        classroomRepository.deleteAll();
+        //Exercise(When)
+
+        //Test(Then)
+        assertTrue("No tiene que traer ningun numero por que no hay aulas!",
+                classroomRepository.getAllClassroomsNumbers().isEmpty());
+    }
+
+    @Test
+    public void ifHaveClassroomInTheDataBase_TheirNumbersAreRetrieved(){
+        //Setup(Given)
+
+        //Exercise(When)
+        List<String> classroomNumber = classroomRepository.getAllClassroomsNumbers();
+
+        //Test(Then)
+        assertFalse("Tiene que traer algunos numeros de aulas!",
+                classroomNumber.isEmpty());
+        assertTrue("Tiene que contener el numero de un aula",
+                classroomNumber.contains("CyT-1"));
+        assertTrue("Tiene que contener el numero de un aula",
+                classroomNumber.contains("52"));
+    }
+
+    @Test
     public void shouldRetrieveAClassroomByNumberWhenHasOneInsertedWithTheseNumber(){
         //Start (Given)
         Classroom aula31 = ClassroomBuilder.buildAClassroom().withName("31").build();
@@ -40,7 +68,6 @@ public class ClassroomRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void shouldNotBePresentIfRetrieveANonexistClassroomInDB(){
         //Start (Given)
 

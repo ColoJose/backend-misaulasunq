@@ -4,14 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
+import com.misaulasunq.persistance.SubjectRepository;
 import com.misaulasunq.service.SubjectService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
@@ -20,18 +25,23 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Rollback
+@Transactional
 public class SubjectControllerTest {
 
     @Autowired
@@ -39,6 +49,9 @@ public class SubjectControllerTest {
 
     @Autowired
     private SubjectController subjectController;
+
+    @Autowired
+    private SubjectRepository subjectRepository;
 
     private MockMvc mockMvc;
 
@@ -50,6 +63,47 @@ public class SubjectControllerTest {
     }
 
     @Test
+    public void getAEmptyListIfDontHaveSubjectSuggestions(){
+        //Setup(Given)
+        subjectRepository.deleteAll();
+
+        //Exercise(When)
+        ResponseEntity<List<String>> response = subjectController.getSuggestions();
+
+        //Test(Then)
+        assertEquals(200,
+                response.getStatusCodeValue(),
+                "Tiene que ser una respuesta del servicio correcta");
+        assertTrue("No tiene que haber sugerencias!",
+                response.getBody().isEmpty());
+    }
+
+    @Test
+    public void ifHaveSubjectSuggestions_TheirAreRetrieved(){
+        //Setup(Given)
+
+        //Exercise(When)
+        ResponseEntity<List<String>> response = subjectController.getSuggestions();
+
+        //Test(Then)
+        assertEquals(200,
+                response.getStatusCodeValue(),
+                "Tiene que ser una respuesta del servicio correcta");
+        assertFalse("Tiene que haber sugerencias de materias en la respuesta!",
+                response.getBody().isEmpty());
+    }
+
+    @Test
+    public void ifGetSubjectSuggestions_getAGoodResponse() throws Exception{
+        //Test(then)
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.get("/subjectAPI/suggestions")
+                ).andExpect(status().isOk())
+                 .andExpect(content().string(containsString("Matematica")))
+                 .andExpect(content().string(containsString("TIP")));
+    }
+
+    @Test
     public void ifGetSubjectASubjectBetweenHours_getAGoodResponse() throws SubjectNotfoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
@@ -58,11 +112,10 @@ public class SubjectControllerTest {
         response = subjectController.getSubjectsBetweenHours("09:00","13:00");
 
         //Test(Then)
-        assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
-        assertEquals(
-                "No trajo ningun subject! Revisar el service o Repository",
-                3,
-                Objects.requireNonNull(response.getBody()).size()
+        assertEquals(HttpStatus.OK, response.getStatusCode(),"No tiene que haber error en el request!");
+        assertEquals(3,
+                Objects.requireNonNull(response.getBody()).size(),
+                "No trajo ningun subject! Revisar el service o Repository"
         );
     }
 
@@ -90,24 +143,27 @@ public class SubjectControllerTest {
         response = subjectController.getSubjectsByName("Sistemas Operativos");
 
         //Test(Then)
-        assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode(),"No tiene que haber error en el request!");
         assertEquals(
-                "No trajo ningun subject! Revisar el service o Repository",
                 1,
-                Objects.requireNonNull(response.getBody()).size()
+                Objects.requireNonNull(response.getBody()).size(),
+                "No trajo ningun subject! Revisar el service o Repository"
         );
 
         SubjectDTO subejctDTOAnswered = response.getBody().get(0);
 
-        assertEquals("No trajo la materia correcta o no convirtio correctamente el nombre",
+        assertEquals(
                 "Sistemas Operativos",
-                subejctDTOAnswered.getName());
-        assertEquals("No trajo la materia correcta o no convirtio correctamente el codigo de materia",
+                subejctDTOAnswered.getName(),
+                "No trajo la materia correcta o no convirtio correctamente el nombre");
+        assertEquals(
                 "150",
-                subejctDTOAnswered.getSubjectCode());
-        assertEquals("No convirtio correctamente las comisiones de la materia",
+                subejctDTOAnswered.getSubjectCode(),
+                "No trajo la materia correcta o no convirtio correctamente el codigo de materia");
+        assertEquals(
                 1,
-                subejctDTOAnswered.getCommissions().size());
+                subejctDTOAnswered.getCommissions().size(),
+                "No convirtio correctamente las comisiones de la materia");
     }
 
     @Test
@@ -134,11 +190,11 @@ public class SubjectControllerTest {
         response = subjectController.getSubjectsByClassroomNumber("52");
 
         //Test(Then)
-        assertEquals("No tiene que haber error en el request!", HttpStatus.OK, response.getStatusCode());
+        assertEquals( HttpStatus.OK, response.getStatusCode(),"No tiene que haber error en el request!");
         assertEquals(
-                "No trajo ningun subject! Revisar el service o Repository",
                 2,
-                Objects.requireNonNull(response.getBody()).size()
+                Objects.requireNonNull(response.getBody()).size(),
+                "No trajo ningun subject! Revisar el service o Repository"
             );
     }
 

@@ -44,4 +44,9 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
         + "GROUP BY subject"
      )
     List<Subject> findCurrentDaySubjects(@Param("currentDay") Day currentDay);
+
+    @Query("SELECT subject.name "
+         + "FROM subject subject "
+         + "GROUP BY subject.name")
+    List<String> getAllSubjectsNames();
 }

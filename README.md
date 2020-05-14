@@ -22,13 +22,15 @@ Debido a la problemática recurrente sobre el desconocimiento de la ubicación d
 
 ## Estado del Proyecto:traffic_light:
 
-###### Travis:
+##### Travis:
 
-Back-End:
+###### Back-End:
+
 - [![Build Status](https://travis-ci.com/ColoJose/backend-misaulasunq.svg?branch=master)](https://travis-ci.com/ColoJose/backend-misaulasunq.svg?branch=master) Back-End Master Branch
 - [![Build Status](https://travis-ci.com/ColoJose/backend-misaulasunq.svg?branch=develop)](https://travis-ci.com/ColoJose/backend-misaulasunq.svg?branch=develop) Back-End Develop Branch
 
-Front-End:
+###### Front-End:
+
 - [![Build Status](https://travis-ci.com/ColoJose/frontend-misaulasunq.svg?branch=master)](https://travis-ci.com/ColoJose/frontend-misaulasunq.svg?branch=master) Front-End Master Branch
 - [![Build Status](https://travis-ci.com/ColoJose/frontend-misaulasunq.svg?branch=develop)](https://travis-ci.com/ColoJose/frontend-misaulasunq.svg?branch=develop) Front-End Develop Branch
 
