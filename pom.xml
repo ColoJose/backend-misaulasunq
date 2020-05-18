@@ -60,6 +60,21 @@
 			<artifactId>junit-vintage-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Swagger 2 -->
+		<!-- http://localhost:8090/v2/api-docs url de conexion-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<!-- http://localhost:8090/swagger-ui.html url de conexion ui -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<!-- /Swagger 2 -->
     </dependencies>
 
 	<build>
