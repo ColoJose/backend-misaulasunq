@@ -1,8 +1,11 @@
 package com.misaulasunq.controller.api;
 
+import com.misaulasunq.controller.dto.DegreeDTO;
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.model.Degree;
 import com.misaulasunq.model.Subject;
+import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,9 @@ public class SubjectController {
 
     @Autowired
     private SubjectService subjectService;
+
+    @Autowired
+    private DegreeService degreeService;
 
     @GetMapping("/suggestions")
     public ResponseEntity<List<String>> getSuggestions(){
@@ -66,7 +71,7 @@ public class SubjectController {
             );
     }
 
-    @GetMapping("/currentDaySubjects")
+    @GetMapping("/currentDaySubjectsAA")
     public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay() throws SubjectNotfoundException {
         DayOfWeek currentDay =  LocalDate.now().getDayOfWeek();
             return this.makeResponseEntityWithGoodStatus(
@@ -74,10 +79,28 @@ public class SubjectController {
             );
     }
 
-    @PostMapping("/newsubject")
-    public ResponseEntity createNewSubject(@Valid @RequestBody Subject subject) {
+    @PostMapping(value = "/new-subject", consumes = "application/json")
+    public ResponseEntity createNewSubject(@Valid @RequestBody SubjectDTO subjectDto) {
+        // recibo el subjectDto y se lo doy a DTOparser
+        // el dtoparser recibe el subjectDTO y pide todas las carreras y le setea subject las carreras
+        // desp agarro las comisiones y las tranformo en una comision del dominio
+        // cuando parseo los horarios de las comisones, armo los horarios
+        //
 
+//        this.subjectService.saveSubject();
         return ResponseEntity.ok("subject successfully created");
+    }
+
+    @GetMapping("/all-degrees")
+    public ResponseEntity<List<DegreeDTO>> getAllDegrees() {
+
+        List<Degree> allDegrees = this.degreeService.findAll();
+        return new ResponseEntity<>(
+                allDegrees.stream()
+                                 .map(DegreeDTO::new)
+                                 .collect(Collectors.toList()),
+                HttpStatus.OK
+        );
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){

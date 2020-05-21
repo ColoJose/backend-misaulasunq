@@ -2,8 +2,8 @@ package com.misaulasunq.model;
 
 public enum Semester {
 
-    PRIMER("Primer"),
-    SEGUNDO("Segundo"),
+    PRIMER("Primer Cuatrimestre"),
+    SEGUNDO("Segundo Cuatrimestre"),
     ANUAL("Anual"),
     ;
 

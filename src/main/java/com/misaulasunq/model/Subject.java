@@ -53,5 +53,4 @@ public class Subject {
 
     public List<Commission> getCommissions() { return commissions; }
     public void setCommissions(List<Commission> commissions) { this.commissions = commissions; }
-
 }
