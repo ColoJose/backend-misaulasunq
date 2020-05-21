@@ -28,6 +28,12 @@ public class BootstrapRunner implements ApplicationRunner {
         Degree tpi = new Degree();
         tpi.setName("Tecnicatura Universitaria en Programacion Informatica");
 
+        Degree biotecnologia = new Degree();
+        biotecnologia.setName("Lic. en Biotecnología");
+
+        Degree automatizacion = new Degree();
+        automatizacion.setName("Ingeniería en automatización");
+
         // Creacion de aulas
         Map<String, Classroom> classroomByNumber = new HashMap<>();
         Classroom room52 = new Classroom();
@@ -45,9 +51,37 @@ public class BootstrapRunner implements ApplicationRunner {
         this.createSistemasOperativos(tpi, classroomByNumber);
         this.createProgramacionObjetos3(tpi, classroomByNumber);
         this.createSeguridadInformatica(tpi, classroomByNumber);
+        this.createQuimicaOrganica(biotecnologia,classroomByNumber);
+        this.createAnalisisI(automatizacion,classroomByNumber);
         this.createTIP(tpi,classroomByNumber);
 
         degreeRepository.save(tpi);
+        degreeRepository.save(biotecnologia);
+        degreeRepository.save(automatizacion);
+    }
+
+    private void createAnalisisI(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
+        Subject analisisI = this.createSubject(automatizacion, "Análisis matemático I", "105");
+        Commission quimicaOrganicaC1Miercoles = this.createCommission(analisisI, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                quimicaOrganicaC1Miercoles,
+                Day.MARTES,
+                LocalTime.of(16,0),
+                LocalTime.of(18,0)
+        );
+    }
+
+    private void createQuimicaOrganica(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
+        Subject quimicaOrganica = this.createSubject(biotecnologia, "Química Orgánica", "89");
+        Commission quimicaOrganicaC1Miercoles = this.createCommission(quimicaOrganica, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                quimicaOrganicaC1Miercoles,
+                Day.MIERCOLES,
+                LocalTime.of(16,0),
+                LocalTime.of(18,0)
+        );
     }
 
     private void createProgramacionObjetos3(Degree aDegree, Map<String, Classroom> classroomByNumber) {
