@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- More Info https://logging.apache.org/log4j/2.x/manual/layouts.html -->
+<!--%5p Escribe el Level de log en 5 caracteres-->
+<!--%d{yyyy-MM-dd HH:mm:ss.SSS}; da la fecha en el formato pasado-->
+<!--%t Escribe el nombre del metodo-->
+<!--%c Escribe el nombre absoluto de la clase-->
+<!--%m%n Escribe el mensaje con un salto de linea-->
+<!--%L Escribe el numero de linea-->
+<!--%F escribe el nombe de la clase en el log-->
+<Configuration>
+    <Appenders>
+        <Console name="Console"
+                 target="SYSTEM_OUT">
+            <PatternLayout disableAnsi="false"> <!--Thanks to the v2.10 some default value change or be broke, so add disableansi to get back the colours in the console&ndash;&gt;-->
+                <ScriptPatternSelector defaultPattern="[%-5level] Class: %C{1.} Method: %M Line: %L - %msg%n">
+                    <Script name="BeanShellSelector"  language="javascript">
+                        <!--El Script solo devuelve el log level para aplicar el pattern que le corresponde por la key-->
+                        <![CDATA[
+                            logEvent.getLevel();
+                        ]]>
+                    </Script>
+                    <PatternMatch key="DEBUG"
+                                  pattern="%style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%highlight{%style{%-5level}{bright}}] %style{Clase: %c{1}}{yellow} | %style{Metodo: %t}{blue} = %style{%msg}{cyan}%n%throwable"/>
+                    <PatternMatch key="INFO"
+                                  pattern="%style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%highlight{%-5level}{bright}] %style{Clase: %c{1}}{yellow} | %style{Metodo: %t}{blue} = %style{%msg}{green}%n%throwable"/>
+                    <PatternMatch key="WARN"
+                                  pattern="%highlight{%style{[!]}{bright,yellow} %style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%-5level] %style{Class: %c{1}}{yellow} | %style{Method: %t}{yellow} = %style{%msg}{bright,yellow}%style{[!]}{bright,yellow}}%n%throwable"/>
+                    <PatternMatch key="ERROR"
+                                  pattern="%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{black} %highlight{%-5level} [%style{%t}{bright,blue}] %style{%F{1.}}{bright,yellow}: [%style{%msg%n%throwable}{bright,red}]"/>
+                    <PatternMatch key="FATAL"
+                                  pattern="%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{black} %highlight{%-5level} [%style{%t}{bright,blue}] %style{%F{1.}}{bright,yellow}: [%style{%msg%n%throwable}{bright,red}]"/>
+                </ScriptPatternSelector>
+            </PatternLayout>
+        </Console>
+
+        <RollingFile name="RollingFile"
+                     fileName="./logs/spring-boot-logger-log4j2.log"
+                     filePattern="./logs/$${date:yyyy-MM}/spring-boot-logger-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy
+                        size="10 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- LOG everything at INFO level -->
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingFile" />
+        </Root>
+    </Loggers>
+
+</Configuration>
