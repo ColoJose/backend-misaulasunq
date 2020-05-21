@@ -2,6 +2,7 @@ package com.misaulasunq;
 
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.*;
+import com.misaulasunq.utils.LoggerHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,7 +21,9 @@ public class BootstrapRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        LoggerHandler.logInfo("Creating Sample Data...");
         this.loadSampleData();
+        LoggerHandler.logInfo("Ending Sample Data creation.");
     }
 
     private void loadSampleData() {
