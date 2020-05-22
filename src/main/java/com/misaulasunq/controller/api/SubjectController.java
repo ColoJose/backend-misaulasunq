@@ -5,6 +5,8 @@ import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.service.SubjectService;
 import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +37,20 @@ import java.util.stream.Collectors;
 @Api(tags = "Subject Endpoint", value = "SubjectEndpoint", description = "Controller para las materias. Se puede consultar sugerencias, busquedas de materias y creacion de las mismas.")
 public class SubjectController {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private SubjectService subjectService;
 
     @GetMapping("/suggestions")
     @ApiOperation(value = "Devuelve una lista de sugerencia de las materias disponibles para buscar.")
     public ResponseEntity<List<String>> getSuggestions(){
-        return new ResponseEntity<List<String>>(this.subjectService.retrieveSubjectsSuggestions(),HttpStatus.OK);
+        LOGGER.info("Got a GET request to retrieve subject suggestions");
+        ResponseEntity<List<String>> response = new ResponseEntity<>(
+                this.subjectService.retrieveSubjectsSuggestions(),
+                HttpStatus.OK);
+        LOGGER.info("Responding the request with suggestions: {}", response);
+        return response;
     }
 
     @GetMapping("/byClassroomNumber/{classroomNumber}")
@@ -50,6 +59,7 @@ public class SubjectController {
     public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(
                         @ApiParam(required = true, value = "Es el numero del aula por la cual se va a buscar", example = "CyT-1")
                         @PathVariable String classroomNumber ) throws SubjectNotfoundException {
+        LOGGER.info("Got a GET request to retrieve subjects that are dictated in the classroom {}",classroomNumber);
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsInClassroom(classroomNumber)
             );
@@ -61,6 +71,7 @@ public class SubjectController {
     public ResponseEntity<List<SubjectDTO>> getSubjectsByName(
                     @ApiParam(required = true, value = "Nombre de la materia a buscar",example = "Matematica I")
                     @PathVariable String name ) throws SubjectNotfoundException {
+        LOGGER.info("Got a GET request to retrieve subjects with the name {}",name);
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsWithName(name)
             );
@@ -74,6 +85,7 @@ public class SubjectController {
                     @PathVariable String start,
                     @ApiParam(required = true, value = "Hora de fin de franja horaria de la busqueda.",example = "22:00")
                     @PathVariable String end) throws SubjectNotfoundException {
+        LOGGER.info("Got a GET request to retrieve subjects that are dictated between {} and {}",start,end);
         LocalTime startTime = LocalTime.parse(start, DateTimeFormatter.ISO_LOCAL_TIME);
         LocalTime endTime = LocalTime.parse(end, DateTimeFormatter.ISO_LOCAL_TIME);
 
@@ -86,9 +98,10 @@ public class SubjectController {
     @ApiOperation(value = "Devuelve las materias que se dictan en el dia.")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in the current day")})
     public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay() throws SubjectNotfoundException {
+        LOGGER.info("Got a GET request to retrieve subjects that are dictated in the current day");
         DayOfWeek currentDay =  LocalDate.now().getDayOfWeek();
-            return this.makeResponseEntityWithGoodStatus(
-                    this.subjectService.retreiveSubjectsCurrentDay(currentDay)
+        return this.makeResponseEntityWithGoodStatus(
+                this.subjectService.retreiveSubjectsCurrentDay(currentDay)
             );
     }
 
@@ -99,11 +112,15 @@ public class SubjectController {
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){
-        return new ResponseEntity<>(
+        ResponseEntity<List<SubjectDTO>> response = new ResponseEntity<>(
                 subjects.stream()
                         .map(SubjectDTO::new)
                         .collect(Collectors.toList()),
                 HttpStatus.OK
-            );
+        );
+
+        LOGGER.info("Responding the request with: {}", response);
+
+        return response;
     }
 }
