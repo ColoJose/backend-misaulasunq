@@ -63,6 +63,37 @@ public class SubjectControllerTest {
     }
 
     @Test
+    public void ifTryToGetSubjectsByDayAndHaveOne_getAGoodResponse() throws SubjectNotfoundException {
+        //Setup(Given)
+        ResponseEntity<List<SubjectDTO>> response;
+
+        //Exercise(When)
+        response = subjectController.getSubjectsDictatedOnTheDay("SABADO");
+
+        //Test(Then)
+        assertEquals(HttpStatus.OK, response.getStatusCode(),"No tiene que haber error en el request!");
+        assertEquals(2,
+                Objects.requireNonNull(response.getBody()).size(),
+                "No trajo ningun subject! Revisar el service o Repository"
+        );
+    }
+
+    @Test
+    public void ifTryToGetSubjectsByDayAndNotHaveOne_getAError(){
+        //Setup(Given)
+        String exceptionMessage = "";
+
+        //Exercise(When)
+        try {
+            subjectController.getSubjectsDictatedOnTheDay("Domingo");
+        } catch (SubjectNotfoundException subjectNotfoundException){
+            exceptionMessage = subjectNotfoundException.getMessage();
+        }
+        //Test(Then)
+        assertEquals("No subjects in the current day", exceptionMessage);
+    }
+
+    @Test
     public void getAEmptyListIfDontHaveSubjectSuggestions(){
         //Setup(Given)
         subjectRepository.deleteAll();

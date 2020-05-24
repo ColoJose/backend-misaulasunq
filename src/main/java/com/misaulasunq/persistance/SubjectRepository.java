@@ -40,10 +40,10 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
         + "FROM subject subject "
         + "JOIN subject.commissions AS commissions "
         + "JOIN commissions.schedules AS schedule "
-        + "WHERE schedule.day=:currentDay "
+        + "WHERE schedule.day=:aDay "
         + "GROUP BY subject"
      )
-    List<Subject> findCurrentDaySubjects(@Param("currentDay") Day currentDay);
+    List<Subject> getAllSubjectsDictatedInTheDay(@Param("aDay") Day aDay);
 
     @Query("SELECT subject.name "
          + "FROM subject subject "
