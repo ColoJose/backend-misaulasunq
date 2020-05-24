@@ -2,8 +2,10 @@ package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.service.SubjectService;
+import com.misaulasunq.utils.DayConverter;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,19 @@ public class SubjectController {
 
     @Autowired
     private SubjectService subjectService;
+
+    @GetMapping("/byDay/{aDay}")
+    @ApiOperation(value = "Devuelve las materias que son dictadas en el dia {aDay}")
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
+    public ResponseEntity<List<SubjectDTO>> getSubjectsDictatedOnTheDay(
+            @ApiParam(required = true, value = "Es el Nombre Del Dia a Buscar (Ej: Lunes,Martes,Sabado, etc)", example = "Lunes")
+            @PathVariable String aDay) throws SubjectNotfoundException {
+        LOGGER.info("Got a GET request to retrieve subjects that are dictated in the day: {}",aDay);
+
+        return this.makeResponseEntityWithGoodStatus(
+                this.subjectService.retreiveSubjectsDictatedOnDay(Day.valueOf(aDay.toUpperCase()))
+        );
+    }
 
     @GetMapping("/suggestions")
     @ApiOperation(value = "Devuelve una lista de sugerencia de las materias disponibles para buscar.")
@@ -96,12 +111,12 @@ public class SubjectController {
 
     @GetMapping("/currentDaySubjects")
     @ApiOperation(value = "Devuelve las materias que se dictan en el dia.")
-    @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in the current day")})
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
     public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay() throws SubjectNotfoundException {
         LOGGER.info("Got a GET request to retrieve subjects that are dictated in the current day");
         DayOfWeek currentDay =  LocalDate.now().getDayOfWeek();
         return this.makeResponseEntityWithGoodStatus(
-                this.subjectService.retreiveSubjectsCurrentDay(currentDay)
+                this.subjectService.retreiveSubjectsDictatedOnDay(DayConverter.getDay(currentDay))
             );
     }
 
