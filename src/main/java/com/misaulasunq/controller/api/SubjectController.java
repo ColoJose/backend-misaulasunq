@@ -1,9 +1,14 @@
 package com.misaulasunq.controller.api;
 
+import com.misaulasunq.controller.dto.DegreeDTO;
 import com.misaulasunq.controller.dto.SubjectDTO;
+import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.model.Degree;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
+import com.misaulasunq.model.SubjectToParse;
+import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import com.misaulasunq.utils.DayConverter;
 import io.swagger.annotations.*;
@@ -15,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,7 +31,7 @@ import java.util.stream.Collectors;
 @RestController(value = "SubjectAPI")
 @CrossOrigin(//Se puede configurar para que sea a travez de una clase
         origins = "http://localhost:3000",
-        methods = RequestMethod.GET,
+        methods = {RequestMethod.GET, RequestMethod.POST},
         maxAge = 60
 )
 @RequestMapping(
@@ -44,6 +48,10 @@ public class SubjectController {
     @Autowired
     private SubjectService subjectService;
 
+
+    @Autowired
+    private DegreeService degreeService;
+
     @GetMapping("/byDay/{aDay}")
     @ApiOperation(value = "Devuelve las materias que son dictadas en el dia {aDay}")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
@@ -56,6 +64,7 @@ public class SubjectController {
                 this.subjectService.retreiveSubjectsDictatedOnDay(Day.valueOf(aDay.toUpperCase()))
         );
     }
+
 
     @GetMapping("/suggestions")
     @ApiOperation(value = "Devuelve una lista de sugerencia de las materias disponibles para buscar.")
@@ -109,6 +118,7 @@ public class SubjectController {
             );
     }
 
+
     @GetMapping("/currentDaySubjects")
     @ApiOperation(value = "Devuelve las materias que se dictan en el dia.")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
@@ -120,11 +130,35 @@ public class SubjectController {
             );
     }
 
-    @PostMapping("/newsubject")
-    public ResponseEntity createNewSubject(@Valid @RequestBody Subject subject) {
+    @PostMapping(value = "/new-subject", consumes = "application/json")
+    public ResponseEntity createNewSubject( @RequestBody SubjectToParse subjectToParse) throws DegreeNotFoundException {
 
-        return ResponseEntity.ok("subject successfully created");
+        Degree degreeReceived = this.degreeService.findDegreeById(subjectToParse.getDegreeId());
+
+        Subject subject = subjectToParse.parse(degreeReceived);
+        // recibo el subjectDto y se lo doy a DTOparser
+        // el dtoparser recibe el subjectDTO y pide todas las carreras y le setea subject las carreras
+        // desp agarro las comisiones y las tranformo en una comision del dominio
+        // cuando parseo los horarios de las comisones, armo los horarios
+        //
+
+        this.subjectService.saveSubject(subject);
+        return new ResponseEntity<>("Materia creada correctamente",HttpStatus.OK);
     }
+
+    @GetMapping("/all-degrees")
+    public ResponseEntity<List<DegreeDTO>> getAllDegrees() {
+
+        List<Degree> allDegrees = this.degreeService.findAll();
+        return new ResponseEntity<>(
+                allDegrees.stream()
+                                 .map(DegreeDTO::new)
+                                 .collect(Collectors.toList()),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("all")
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){
         ResponseEntity<List<SubjectDTO>> response = new ResponseEntity<>(

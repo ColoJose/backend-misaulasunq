@@ -37,6 +37,10 @@ public class Subject {
         this.getCommissions().add(commission);
     }
 
+    public void addCommissions(List<Commission> commissions) {
+        commissions.addAll(commissions);
+    }
+
     public void addDegree(Degree aDegree) { this.getDegrees().add(aDegree); }
 
     public Integer getId() { return id; }
@@ -53,5 +57,4 @@ public class Subject {
 
     public List<Commission> getCommissions() { return commissions; }
     public void setCommissions(List<Commission> commissions) { this.commissions = commissions; }
-
 }
