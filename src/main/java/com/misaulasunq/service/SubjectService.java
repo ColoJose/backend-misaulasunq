@@ -65,9 +65,9 @@ public class SubjectService {
 
     public void deleteAll() { subjectRepository.deleteAll(); }
 
-    public List<Subject> retreiveSubjectsCurrentDay(DayOfWeek currentDay) throws SubjectNotfoundException {
+    public List<Subject> retreiveSubjectsDictatedOnDay(Day currentDay) throws SubjectNotfoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
-                this.subjectRepository.findCurrentDaySubjects(DayConverter.getDay(currentDay)),
+                this.subjectRepository.getAllSubjectsDictatedInTheDay(currentDay),
                 SubjectNotfoundException.SubjectNotFoundCurrentDay()
         );
     }

@@ -17,11 +17,23 @@
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
-
+	<repositories>
+		<repository>
+			<id>jcenter-snapshots</id>
+			<name>jcenter</name>
+			<url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -35,7 +47,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -60,6 +75,31 @@
 			<artifactId>junit-vintage-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Swagger 2 -->
+		<!-- http://localhost:8090/v2/api-docs url de conexion-->
+		<!-- http://localhost:8090/swagger-ui.html url de conexion ui -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-data-rest</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-bean-validators</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<!-- /Swagger 2 -->
     </dependencies>
 
 	<build>

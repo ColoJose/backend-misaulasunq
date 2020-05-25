@@ -2,6 +2,8 @@ package com.misaulasunq;
 
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -14,16 +16,20 @@ import java.util.Map;
 /** Clase encargada de proporsionar datos de prueba para la aplicacion*/
 @Component
 public class BootstrapRunner implements ApplicationRunner {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private DegreeRepository degreeRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        LOGGER.info("BootstrapRunner Run");
         this.loadSampleData();
+        LOGGER.info("BootstrapRunner End");
     }
 
     private void loadSampleData() {
+        LOGGER.info("Creating and loading sample data");
         //Creacion de Carrera
         Degree tpi = new Degree();
         tpi.setName("Tecnicatura Universitaria en Programacion Informatica");
@@ -55,9 +61,14 @@ public class BootstrapRunner implements ApplicationRunner {
         this.createAnalisisI(automatizacion,classroomByNumber);
         this.createTIP(tpi,classroomByNumber);
 
+        LOGGER.info("Inserting sample data");
+      
         degreeRepository.save(tpi);
         degreeRepository.save(biotecnologia);
         degreeRepository.save(automatizacion);
+      
+        LOGGER.info("Sample data inserted");
+        LOGGER.info("Sample data created and loaded");
     }
 
     private void createAnalisisI(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
@@ -85,6 +96,7 @@ public class BootstrapRunner implements ApplicationRunner {
     }
 
     private void createProgramacionObjetos3(Degree aDegree, Map<String, Classroom> classroomByNumber) {
+        LOGGER.info("Creating Programacion Orientada a Objetos 3 Sample data");
         Subject progObjectos3 = this.createSubject(aDegree, "Programacion Orientada a Objetos 3", "15");
         Commission progObjetos3C1Viernes = this.createCommission(progObjectos3, "Comision 1",2019,Semester.PRIMER);
         this.createSchedule(
@@ -94,9 +106,11 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(16,0),
                 LocalTime.of(22,0)
         );
+        LOGGER.info("Programacion Orientada a Objetos 3 Sample Data Created");
     }
 
     public void createSistemasOperativos(Degree aDegree, Map<String,Classroom> classroomByNumber){
+        LOGGER.info("Creating Sistemas Operativos Sample data");
         Subject sistemasOperativos = this.createSubject(aDegree, "Sistemas Operativos", "150");
         Commission sistemasOpC1 = this.createCommission(sistemasOperativos, "Comision 1",2019,Semester.PRIMER);
         this.createSchedule(
@@ -106,9 +120,11 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(16,0),
                 LocalTime.of(22,0)
         );
+        LOGGER.info("Sistemas Operativos Sample Data Created");
     }
 
     public void createSeguridadInformatica(Degree degree, Map<String, Classroom> classroomByNumber) {
+        LOGGER.info("Creating Seguridad Informatica Sample data");
         Subject seguridadInformatica = this.createSubject(degree, "Seguridad Informática", "420");
         Commission seguridadC1 = this.createCommission(seguridadInformatica,"Comision 1",2019,Semester.PRIMER);
         this.createSchedule(classroomByNumber.get("CyT-1"),
@@ -117,9 +133,11 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(9,0),
                 LocalTime.of(13,0)
         );
+        LOGGER.info("Seguridad Informatica Sample Data Created");
     }
 
     public void createTIP(Degree degree, Map<String, Classroom> clasroomByNumber) {
+        LOGGER.info("Creating TIP Sample data");
         Subject tip = this.createSubject(degree, "TIP", "231");
         Commission seguridadC1 = this.createCommission(tip,"Comision 1",2019,Semester.PRIMER);
         this.createSchedule(clasroomByNumber.get("52"),
@@ -128,9 +146,11 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(8,0),
                 LocalTime.of(13,0)
         );
+        LOGGER.info("TIP Sample Data Created");
     }
 
     public void createMatematica(Degree aDegree, Map<String,Classroom> classroomByNumber){
+        LOGGER.info("Creating Matematica Sample data");
         Subject matematica1 = this.createSubject(aDegree,"Matematica I", "223");
 
         //COMISION 1
@@ -183,18 +203,24 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(9,0),
                 LocalTime.of(13,0)
             );
+        LOGGER.info("Matematica Sample Data Created");
     }
 
     private Subject createSubject(Degree aDegree, String name, String code){
+        LOGGER.info("Creating Subject {}(CODE{}) for degree {}",name,code,aDegree.getName());
         Subject subject = new Subject();
         subject.setName(name);
         subject.setSubjectCode(code);
         subject.addDegree(aDegree);
         aDegree.addSubject(subject);
+
+        LOGGER.info("Subject created!");
+
         return subject;
     }
 
     private Schedule createSchedule(Classroom aClassroom, Commission aCommission, Day aday, LocalTime startTime, LocalTime endTime){
+        LOGGER.info("Creating Schedule for commission {} {} in the classroom {} in the day {} at {} to {}",aCommission.getSubject().getName(),aCommission.getName(),aClassroom.getNumber(),aday,startTime,endTime);
         Schedule aSchudule = new Schedule();
         aSchudule.setDay(aday);
         aSchudule.setStartTime(startTime);
@@ -203,16 +229,24 @@ public class BootstrapRunner implements ApplicationRunner {
         aSchudule.setCommission(aCommission);
         aClassroom.addSchedule(aSchudule);
         aCommission.addSchedule(aSchudule);
+
+        LOGGER.info("Schedule created!");
+
         return aSchudule;
     }
 
     private Commission createCommission(Subject aSubject, String name, Integer aYear, Semester aSemester){
+        LOGGER.info("Creating Commission {} for Semester {}-{} for subject: {}",name,aSemester,aYear,aSubject.getName());
+
         Commission aCommission = new Commission();
         aCommission.setSemester(aSemester);
         aCommission.setYear(aYear);
         aCommission.setName(name);
         aCommission.setSubject(aSubject);
         aSubject.addCommission(aCommission);
+
+        LOGGER.info("Commission created!");
+
         return aCommission;
     }
 }

@@ -4,6 +4,7 @@ import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.persistance.SubjectRepository;
+import com.misaulasunq.utils.DayConverter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +46,14 @@ public class SubjectServiceTestBis {
         Subject obj1 = new Subject();
         obj1.setName("objetos 1");
 
-        Mockito.when(subjectRepository.findCurrentDaySubjects(Mockito.any(Day.class))).thenReturn(Arrays.asList(obj1));
+        Mockito.when(subjectRepository.getAllSubjectsDictatedInTheDay(Mockito.any(Day.class))).thenReturn(Arrays.asList(obj1));
     }
 
     @Test
     public void whenAskServiceForSubjectOfTheCurrentDayItShoueldRetrieveIt() throws SubjectNotfoundException {
 
         // exercise
-        List<Subject> currentDaySubject = subjectService.retreiveSubjectsCurrentDay(LocalDate.now().getDayOfWeek());
+        List<Subject> currentDaySubject = subjectService.retreiveSubjectsDictatedOnDay(DayConverter.getDay(LocalDate.now().getDayOfWeek()));
         Assert.assertEquals("objetos 1",currentDaySubject.get(0).getName());
     }
 }
