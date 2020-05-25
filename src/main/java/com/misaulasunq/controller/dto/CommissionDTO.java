@@ -24,6 +24,8 @@ public class CommissionDTO {
         this.year = commission.getYear();
     }
 
+    public CommissionDTO() {}
+
     private List<ScheduleDTO> createScheduleDTO(List<Schedule> schedules) {
         return schedules.stream().map(sc -> new ScheduleDTO(sc)).collect(Collectors.toList());
     }

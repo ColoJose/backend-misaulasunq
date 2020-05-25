@@ -2,9 +2,11 @@ package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.DegreeDTO;
 import com.misaulasunq.controller.dto.SubjectDTO;
+import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Degree;
 import com.misaulasunq.model.Subject;
+import com.misaulasunq.model.SubjectToParse;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,15 +82,19 @@ public class SubjectController {
     }
 
     @PostMapping(value = "/new-subject", consumes = "application/json")
-    public ResponseEntity createNewSubject(@Valid @RequestBody SubjectDTO subjectDto) {
+    public ResponseEntity createNewSubject( @RequestBody SubjectToParse subjectToParse) throws DegreeNotFoundException {
+
+        Degree degreeReceived = this.degreeService.findDegreeById(subjectToParse.getDegreeId());
+
+        Subject subject = subjectToParse.parse(degreeReceived);
         // recibo el subjectDto y se lo doy a DTOparser
         // el dtoparser recibe el subjectDTO y pide todas las carreras y le setea subject las carreras
         // desp agarro las comisiones y las tranformo en una comision del dominio
         // cuando parseo los horarios de las comisones, armo los horarios
         //
 
-//        this.subjectService.saveSubject();
-        return ResponseEntity.ok("subject successfully created");
+        this.subjectService.saveSubject(subject);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/all-degrees")

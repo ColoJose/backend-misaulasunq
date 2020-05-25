@@ -22,6 +22,8 @@ public class ScheduleDTO {
         this.classroom = this.createClassroomDTO(sc.getClassroom());
     }
 
+    public ScheduleDTO() {};
+
     private ClassroomDTO createClassroomDTO(Classroom classroom) {
         return new ClassroomDTO(classroom);
     }

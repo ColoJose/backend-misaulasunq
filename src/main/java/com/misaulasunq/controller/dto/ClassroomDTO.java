@@ -10,6 +10,8 @@ public class ClassroomDTO {
     protected String number;
     protected String imageUrl;
 
+    public ClassroomDTO() {}
+
     public ClassroomDTO(Classroom classroom) {
         this.id = classroom.getId();
         this.number = classroom.getNumber();
