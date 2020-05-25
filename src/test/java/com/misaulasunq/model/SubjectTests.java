@@ -18,11 +18,12 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 public class SubjectTests {
 
-    private ValidatorFactory factory;
     private Validator validator;
+
     @Before
     public void setUp() {
-        this.factory = Validation.buildDefaultValidatorFactory();
+        ValidatorFactory factory;
+        factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 

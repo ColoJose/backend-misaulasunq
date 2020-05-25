@@ -19,13 +19,13 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 public class ScheduleTests {
 
-    private ValidatorFactory validatorFactory;
     private Validator validator;
     private Schedule schedule;
 
     @Before
     public void setUp(){
-        this.validatorFactory = Validation.buildDefaultValidatorFactory();
+        ValidatorFactory validatorFactory;
+        validatorFactory = Validation.buildDefaultValidatorFactory();
         this.validator = validatorFactory.getValidator();
     }
 
