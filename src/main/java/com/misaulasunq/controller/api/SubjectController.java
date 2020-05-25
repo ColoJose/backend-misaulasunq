@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(//Se puede configurar para que sea a travez de una clase
         origins = "http://localhost:3000",
-        methods = RequestMethod.GET,
+        methods = {RequestMethod.GET, RequestMethod.POST},
         maxAge = 60
 )
 @RestController(value = "SubjectAPI")
@@ -94,7 +93,7 @@ public class SubjectController {
         //
 
         this.subjectService.saveSubject(subject);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>("Materia creada correctamente",HttpStatus.OK);
     }
 
     @GetMapping("/all-degrees")
@@ -108,6 +107,8 @@ public class SubjectController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("all")
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){
         return new ResponseEntity<>(

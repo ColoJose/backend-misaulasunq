@@ -4,6 +4,7 @@ import com.misaulasunq.controller.dto.CommissionDTO;
 import com.misaulasunq.controller.dto.ScheduleDTO;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class SubjectToParse {
@@ -93,6 +94,7 @@ public class SubjectToParse {
     }
 
     private Schedule parseSchedule(ScheduleDTO sch, Commission commission) {
+        Random ran = new Random();
         Schedule schedule = new Schedule();
         schedule.setDay(Day.valueOf(this.toDayEnumString(sch.getDay())));
         schedule.setStartTime(sch.getStartTime());
@@ -100,7 +102,7 @@ public class SubjectToParse {
         schedule.setCommission(commission);
         // classroom
         Classroom classroom = new Classroom();
-        classroom.setNumber("10");
+        classroom.setNumber( ((Integer) ran.nextInt()).toString());
         classroom.setImageClassRoomBase64("");
         classroom.addSchedule(schedule);
         schedule.setClassroom(classroom);
