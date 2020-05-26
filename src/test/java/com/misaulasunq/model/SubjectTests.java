@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -18,11 +17,12 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 public class SubjectTests {
 
-    private ValidatorFactory factory;
     private Validator validator;
+
     @Before
     public void setUp() {
-        this.factory = Validation.buildDefaultValidatorFactory();
+        ValidatorFactory factory;
+        factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 

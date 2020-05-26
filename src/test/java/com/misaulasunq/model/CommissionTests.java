@@ -17,11 +17,12 @@ import java.util.Set;
 public class CommissionTests {
 
     private Commission commission;
-    private ValidatorFactory factory;
     private Validator validator;
+
     @Before
     public void setUp() {
-        this.factory = Validation.buildDefaultValidatorFactory();
+        ValidatorFactory factory;
+        factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
     @Test

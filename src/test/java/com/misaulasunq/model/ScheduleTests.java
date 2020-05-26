@@ -1,12 +1,9 @@
 package com.misaulasunq.model;
 
-
-import org.apache.tomcat.jni.Local;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolation;
@@ -19,13 +16,13 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 public class ScheduleTests {
 
-    private ValidatorFactory validatorFactory;
     private Validator validator;
     private Schedule schedule;
 
     @Before
     public void setUp(){
-        this.validatorFactory = Validation.buildDefaultValidatorFactory();
+        ValidatorFactory validatorFactory;
+        validatorFactory = Validation.buildDefaultValidatorFactory();
         this.validator = validatorFactory.getValidator();
     }
 

@@ -61,7 +61,7 @@ public class ClassroomControllerTest {
     }
 
     @Test
-    public void ifHaveClassroomSuggestions_TheirAreRetrieved(){
+    public void ifHaveClassroomSuggestionsTheirAreRetrieved(){
         //Setup(Given)
 
         //Exercise(When)
@@ -76,7 +76,7 @@ public class ClassroomControllerTest {
     }
 
     @Test
-    public void ifGetClassroomSuggestions_getAGoodResponse() throws Exception{
+    public void ifGetClassroomSuggestionsGetAGoodResponse() throws Exception{
         //Test(then)
         this.mockMvc.perform(
                 MockMvcRequestBuilders.get("/classroomAPI/suggestions")

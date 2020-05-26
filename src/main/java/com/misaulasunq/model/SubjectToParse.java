@@ -81,8 +81,11 @@ public class SubjectToParse {
         String res = new String();
         switch (semester) {
             case "Primer cuatrimestre": res = "PRIMER";
+            break;
             case "Segundo cuatrimestre": res = "SEGUNDO";
+            break;
             case "Anual": res = "ANUAL";
+            break;
         }
         return res;
     }
@@ -114,11 +117,17 @@ public class SubjectToParse {
         String dayString = new String();
         switch (day) {
             case "Lunes": dayString = "LUNES";
+            break;
             case "Martes": dayString = "MARTES";
+            break;
             case "Miércoles": dayString = "MIERCOLES";
+            break;
             case "Jueves": dayString = "JUEVES";
+            break;
             case "Viernes": dayString = "VIERNES";
+            break;
             case "Sábado": dayString = "SABADO";
+            break;
         }
 
         return  dayString;

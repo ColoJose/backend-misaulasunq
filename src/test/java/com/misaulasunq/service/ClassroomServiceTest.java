@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -21,7 +20,7 @@ public class ClassroomServiceTest {
     public ClassroomService classroomService;
 
     @Test
-    public void ifHaveClassroomInTheDataBase_TheirNumbersAreRetrieved(){
+    public void ifHaveClassroomInTheDataBaseTheirNumbersAreRetrieved(){
         //Setup(Given)
         //Exercise(When)
         //Test(Then)
