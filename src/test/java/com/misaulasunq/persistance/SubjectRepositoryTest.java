@@ -3,15 +3,12 @@ package com.misaulasunq.persistance;
 import com.misaulasunq.model.*;
 import com.misaulasunq.utils.*;
 import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import org.junit.Test;
@@ -28,7 +25,7 @@ public class SubjectRepositoryTest {
     private SubjectRepository subjectRepository;
 
     @Test
-    public void ifDontHaveSubjectInTheDataBase_GetAEmptyList(){
+    public void ifDontHaveSubjectInTheDataBaseGetAEmptyList(){
         //Setup(Given)
         subjectRepository.deleteAll();
 
@@ -58,7 +55,7 @@ public class SubjectRepositoryTest {
     }
 
     @Test
-    public void ifHaveSubjectsWithHoursBetween8HoursAnd22Hours_TheirAreRetrieved(){
+    public void ifHaveSubjectsWithHoursBetween8HoursAnd22HoursTheirAreRetrieved(){
         //Setup(Given)
         LocalTime startTimeToSearch = LocalTime.of(8,0);
         LocalTime endTimeToSearch = LocalTime.of(22,0);
@@ -84,7 +81,7 @@ public class SubjectRepositoryTest {
     }
 
     @Test
-    public void ifHaveSubjectsWithHoursBetween19HoursAnd23Hours_TheirAreRetrieved(){
+    public void ifHaveSubjectsWithHoursBetween19HoursAnd23HoursTheirAreRetrieved(){
         //Setup(Given)
         LocalTime startTimeToSearch = LocalTime.of(1,0);
         LocalTime endTimeToSearch = LocalTime.of(4,0);
@@ -110,7 +107,7 @@ public class SubjectRepositoryTest {
     }
 
     @Test
-    public void ifHaveSubjectsWithNameLikeBase_TheirAreRetrievedWhenGetBySubjectName(){
+    public void ifHaveSubjectsWithNameLikeBaseTheirAreRetrievedWhenGetBySubjectName(){
         //Setup(Given)
 
         // Exercise (When)

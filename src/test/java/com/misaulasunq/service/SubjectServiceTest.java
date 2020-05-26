@@ -40,7 +40,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToGetASubjectBetweenAnHours_AndThereIsOne_ItsRetrieved() throws SubjectNotfoundException {
+    public void ifTryToGetASubjectBetweenAnHoursAndThereIsOne_ItsRetrieved() throws SubjectNotfoundException {
         //Setup(Given)
         LocalTime start = LocalTime.of(2,0);
         LocalTime end = LocalTime.of(5,0);
@@ -62,7 +62,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToGetASubjectBetweenAStartAndEndHour_AndThereIsNone_GetASubjectNotFoundException(){
+    public void ifTryToGetASubjectBetweenAStartAndEndHourAndThereIsNone_GetASubjectNotFoundException(){
         //Setup(Given)
         String exceptionMessage = "";
 
@@ -84,7 +84,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToGetASubjectWithAName_AndThereIsOne_ItsRetrieved() throws SubjectNotfoundException {
+    public void ifTryToGetASubjectWithANameAndThereIsOneItsRetrieved() throws SubjectNotfoundException {
         //Setup(Given)
 
         //exercise
@@ -98,7 +98,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToGetASubjectWithAName_AndThereIsNone_GetASubjectNotFoundException(){
+    public void ifTryToGetASubjectWithANameAndThereIsNoneGetASubjectNotFoundException(){
         //Setup(Given)
         String exceptionMessage = "";
 
@@ -117,7 +117,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifHaveSubjectInClassroomFive_IfSearchWithClassroomNumber_WeGetOne() throws SubjectNotfoundException {
+    public void ifHaveSubjectInClassroomFiveIfSearchWithClassroomNumberWeGetOne() throws SubjectNotfoundException {
         //Setup(Given)
 
         //exercise
@@ -144,7 +144,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToRetrieveASubjectInClassroomFive_AndThereIsNone_GetASubjectNotFoundException() {
+    public void ifTryToRetrieveASubjectInClassroomFiveAndThereIsNoneGetASubjectNotFoundException() {
         //Setup(Given)
         String exceptionMessage = "";
 

@@ -1,7 +1,6 @@
 package com.misaulasunq.utils;
 
 import com.misaulasunq.model.Degree;
-import com.misaulasunq.model.Subject;
 
 import java.util.ArrayList;
 

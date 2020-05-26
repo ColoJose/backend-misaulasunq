@@ -5,24 +5,16 @@ import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.SubjectRepository;
-import com.misaulasunq.service.SubjectService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +25,6 @@ import java.util.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,7 +54,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifTryToGetSubjectsByDayAndHaveOne_getAGoodResponse() throws SubjectNotfoundException {
+    public void ifTryToGetSubjectsByDayAndHaveOneGetAGoodResponse() throws SubjectNotfoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -79,7 +70,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifTryToGetSubjectsByDayAndNotHaveOne_getAError(){
+    public void ifTryToGetSubjectsByDayAndNotHaveOneGetAError(){
         //Setup(Given)
         String exceptionMessage = "";
 
@@ -110,7 +101,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifHaveSubjectSuggestions_TheirAreRetrieved(){
+    public void ifHaveSubjectSuggestionsTheirAreRetrieved(){
         //Setup(Given)
 
         //Exercise(When)
@@ -125,7 +116,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectSuggestions_getAGoodResponse() throws Exception{
+    public void ifGetSubjectSuggestionsGetAGoodResponse() throws Exception{
         //Test(then)
         this.mockMvc.perform(
                 MockMvcRequestBuilders.get("/subjectAPI/suggestions")
@@ -135,7 +126,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectASubjectBetweenHours_getAGoodResponse() throws SubjectNotfoundException {
+    public void ifGetSubjectASubjectBetweenHoursGetAGoodResponse() throws SubjectNotfoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -198,7 +189,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectByAUnexistName_getAError(){
+    public void ifGetSubjectByANonExistentNameGetAError(){
         //Setup(Given)
         String exceptionMessage = "";
 
@@ -213,7 +204,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubject_getAGoodResponse() throws SubjectNotfoundException {
+    public void ifGetSubjectGetAGoodResponse() throws SubjectNotfoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -230,7 +221,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectByAUnexistClassroomNumber_getAError(){
+    public void ifGetSubjectByANonExistentClassroomNumberGetAError(){
         //Setup(Given)
         String exceptionMessage = "";
 
@@ -257,11 +248,6 @@ public class SubjectControllerTest {
 //                        .content(serializedSubject))
 //                        .andExpect(status().isOk());
 //    }
-
-    @Test
-    public void whenReceivingAValidSubject_shouldRetrieveHttpStatusOk() {
-
-    }
 
     // auxiliary methods
 

@@ -158,8 +158,6 @@ public class SubjectController {
         );
     }
 
-    @GetMapping("all")
-
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){
         ResponseEntity<List<SubjectDTO>> response = new ResponseEntity<>(
                 subjects.stream()

@@ -25,7 +25,7 @@ public class ClassroomRepositoryTest {
     private ClassroomRepository classroomRepository;
 
     @Test
-    public void ifDontHaveClassroomInTheDataBase_GetAEmptyList(){
+    public void ifDontHaveClassroomInTheDataBaseGetAEmptyList(){
         //Setup(Given)
         classroomRepository.deleteAll();
         //Exercise(When)
@@ -36,7 +36,7 @@ public class ClassroomRepositoryTest {
     }
 
     @Test
-    public void ifHaveClassroomInTheDataBase_TheirNumbersAreRetrieved(){
+    public void ifHaveClassroomInTheDataBaseTheirNumbersAreRetrieved(){
         //Setup(Given)
 
         //Exercise(When)
@@ -68,7 +68,7 @@ public class ClassroomRepositoryTest {
     }
 
     @Test
-    public void shouldNotBePresentIfRetrieveANonexistClassroomInDB(){
+    public void shouldNotBePresentIfRetrieveANonExistentClassroomInDB(){
         //Start (Given)
 
         //Exercise (When)
