@@ -1,6 +1,7 @@
 package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.DegreeDTO;
+import com.misaulasunq.controller.dto.GeneralInfo;
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
@@ -136,17 +137,12 @@ public class SubjectController {
         Degree degreeReceived = this.degreeService.findDegreeById(subjectToParse.getDegreeId());
 
         Subject subject = subjectToParse.parse(degreeReceived);
-        // recibo el subjectDto y se lo doy a DTOparser
-        // el dtoparser recibe el subjectDTO y pide todas las carreras y le setea subject las carreras
-        // desp agarro las comisiones y las tranformo en una comision del dominio
-        // cuando parseo los horarios de las comisones, armo los horarios
-        //
 
         this.subjectService.saveSubject(subject);
         return new ResponseEntity<>("Materia creada correctamente",HttpStatus.OK);
     }
 
-    @GetMapping("/all-degrees")
+    @GetMapping(value = "/all-degrees")
     public ResponseEntity<List<DegreeDTO>> getAllDegrees() {
 
         List<Degree> allDegrees = this.degreeService.findAll();
@@ -163,6 +159,16 @@ public class SubjectController {
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.getAll()
         );
+    }
+
+    @PutMapping(value = "/edit-general-info/{id}", consumes = "application/json")
+    public ResponseEntity<SubjectDTO> editGeneralInfoSubject(@PathVariable Integer id,
+                                                             @RequestBody GeneralInfo generalInfo)
+                                                             throws SubjectNotfoundException {
+        Subject retrievedSubject = this.subjectService.editGeneralInfo(id, generalInfo);
+        SubjectDTO subjectDTO = new SubjectDTO(retrievedSubject);
+
+        return new ResponseEntity<SubjectDTO>(subjectDTO, HttpStatus.OK);
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){

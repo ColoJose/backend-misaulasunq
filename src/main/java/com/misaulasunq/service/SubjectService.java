@@ -1,5 +1,6 @@
 package com.misaulasunq.service;
 
+import com.misaulasunq.controller.dto.GeneralInfo;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
@@ -68,5 +69,15 @@ public class SubjectService {
                 this.subjectRepository.getAllSubjectsDictatedInTheDay(currentDay),
                 SubjectNotfoundException.SubjectNotFoundCurrentDay()
         );
+    }
+
+    public Subject editGeneralInfo(Integer id, GeneralInfo generalInfo) throws SubjectNotfoundException {
+        Subject retrievedSubjectById = this.findSubjectById(id);
+        retrievedSubjectById.setName(generalInfo.getName());
+        retrievedSubjectById.setSubjectCode(generalInfo.getSubjectCode());
+
+        this.saveSubject(retrievedSubjectById);
+
+        return retrievedSubjectById;
     }
 }

@@ -38,4 +38,5 @@ public class SubjectDTO {
     public String getSubjectCode() {    return subjectCode; }
     public List<CommissionDTO> getCommissions() {   return commissions; }
     public List<DegreeDTO> getDegrees() {   return degrees; }
+
 }
