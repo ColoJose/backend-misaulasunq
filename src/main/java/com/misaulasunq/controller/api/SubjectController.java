@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @RestController(value = "SubjectAPI")
 @CrossOrigin(//Se puede configurar para que sea a travez de una clase
         origins = "http://localhost:3000",
-        methods = {RequestMethod.GET, RequestMethod.POST},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT},
         maxAge = 60
 )
 @RequestMapping(
