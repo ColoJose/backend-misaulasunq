@@ -1,7 +1,9 @@
 package com.misaulasunq.service;
 
+import com.misaulasunq.controller.dto.CommissionDTO;
 import com.misaulasunq.controller.dto.GeneralInfo;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.model.Commission;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.persistance.SubjectRepository;
@@ -79,5 +81,9 @@ public class SubjectService {
         this.saveSubject(retrievedSubjectById);
 
         return retrievedSubjectById;
+    }
+
+    public List<Commission> getCommissionsById(Integer id) throws SubjectNotfoundException {
+        return this.findSubjectById(id).getCommissions();
     }
 }
