@@ -67,7 +67,7 @@ public class SubjectRepositoryTest {
         );
 
         // Test (then)
-        assertEquals("Tiene que haber solo ocho materias entre esos horarios!", 8, subjectsRetrieved.size());
+        assertEquals("Tiene que haber solo nueve materias entre esos horarios!", 9, subjectsRetrieved.size());
         LocalTime startTime;
         LocalTime endTime;
         for (Subject each : subjectsRetrieved){

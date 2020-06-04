@@ -48,8 +48,7 @@ public class SubjectService {
         }
         return subjects;
     }
-
-    //TODO: estos metodos pueden deprecarse
+    // TODO: Aca habria que agregar un chequeo para que revise si no hay un horario que se solape y generar la nota si es necesario
     public void saveSubject(Subject subject) {
         subjectRepository.save(subject);
     }
