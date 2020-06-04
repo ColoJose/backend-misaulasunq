@@ -1,5 +1,6 @@
 package com.misaulasunq.model;
 
+import com.misaulasunq.utils.CommissionBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,7 @@ public class ScheduleTests {
         schedule = new Schedule();
         schedule.setEndTime(LocalTime.now());
         schedule.setDay(Day.LUNES);
+        schedule.setCommission(CommissionBuilder.buildACommission().build());
 
         // when
         Set<ConstraintViolation<Schedule>> violations = validator.validate(schedule);
@@ -47,6 +49,7 @@ public class ScheduleTests {
         schedule = new Schedule();
         schedule.setDay(Day.LUNES);
         schedule.setStartTime(LocalTime.now());
+        schedule.setCommission(CommissionBuilder.buildACommission().build());
 
         // when
         Set<ConstraintViolation<Schedule>> violations = validator.validate(schedule);
@@ -63,6 +66,7 @@ public class ScheduleTests {
         schedule = new Schedule();
         schedule.setEndTime(LocalTime.now());
         schedule.setStartTime(LocalTime.now());
+        schedule.setCommission(CommissionBuilder.buildACommission().build());
 
         // when
         Set<ConstraintViolation<Schedule>> violations = validator.validate(schedule);

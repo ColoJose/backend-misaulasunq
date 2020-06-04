@@ -21,6 +21,9 @@ public class BootstrapRunner implements ApplicationRunner {
     @Autowired
     private DegreeRepository degreeRepository;
 
+    @Autowired
+    private OverlapNoticeRepository overlapNoticeRepository;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         LOGGER.info("BootstrapRunner Run");
@@ -44,12 +47,10 @@ public class BootstrapRunner implements ApplicationRunner {
         Map<String, Classroom> classroomByNumber = new HashMap<>();
         Classroom room52 = new Classroom();
         room52.setNumber("52");
-        room52.setImageClassRoomBase64("https://miro.medium.com/max/11344/1*32h8ts3A-7XNr6A4Js87ng.jpeg");
         classroomByNumber.put(room52.getNumber(),room52);
 
         Classroom roomCyT1 = new Classroom();
         roomCyT1.setNumber("CyT-1");
-        roomCyT1.setImageClassRoomBase64("https://filedn.com/ltOdFv1aqz1YIFhf4gTY8D7/ingus-info/BLOGS/Photography-stocks3/stock-photography-slider.jpg");
         classroomByNumber.put(roomCyT1.getNumber(),roomCyT1);
 
         //Creacion de materias
@@ -57,21 +58,27 @@ public class BootstrapRunner implements ApplicationRunner {
         this.createSistemasOperativos(tpi, classroomByNumber);
         this.createProgramacionObjetos3(tpi, classroomByNumber);
         this.createSeguridadInformatica(tpi, classroomByNumber);
-        this.createQuimicaOrganica(biotecnologia,classroomByNumber);
+        Subject qumicaOrganica = this.createQuimicaOrganica(biotecnologia,classroomByNumber);
         this.createAnalisisI(automatizacion,classroomByNumber);
         this.createTIP(tpi,classroomByNumber);
+        Subject inglesII = this.createInglesII(tpi,classroomByNumber);
 
         LOGGER.info("Inserting sample data");
-      
+
         degreeRepository.save(tpi);
         degreeRepository.save(biotecnologia);
         degreeRepository.save(automatizacion);
-      
+
+        //Creacion de nota de solapado para Qumica e Ingles II
+        OverlapNotice aOverlapNotice = this.createScheduleOverlap(qumicaOrganica,inglesII);
+        overlapNoticeRepository.save(aOverlapNotice);
+
         LOGGER.info("Sample data inserted");
         LOGGER.info("Sample data created and loaded");
     }
 
-    private void createAnalisisI(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
+    private Subject createAnalisisI(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
+        LOGGER.info("Creating Análisis matemático I Sample data");
         Subject analisisI = this.createSubject(automatizacion, "Análisis matemático I", "105");
         Commission quimicaOrganicaC1Miercoles = this.createCommission(analisisI, "Comision 1",2020,Semester.PRIMER);
         this.createSchedule(
@@ -81,9 +88,12 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(16,0),
                 LocalTime.of(18,0)
         );
+        LOGGER.info("Análisis matemático I Sample Data Created");
+        return analisisI;
     }
 
-    private void createQuimicaOrganica(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
+    private Subject createQuimicaOrganica(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
+        LOGGER.info("Creating Química Orgánica Sample data");
         Subject quimicaOrganica = this.createSubject(biotecnologia, "Química Orgánica", "89");
         Commission quimicaOrganicaC1Miercoles = this.createCommission(quimicaOrganica, "Comision 1",2020,Semester.PRIMER);
         this.createSchedule(
@@ -93,9 +103,11 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(16,0),
                 LocalTime.of(18,0)
         );
+        LOGGER.info("Química Orgánica Sample Data Created");
+        return quimicaOrganica;
     }
 
-    private void createProgramacionObjetos3(Degree aDegree, Map<String, Classroom> classroomByNumber) {
+    private Subject createProgramacionObjetos3(Degree aDegree, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Programacion Orientada a Objetos 3 Sample data");
         Subject progObjectos3 = this.createSubject(aDegree, "Programacion Orientada a Objetos 3", "15");
         Commission progObjetos3C1Viernes = this.createCommission(progObjectos3, "Comision 1",2019,Semester.PRIMER);
@@ -107,9 +119,10 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(22,0)
         );
         LOGGER.info("Programacion Orientada a Objetos 3 Sample Data Created");
+        return progObjectos3;
     }
 
-    public void createSistemasOperativos(Degree aDegree, Map<String,Classroom> classroomByNumber){
+    public Subject createSistemasOperativos(Degree aDegree, Map<String,Classroom> classroomByNumber){
         LOGGER.info("Creating Sistemas Operativos Sample data");
         Subject sistemasOperativos = this.createSubject(aDegree, "Sistemas Operativos", "150");
         Commission sistemasOpC1 = this.createCommission(sistemasOperativos, "Comision 1",2019,Semester.PRIMER);
@@ -121,9 +134,10 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(22,0)
         );
         LOGGER.info("Sistemas Operativos Sample Data Created");
+        return sistemasOperativos;
     }
 
-    public void createSeguridadInformatica(Degree degree, Map<String, Classroom> classroomByNumber) {
+    public Subject createSeguridadInformatica(Degree degree, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Seguridad Informatica Sample data");
         Subject seguridadInformatica = this.createSubject(degree, "Seguridad Informática", "420");
         Commission seguridadC1 = this.createCommission(seguridadInformatica,"Comision 1",2019,Semester.PRIMER);
@@ -134,9 +148,10 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(13,0)
         );
         LOGGER.info("Seguridad Informatica Sample Data Created");
+        return seguridadInformatica;
     }
 
-    public void createTIP(Degree degree, Map<String, Classroom> clasroomByNumber) {
+    public Subject createTIP(Degree degree, Map<String, Classroom> clasroomByNumber) {
         LOGGER.info("Creating TIP Sample data");
         Subject tip = this.createSubject(degree, "TIP", "231");
         Commission seguridadC1 = this.createCommission(tip,"Comision 1",2019,Semester.PRIMER);
@@ -147,9 +162,10 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(13,0)
         );
         LOGGER.info("TIP Sample Data Created");
+        return tip;
     }
 
-    public void createMatematica(Degree aDegree, Map<String,Classroom> classroomByNumber){
+    public Subject createMatematica(Degree aDegree, Map<String,Classroom> classroomByNumber){
         LOGGER.info("Creating Matematica Sample data");
         Subject matematica1 = this.createSubject(aDegree,"Matematica I", "223");
 
@@ -204,6 +220,22 @@ public class BootstrapRunner implements ApplicationRunner {
                 LocalTime.of(13,0)
             );
         LOGGER.info("Matematica Sample Data Created");
+        return matematica1;
+    }
+
+    private Subject createInglesII(Degree aDegree, Map<String, Classroom> classroomByNumber) {
+        LOGGER.info("Creating Ingles II Sample data");
+        Subject inglesII = this.createSubject(aDegree, "Ingles II", "611");
+        Commission inglesIIC1Viernes = this.createCommission(inglesII, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                inglesIIC1Viernes,
+                Day.VIERNES,
+                LocalTime.of(16,0),
+                LocalTime.of(22,0)
+        );
+        LOGGER.info("Ingles II Sample Data Created");
+        return inglesII;
     }
 
     private Subject createSubject(Degree aDegree, String name, String code){
@@ -248,5 +280,11 @@ public class BootstrapRunner implements ApplicationRunner {
         LOGGER.info("Commission created!");
 
         return aCommission;
+    }
+
+    private OverlapNotice createScheduleOverlap(Subject aSubject, Subject anotherSubject){
+        Schedule aSchedule = aSubject.getCommissions().get(0).getSchedules().get(0);
+        Schedule anotherSchedule = anotherSubject.getCommissions().get(0).getSchedules().get(0);
+        return OverlapNotice.makeOverlapNotice(aSchedule,anotherSchedule);
     }
 }

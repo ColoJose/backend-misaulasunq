@@ -21,12 +21,7 @@ public class ClassroomBuilder {
         return this;
     }
 
-    public ClassroomBuilder withImage(String image){
-        this.classroom.setImageClassRoomBase64(image);
-        return this;
-    }
-
-    public ClassroomBuilder withSubjectCode(List<Schedule> schedules){
+    public ClassroomBuilder withSchedules(List<Schedule> schedules){
         this.classroom.setSchedules(schedules);
         return this;
     }

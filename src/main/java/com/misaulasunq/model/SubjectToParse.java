@@ -106,7 +106,6 @@ public class SubjectToParse {
         // classroom
         Classroom classroom = new Classroom();
         classroom.setNumber( ((Integer) ran.nextInt()).toString());
-        classroom.setImageClassRoomBase64("");
         classroom.addSchedule(schedule);
         schedule.setClassroom(classroom);
 
