@@ -9,6 +9,7 @@ import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
+import com.misaulasunq.utils.CommissionParser;
 import com.misaulasunq.utils.DayConverter;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -186,9 +187,8 @@ public class SubjectController {
                                              @RequestBody List<CommissionDTO> commissions)
                                              throws SubjectNotfoundException{
 
-        Subject subject = this.subjectService.findSubjectById(id).parseCommissions(commissions);
-
-        this.subjectService.updateCommissions(id, commissions);
+        Subject subjectById = this.subjectService.findSubjectById(id);
+        this.subjectService.updateCommissions(subjectById, CommissionParser.parseCommissions(commissions, subjectById));
         return new ResponseEntity<>("Comissiones materia actualizada",HttpStatus.OK);
     }
 
