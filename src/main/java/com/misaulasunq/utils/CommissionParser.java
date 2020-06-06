@@ -33,7 +33,6 @@ public  class CommissionParser {
         schedule.setStartTime(sch.getStartTime());
         schedule.setEndTime(sch.getEndTime());
         Classroom classroom = new Classroom();
-        classroom.setImageClassRoomBase64("http://");
         classroom.setNumber("52");
         schedule.setClassroom(classroom);
         return schedule;
