@@ -1,16 +1,15 @@
 package com.misaulasunq.controller.api;
 
+import com.misaulasunq.controller.dto.CommissionDTO;
 import com.misaulasunq.controller.dto.DegreeDTO;
 import com.misaulasunq.controller.dto.GeneralInfo;
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
-import com.misaulasunq.model.Degree;
-import com.misaulasunq.model.Day;
-import com.misaulasunq.model.Subject;
-import com.misaulasunq.model.SubjectToParse;
+import com.misaulasunq.model.*;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
+import com.misaulasunq.utils.CommissionParser;
 import com.misaulasunq.utils.DayConverter;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -161,6 +160,8 @@ public class SubjectController {
         );
     }
 
+
+
     @PutMapping(value = "/edit-general-info/{id}", consumes = "application/json")
     public ResponseEntity<SubjectDTO> editGeneralInfoSubject(@PathVariable Integer id,
                                                              @RequestBody GeneralInfo generalInfo)
@@ -169,6 +170,26 @@ public class SubjectController {
         SubjectDTO subjectDTO = new SubjectDTO(retrievedSubject);
 
         return new ResponseEntity<SubjectDTO>(subjectDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/commissions/{id}")
+    public ResponseEntity<List<CommissionDTO>> getCommissionById(@PathVariable Integer id) throws SubjectNotfoundException {
+        List<CommissionDTO> commissionsById = this.subjectService.getCommissionsById(id)
+                                                                 .stream()
+                                                                 .map(CommissionDTO::new)
+                                                                 .collect(Collectors.toList());
+
+        return new ResponseEntity<>(commissionsById,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json")
+    public ResponseEntity<String> updateCommission(@PathVariable Integer id,
+                                             @RequestBody List<CommissionDTO> commissions)
+                                             throws SubjectNotfoundException{
+
+        Subject subjectById = this.subjectService.findSubjectById(id);
+        this.subjectService.updateCommissions(subjectById, CommissionParser.parseCommissions(commissions, subjectById));
+        return new ResponseEntity<>("Comissiones materia actualizada",HttpStatus.OK);
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){

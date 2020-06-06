@@ -1,9 +1,13 @@
 package com.misaulasunq.model;
 
+import com.misaulasunq.controller.dto.CommissionDTO;
+import com.misaulasunq.controller.dto.ScheduleDTO;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity(name = "subject") // name when using HQL
 public class Subject {
