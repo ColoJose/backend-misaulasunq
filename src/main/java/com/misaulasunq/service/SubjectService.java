@@ -86,4 +86,9 @@ public class SubjectService {
     public List<Commission> getCommissionsById(Integer id) throws SubjectNotfoundException {
         return this.findSubjectById(id).getCommissions();
     }
+
+    public void updateCommissions(Integer id, List<CommissionDTO> commissions) throws SubjectNotfoundException{
+        Subject subject = this.findSubjectById(id);
+        subject.setCommissions(commissions);
+    }
 }

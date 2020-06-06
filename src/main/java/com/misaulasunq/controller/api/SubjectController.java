@@ -171,7 +171,7 @@ public class SubjectController {
         return new ResponseEntity<SubjectDTO>(subjectDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/edit-general-info/commissions/{id}")
+    @GetMapping("/commissions/{id}")
     public ResponseEntity<List<CommissionDTO>> getCommissionById(@PathVariable Integer id) throws SubjectNotfoundException {
         List<CommissionDTO> commissionsById = this.subjectService.getCommissionsById(id)
                                                                  .stream()
@@ -179,6 +179,17 @@ public class SubjectController {
                                                                  .collect(Collectors.toList());
 
         return new ResponseEntity<>(commissionsById,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json")
+    public ResponseEntity<String> updateCommission(@PathVariable Integer id,
+                                             @RequestBody List<CommissionDTO> commissions)
+                                             throws SubjectNotfoundException{
+
+        Subject subject = this.subjectService.findSubjectById(id).parseCommissions(commissions);
+
+        this.subjectService.updateCommissions(id, commissions);
+        return new ResponseEntity<>("Comissiones materia actualizada",HttpStatus.OK);
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){

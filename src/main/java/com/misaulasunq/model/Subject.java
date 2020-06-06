@@ -1,9 +1,13 @@
 package com.misaulasunq.model;
 
+import com.misaulasunq.controller.dto.CommissionDTO;
+import com.misaulasunq.controller.dto.ScheduleDTO;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity(name = "subject") // name when using HQL
 public class Subject {
@@ -55,4 +59,28 @@ public class Subject {
 
     public List<Commission> getCommissions() { return commissions; }
     public void setCommissions(List<Commission> commissions) { this.commissions = commissions; }
+
+    public Subject parseCommissions(List<CommissionDTO> commissions) {
+        List<Commission> parsedCommission = commissions.stream().map( com -> parseCommission(com))
+                                                                .collect(Collectors.toList());
+    }
+
+    private Commission parseCommission(CommissionDTO com) {
+        Commission commission = new Commission();
+        commission.setName(com.getName());
+        commission.setYear(com.getYear());
+        commission.setSemester(Semester.valueOf(com.getSemester()));
+        commission.setSchedules(
+                com.getSchedules().stream().map(sch -> parseSchedule(sch)).collect(Collectors.toList())
+        );
+        return commission;
+
+    }
+
+    private Schedule parseSchedule(ScheduleDTO sch) {
+        Schedule schedule = new Schedule();
+        schedule.setDay(Day.valueOf(sch.getDay()));
+
+        return schedule;
+    }
 }
