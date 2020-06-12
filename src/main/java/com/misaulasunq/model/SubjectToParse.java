@@ -3,6 +3,7 @@ package com.misaulasunq.model;
 import com.misaulasunq.controller.dto.CommissionDTO;
 import com.misaulasunq.controller.dto.ScheduleDTO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,15 +143,18 @@ public class SubjectToParse {
 
     public List<String> getClassroomNumbers() {
 
-        ArrayList<String> res = new ArrayList<>();
+        List<String> res = new ArrayList<>();
+        for(CommissionDTO com : this.getCommissions()) {
+            res.addAll(this.getClassroomNumberByCommission(com.getSchedules()));
+        }
+        return res;
+    }
 
-        this.getCommissions()
-                   .stream()
-                   .map(
-                       com -> com.getSchedules().stream()
-                                                .map( sch -> sch.getClassroom().getNumber())
-                   ).forEach( n -> res.add(n.toString()));
-        
+    private List<String> getClassroomNumberByCommission(List<ScheduleDTO> schedules) {
+        List<String> res = new ArrayList<>();
+        for(ScheduleDTO sch : schedules) {
+            res.add(sch.getClassroom().getNumber());
+        }
         return res;
     }
 }
