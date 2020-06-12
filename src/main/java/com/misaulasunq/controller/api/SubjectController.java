@@ -7,6 +7,7 @@ import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.exceptions.SubjectNotfoundException;
 import com.misaulasunq.model.*;
+import com.misaulasunq.service.ClassroomService;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import com.misaulasunq.utils.CommissionParser;
@@ -48,9 +49,11 @@ public class SubjectController {
     @Autowired
     private SubjectService subjectService;
 
-
     @Autowired
     private DegreeService degreeService;
+
+    @Autowired
+    private ClassroomService classroomService;
 
     @GetMapping("/byDay/{aDay}")
     @ApiOperation(value = "Devuelve las materias que son dictadas en el dia {aDay}")
@@ -134,8 +137,12 @@ public class SubjectController {
     public ResponseEntity createNewSubject( @RequestBody SubjectToParse subjectToParse) throws DegreeNotFoundException {
 
         Degree degreeReceived = this.degreeService.findDegreeById(subjectToParse.getDegreeId());
+        List<Classroom> classroomsNewSubject = this.classroomService
+                                                   .findClassroomsByNumber(
+                                                        subjectToParse.getClassroomNumbers()
+                                                   );
 
-        Subject subject = subjectToParse.parse(degreeReceived);
+        Subject subject = subjectToParse.parse(degreeReceived, classroomsNewSubject);
 
         this.subjectService.saveSubject(subject);
         return new ResponseEntity<>("Materia creada correctamente",HttpStatus.OK);
