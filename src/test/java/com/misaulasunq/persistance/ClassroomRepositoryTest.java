@@ -1,34 +1,33 @@
 package com.misaulasunq.persistance;
 
-import com.misaulasunq.RestServiceApplication;
 import com.misaulasunq.model.Classroom;
 import com.misaulasunq.utils.ClassroomBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestServiceApplication.class)
 @Rollback
+@DataJpaTest
 @Transactional
+@RunWith(SpringRunner.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ClassroomRepositoryTest {
 
-    @Autowired
-    private ClassroomRepository classroomRepository;
+    @Autowired private ClassroomRepository classroomRepository;
 
     @Test
     public void ifDontHaveClassroomInTheDataBaseGetAEmptyList(){
         //Setup(Given)
-        classroomRepository.deleteAll();
         //Exercise(When)
 
         //Test(Then)
@@ -39,6 +38,10 @@ public class ClassroomRepositoryTest {
     @Test
     public void ifHaveClassroomInTheDataBaseTheirNumbersAreRetrieved(){
         //Setup(Given)
+        classroomRepository.saveAll(List.of(
+                ClassroomBuilder.buildAClassroom().withName("CyT-1").build(),
+                ClassroomBuilder.buildAClassroom().withName("52").build()
+        ));
 
         //Exercise(When)
         List<String> classroomNumber = classroomRepository.getAllClassroomsNumbers();
@@ -64,8 +67,8 @@ public class ClassroomRepositoryTest {
         Optional<Classroom> classroomRetrieved = classroomRepository.findClassroomsByNumberEquals("212");
 
         //Test (Then)
-        assertEquals("No recupero el aula dek numero 212", "212", classroomRetrieved.map(Classroom::getNumber).orElseGet(()->""));
-        assertEquals("No es el mismo aula 212 que se salvo!", aula212.getId(), classroomRetrieved.map(Classroom::getId).orElseGet(()->-1));
+        assertEquals("212", classroomRetrieved.map(Classroom::getNumber).orElseGet(()->""),"No recupero el aula dek numero 212");
+        assertEquals(aula212.getId(), classroomRetrieved.map(Classroom::getId).orElseGet(()->-1),"No es el mismo aula 212 que se salvo!");
     }
 
     @Test
@@ -77,6 +80,25 @@ public class ClassroomRepositoryTest {
 
         //Test (Then)
         assertFalse("No tiene que recuperar nada por que no hay aula!", classroomRetrieved.isPresent());
-        assertEquals("No tiene que haber id por que no hay aula", "", classroomRetrieved.map(Classroom::getNumber).orElseGet(()->""));
+        assertEquals("", classroomRetrieved.map(Classroom::getNumber).orElseGet(()->""),"No tiene que haber id por que no hay aula");
+    }
+
+    @Test
+    public void findAllByNumberIn() {
+        //Setup(Given)
+        Classroom aClassroom = ClassroomBuilder.buildAClassroom().withName("12").build();
+        Classroom aClassroom1 = ClassroomBuilder.buildAClassroom().withName("52").build();
+        Classroom aClassroom2 = ClassroomBuilder.buildAClassroom().withName("55").build();
+        Classroom aClassroom3 = ClassroomBuilder.buildAClassroom().withName("68").build();
+        Classroom aClassroom4 = ClassroomBuilder.buildAClassroom().withName("76").build();
+        classroomRepository.saveAll(List.of(aClassroom,aClassroom1,aClassroom2,aClassroom3,aClassroom4));
+
+        //Exercise(When)
+        List<Classroom> classroomRetrieved = classroomRepository.findAllByNumberIn(List.of("55","76"));
+
+        //Test(Then)
+        assertEquals(2, classroomRetrieved.size());
+        assertEquals("55", classroomRetrieved.get(0).getNumber());
+        assertEquals("76", classroomRetrieved.get(1).getNumber());
     }
 }

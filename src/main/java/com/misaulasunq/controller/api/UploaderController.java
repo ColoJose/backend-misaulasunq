@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping(
         name="UploaderAPI",
         value = "/uploaderAPI",
-       // produces = "application/json",
+        produces = "application/json",
         method = {RequestMethod.POST}
 )
 @Api(tags = "Uploads Endpoint", value = "UploadEndpoint", description = "Controller para las carga masiva de materias/Horarios.")

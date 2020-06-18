@@ -23,6 +23,11 @@ public class DegreeBuilder {
         return this;
     }
 
+    public DegreeBuilder withDegreeCode(String code){
+        this.degree.setCode(code);
+        return this;
+    }
+
     public Degree build(){
         return this.degree;
     }

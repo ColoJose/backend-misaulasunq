@@ -36,12 +36,15 @@ public class BootstrapRunner implements ApplicationRunner {
         LOGGER.info("Creating and loading sample data");
         //Creacion de Carrera
         Degree tpi = new Degree();
+        tpi.setCode("102");
         tpi.setName("Tecnicatura Universitaria en Programacion Informatica");
 
         Degree biotecnologia = new Degree();
+        biotecnologia.setCode("103");
         biotecnologia.setName("Lic. en Biotecnología");
 
         Degree automatizacion = new Degree();
+        automatizacion.setCode("104");
         automatizacion.setName("Ingeniería en automatización");
 
         // Creacion de aulas

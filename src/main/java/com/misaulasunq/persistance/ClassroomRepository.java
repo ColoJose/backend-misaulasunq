@@ -14,7 +14,9 @@ public interface ClassroomRepository extends JpaRepository<Classroom,Integer> {
     Optional<Classroom> findClassroomsByNumberEquals(String number);
 
     @Query("SELECT classroom.number "
-         + "FROM Classroom classroom "
-         + "GROUP BY classroom.number")
+            + "FROM Classroom classroom "
+            + "GROUP BY classroom.number")
     List<String> getAllClassroomsNumbers();
+
+    List<Classroom> findAllByNumberIn(List<String> classroomNumbers);
 }
