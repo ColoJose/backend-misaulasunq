@@ -18,5 +18,5 @@ public interface ClassroomRepository extends JpaRepository<Classroom,Integer> {
             + "GROUP BY classroom.number")
     List<String> getAllClassroomsNumbers();
 
-    List<Classroom> findAllByNumberIn(List<String> classroomNumbers);
+    List<Classroom> findAllByNumberInOrderByNumberAsc(List<String> classroomNumbers);
 }

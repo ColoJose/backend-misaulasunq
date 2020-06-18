@@ -46,4 +46,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
          + "FROM subject subject "
          + "GROUP BY subject.name")
     List<String> getAllSubjectsNames();
+
+    List<Subject> findAllBySubjectCodeInOrderBySubjectCodeAsc(List<String> subjectCodes);
 }

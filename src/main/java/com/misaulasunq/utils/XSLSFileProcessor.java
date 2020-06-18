@@ -365,4 +365,12 @@ public class XSLSFileProcessor {
     public List<String> getDegreeCodes() {
         return new ArrayList<>(this.getDegreeByCode().keySet());
     }
+
+    public List<String> getClassroomNumbers() {
+        return new ArrayList<>(this.getClassroomByNumber().keySet());
+    }
+
+    public List<String> getSubjectsCodes() {
+        return new ArrayList<>(this.getSubjesctsByCode().keySet());
+    }
 }

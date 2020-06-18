@@ -18,6 +18,12 @@ public class SubjectBuilder {
         return new SubjectBuilder();
     }
 
+    public SubjectBuilder withMockData(){
+        this.subject.setSubjectCode("222");
+        this.subject.setName("TestSubject");
+        return this;
+    }
+
     public SubjectBuilder withName(String name){
         this.subject.setName(name);
         return this;

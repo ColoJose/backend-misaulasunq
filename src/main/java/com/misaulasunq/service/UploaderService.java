@@ -3,12 +3,14 @@ package com.misaulasunq.service;
 import com.misaulasunq.exceptions.InvalidCellFormat;
 import com.misaulasunq.model.Classroom;
 import com.misaulasunq.model.Degree;
+import com.misaulasunq.model.Subject;
 import com.misaulasunq.persistance.ClassroomRepository;
 import com.misaulasunq.persistance.DegreeRepository;
 import com.misaulasunq.persistance.SubjectRepository;
 import com.misaulasunq.utils.XSLSFileProcessor;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +41,16 @@ public class UploaderService {
                 degreeRepository.findAllByCodeInOrderByCodeAsc(
                     xslsProcessor.getDegreeCodes()
                 );
-//            List<Classroom> classroomsInDB = classroomRepository.
+            List<Classroom> classroomsInDB =
+                classroomRepository.findAllByNumberInOrderByNumberAsc(
+                    xslsProcessor.getClassroomNumbers()
+                );
+            List<Subject> sunjectInDB =
+                subjectRepository.findAllBySubjectCodeInOrderBySubjectCodeAsc(
+                    xslsProcessor.getSubjectsCodes()
+            );
+
+            //se procesa los datos y se los mergean
             return "Procesado";
         } else {
             return "No procesado";

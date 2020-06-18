@@ -20,6 +20,7 @@ public class DegreeBuilder {
     public DegreeBuilder withMockData(){
         this.degree.setSubjects(new ArrayList<>());
         this.degree.setName("Test Degree");
+        this.degree.setCode("214");
         return this;
     }
 
