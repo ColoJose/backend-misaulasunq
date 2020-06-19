@@ -34,7 +34,7 @@ public class BootstrapRunner implements ApplicationRunner {
     
     private void loadSampleData() {
         LOGGER.info("Creating and loading sample data");
-        //Creacion de Carrera
+        //Creacion de Carreras
         Degree tpi = new Degree();
         tpi.setName("Tecnicatura Universitaria en Programacion Informatica");
 
@@ -43,6 +43,12 @@ public class BootstrapRunner implements ApplicationRunner {
 
         Degree automatizacion = new Degree();
         automatizacion.setName("Ingeniería en automatización");
+
+        Degree liceducacion = new Degree();
+        liceducacion.setName("Licenciatura en educacion");
+
+        Degree comercio = new Degree();
+        comercio.setName("Licenciatura en Comercio Internacional");
 
         // Creacion de aulas
         Map<String, Classroom> classroomByNumber = new HashMap<>();
@@ -55,15 +61,30 @@ public class BootstrapRunner implements ApplicationRunner {
         classroomByNumber.put(roomCyT1.getNumber(),roomCyT1);
 
         //Creacion de materias
+
+        // tpi
         this.createMatematica(tpi, classroomByNumber);
         this.createSistemasOperativos(tpi, classroomByNumber);
         this.createProgramacionObjetos3(tpi, classroomByNumber);
         this.createSeguridadInformatica(tpi, classroomByNumber);
-        Subject qumicaOrganica = this.createQuimicaOrganica(biotecnologia,classroomByNumber);
-        this.createAnalisisI(automatizacion,classroomByNumber);
         this.createTIP(tpi,classroomByNumber);
         Subject inglesII = this.createInglesII(tpi,classroomByNumber);
-
+        // bio
+        Subject qumicaOrganica = this.createQuimicaOrganica(biotecnologia,classroomByNumber);
+        this.createBiologiaGeneral(biotecnologia,classroomByNumber);
+        this.createMicrobioGeneral(biotecnologia,classroomByNumber);
+        this.createBioquimica(biotecnologia,classroomByNumber);
+        // automatizacion
+        this.createAnalisisI(automatizacion,classroomByNumber);
+        this.createAlgebraLineal(automatizacion,classroomByNumber);
+        // educacion
+        this.createHistoriaArgentina(liceducacion,classroomByNumber);
+        this.createDidacticaYPedadogia(liceducacion,classroomByNumber);
+        this.createPsicologia(liceducacion,classroomByNumber);
+        // comercio
+        this.createMicroEconomia(comercio,classroomByNumber);
+        this.createMacroEconomia(comercio,classroomByNumber);
+        this.introALaEconomia(comercio,classroomByNumber);
         LOGGER.info("Inserting sample data");
 
         degreeRepository.save(tpi);
@@ -78,13 +99,136 @@ public class BootstrapRunner implements ApplicationRunner {
         LOGGER.info("Sample data created and loaded");
     }
 
+    private void introALaEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
+        Subject macro = this.createSubject(comercio, "Didáctica y pedagogía", "1999");
+        Commission commission = this.createCommission(macro, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("52"),
+                commission,
+                Day.MIERCOLES,
+                LocalTime.of(10,0),
+                LocalTime.of(15,0)
+        );
+    }
+
+    private void createMacroEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
+        Subject macro = this.createSubject(comercio, "Didáctica y pedagogía", "1010");
+        Commission commission = this.createCommission(macro, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("52"),
+                commission,
+                Day.LUNES,
+                LocalTime.of(11,0),
+                LocalTime.of(14,0)
+        );
+    }
+
+    private void createMicroEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
+        Subject micro = this.createSubject(comercio, "Didáctica y pedagogía", "1800");
+        Commission commission = this.createCommission(micro, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                commission,
+                Day.SABADO,
+                LocalTime.of(18,0),
+                LocalTime.of(20,0)
+        );
+    }
+
+    private void createPsicologia(Degree liceducacion, Map<String, Classroom> classroomByNumber) {
+        Subject psicologia = this.createSubject(liceducacion, "Didáctica y pedagogía", "1005");
+        Commission commission = this.createCommission(psicologia, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                commission,
+                Day.SABADO,
+                LocalTime.of(14,0),
+                LocalTime.of(17,0)
+        );
+    }
+
+    private void createDidacticaYPedadogia(Degree liceducacion, Map<String, Classroom> classroomByNumber) {
+        Subject didacticaYPedagogia = this.createSubject(liceducacion, "Didáctica y pedagogía", "1000");
+        Commission commission = this.createCommission(didacticaYPedagogia, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("52"),
+                commission,
+                Day.SABADO,
+                LocalTime.of(14,0),
+                LocalTime.of(17,0)
+        );
+    }
+
+
+    private void createHistoriaArgentina(Degree liceducacion, Map<String, Classroom> classroomByNumber) {
+        Subject historiaArgetina = this.createSubject(liceducacion, "Historia Argentina", "77");
+        Commission commission = this.createCommission(historiaArgetina, "Comision 1",2020,Semester.SEGUNDO);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                commission,
+                Day.JUEVES,
+                LocalTime.of(15,0),
+                LocalTime.of(17,0)
+        );
+    }
+
+    private void createBioquimica(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
+        Subject analisisI = this.createSubject(biotecnologia, "Bioquímica I", "405");
+        Commission commission = this.createCommission(analisisI, "Comision 1",2020,Semester.SEGUNDO);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                commission,
+                Day.VIERNES,
+                LocalTime.of(20,0),
+                LocalTime.of(22,0)
+        );
+    }
+
+    private void createMicrobioGeneral(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
+        Subject microBioGeneral = this.createSubject(biotecnologia, "Microbiología general", "404");
+        Commission commission = this.createCommission(microBioGeneral, "Comision 1",2020,Semester.SEGUNDO);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                commission,
+                Day.VIERNES,
+                LocalTime.of(20,0),
+                LocalTime.of(22,0)
+        );
+    }
+
+    private void createBiologiaGeneral(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
+        Subject biologiaGeneral = this.createSubject(biotecnologia, "Biología general", "1251");
+        Commission commission = this.createCommission(biologiaGeneral, "Comision 1",2020,Semester.SEGUNDO);
+        this.createSchedule(
+                classroomByNumber.get("CyT-1"),
+                commission,
+                Day.MARTES,
+                LocalTime.of(20,0),
+                LocalTime.of(22,0)
+        );
+    }
+
+    private void createAlgebraLineal(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
+
+        Subject algebraLineal = this.createSubject(automatizacion, "Algenbra Lineal", "999");
+        Commission commission = this.createCommission(algebraLineal, "Comision 1",2020,Semester.PRIMER);
+        this.createSchedule(
+                classroomByNumber.get("52"),
+                commission,
+                Day.JUEVES,
+                LocalTime.of(7,0),
+                LocalTime.of(9,0)
+        );
+    }
+
+
     private Subject createAnalisisI(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Análisis matemático I Sample data");
         Subject analisisI = this.createSubject(automatizacion, "Análisis matemático I", "105");
-        Commission quimicaOrganicaC1Miercoles = this.createCommission(analisisI, "Comision 1",2020,Semester.PRIMER);
+        Commission commission = this.createCommission(analisisI, "Comision 1",2020,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
-                quimicaOrganicaC1Miercoles,
+                commission,
                 Day.MARTES,
                 LocalTime.of(16,0),
                 LocalTime.of(18,0)
