@@ -16,6 +16,8 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -161,9 +163,13 @@ public class SubjectController {
     }
 
     @GetMapping("/all-subjects")
-    public ResponseEntity<List<SubjectDTO>> getAllSubjects() {
+    public ResponseEntity<List<SubjectDTO>> getAllSubjects(
+            @RequestParam(name="page") Integer page,
+            @RequestParam(name="elems", defaultValue = "10") Integer elems
+    ) {
+        Pageable pageable = PageRequest.of(page, elems);
         return this.makeResponseEntityWithGoodStatus(
-                this.subjectService.getAll()
+                this.subjectService.getPageSubject(pageable).toList()
         );
     }
 
