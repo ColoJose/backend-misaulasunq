@@ -67,7 +67,7 @@ public class SubjectRepositoryTest {
         );
 
         // Test (then)
-        assertEquals("Tiene que haber solo nueve materias entre esos horarios!", 9, subjectsRetrieved.size());
+        assertEquals("Tiene que haber solo nueve materias entre esos horarios!", 19, subjectsRetrieved.size());
         LocalTime startTime;
         LocalTime endTime;
         for (Subject each : subjectsRetrieved){
@@ -166,7 +166,7 @@ public class SubjectRepositoryTest {
         aCommission.addSchedule(aSchedule);
         Subject FPSubject = SubjectBuilder.buildASubject()
                                         .withName("Programacion Funcional")
-                                        .withSubjectCode("201")
+                                        .withSubjectCode("20111")
                                         .build();
         FPSubject.addDegree(aDegree);
         FPSubject.addCommission(aCommission);
@@ -178,7 +178,7 @@ public class SubjectRepositoryTest {
         aCommission1.addSchedule(aSchedule1);
         Subject OOP1ProgSubject = SubjectBuilder.buildASubject()
                                         .withName("Programacion Orientada A Objetos 1")
-                                        .withSubjectCode("1004")
+                                        .withSubjectCode("100411")
                                         .build();
         OOP1ProgSubject.addDegree(aDegree);
         OOP1ProgSubject.addCommission(aCommission1);
@@ -190,7 +190,7 @@ public class SubjectRepositoryTest {
         aCommission2.addSchedule(aSchedule2);
         Subject OOP2ProgSubject = SubjectBuilder.buildASubject()
                                             .withName("Programacion Orientada A Objetos 2")
-                                            .withSubjectCode("1005")
+                                            .withSubjectCode("100512")
                                             .build();
         OOP2ProgSubject.addDegree(aDegree);
         OOP2ProgSubject.addCommission(aCommission2);
