@@ -4,6 +4,7 @@ import com.misaulasunq.exceptions.InvalidCellFormat;
 import com.misaulasunq.exceptions.InvalidDay;
 import com.misaulasunq.exceptions.InvalidSemester;
 import com.misaulasunq.model.*;
+import com.misaulasunq.utils.fileProcessor.RowFileWrapper;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -14,10 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-// procesar archivo,
-// Mapear las carreras
-// mapear las materias
-// TODO: Hay que separarlo en mas clases. Ej RowProcessor, CellProcessor, ObjectImporterMaker
+// TODO: estaria bueno hacer un cell processor y un row processor para separar las responsabilidades
 public class XSLSFileProcessor {
 
     private final List<String> validFormats = List.of(".xslx", ".xsl", ".csv");
@@ -31,159 +29,99 @@ public class XSLSFileProcessor {
     private final Pair<String, Integer> DIA = new MutablePair<>("Dia", 0);
     private final Pair<String, Integer> AULA = new MutablePair<>("Aula", 0);
 
-    private Map<String, Degree> degreeByCode;
-    private Map<String, Subject> subjesctsByCode;
-    private Map<String, Commission> commisionsByNameAndSubjectCode;
-    private Map<String, Classroom> classroomByNumber;
+    private Set<String> degreeCodes;
+    private Set<String> classroomNumbers;
+    private Map<String, List<RowFileWrapper>> rowsWrapperBySubjectCode;
 
     public XSLSFileProcessor() {
         this.initialize();
     }
 
     private void initialize() {
-        this.degreeByCode = new HashMap<>();
-        this.subjesctsByCode = new HashMap<>();
-        this.commisionsByNameAndSubjectCode = new HashMap<>();
-        this.classroomByNumber = new HashMap<>();
+        this.degreeCodes = new HashSet<>();
+        this.classroomNumbers = new HashSet<>();
+        this.rowsWrapperBySubjectCode = new HashMap<>();
     }
 
     /**
      * Se asume que se recibe un sheet con los headers y al menos una celda para importar
      */
     public void processFile(Sheet worksheet) throws InvalidCellFormat {
-        //obtener las posiciones de los datos de la primera fila (Header)
-        // iterar sobre cada fila para obtener la data, procesarla y mapearla
-
         //itero sobre la primera fila paraquedarme con la posicion de cada dato a impotar
         Iterator<Row> rowIterator = worksheet.iterator();
         this.recordDataPositions(rowIterator);
 
         //procesamos todas las filas armando los objetos y mapeandolos
         Row rowToProcess;
+        List<RowFileWrapper> rowsMapped;
+        RowFileWrapper rowFileWrapper;
         while (rowIterator.hasNext()) {
             rowToProcess = rowIterator.next();
-            Degree aDegree = this.makeOrGetDegree(rowToProcess);
-            Subject aSubject = this.makeOrGetSubject(rowToProcess, aDegree);
-            Commission aCommission = this.makeOrGetComission(rowToProcess, aSubject);
-            Classroom aClassroom = this.makeOrGetClassroom(rowToProcess);
-            this.makeSchedule(rowToProcess, aCommission, aClassroom);
-        }
-    }
 
-    void makeSchedule(Row rowToProcess, Commission aCommission, Classroom aClassroom) throws InvalidCellFormat {
-        Schedule scheduleToImport = new Schedule();
-        scheduleToImport.setStartTime(
-                this.getCellValueAsLocalTime(
-                        rowToProcess.getCell(this.HORA_INICIO.getRight()),
-                        this.HORA_INICIO
-                ));
-        scheduleToImport.setEndTime(
-                this.getCellValueAsLocalTime(
-                        rowToProcess.getCell(this.HORA_FIN.getRight()),
-                        this.HORA_FIN
-                ));
-        scheduleToImport.setDay(
-                this.getCellValueAsDayEnum(
-                        rowToProcess.getCell(this.DIA.getRight()),
-                        this.DIA
-                )
-        );
-        scheduleToImport.setCommission(aCommission);
-        aCommission.addSchedule(scheduleToImport);
-        scheduleToImport.setClassroom(aClassroom);
-        aClassroom.addSchedule(scheduleToImport);
-    }
-
-    Classroom makeOrGetClassroom(Row rowToProcess) throws InvalidCellFormat {
-        Classroom classroomToImport;
-        String classroomNumber = this.getCellValueAsString(
-                rowToProcess.getCell(this.AULA.getRight()),
-                this.AULA
-        );
-        boolean hasClassroomMapped = this.classroomByNumber.containsKey(classroomNumber);
-
-        if (!hasClassroomMapped) {
-            classroomToImport = new Classroom();
-            classroomToImport.setNumber(classroomNumber);
-            this.classroomByNumber.put(classroomNumber, classroomToImport);
-        } else {
-            classroomToImport = this.classroomByNumber.get(classroomNumber);
-        }
-        return classroomToImport;
-    }
-
-    Commission makeOrGetComission(Row rowToProcess, Subject aSubject) throws InvalidCellFormat {
-        Commission commissionToImport;
-        String commissionName = this.getCellValueAsString(
-                rowToProcess.getCell(this.NOMBRE_COMISION.getRight()),
-                this.NOMBRE_COMISION
-        );
-        String mapKey = String.format("%s-%s", aSubject.getSubjectCode(), commissionName);
-
-        boolean hasCommissionMapped = this.commisionsByNameAndSubjectCode.containsKey(mapKey);
-
-        if (!hasCommissionMapped) {
-            commissionToImport = new Commission();
-            commissionToImport.setName(commissionName);
-            commissionToImport.setYear(LocalDate.now().getYear());
-            commissionToImport.setSemester(
-                    this.getCellValueAsSemesterEnum(
-                            rowToProcess.getCell(this.SEMESTRE.getRight()),
-                            this.SEMESTRE
-                    )
+            String subjectCode = this.getCellValueAsString(
+                    rowToProcess.getCell(this.CODIGO_MATERIA.getRight()),
+                    this.CODIGO_CARRERA
             );
-            commissionToImport.setSubject(aSubject);
-            aSubject.addCommission(commissionToImport);
-            this.commisionsByNameAndSubjectCode.put(mapKey, commissionToImport);
-        } else {
-            commissionToImport = this.commisionsByNameAndSubjectCode.get(mapKey);
-        }
 
-        return commissionToImport;
+            // Si ya hay una lista mapeada la traigo, sino la creo
+            if(this.rowsWrapperBySubjectCode.containsKey(subjectCode)){
+                rowsMapped = this.rowsWrapperBySubjectCode.get(subjectCode);
+            } else {
+                rowsMapped = new ArrayList<>();
+            }
+            rowFileWrapper = this.createRowWrapper(subjectCode,rowToProcess);
+            this.degreeCodes.add(rowFileWrapper.getDegreeCode());
+            this.classroomNumbers.add(rowFileWrapper.getClassroom());
+            rowsMapped.add(rowFileWrapper);
+            this.rowsWrapperBySubjectCode.put(subjectCode,rowsMapped);
+        }
     }
 
-    Subject makeOrGetSubject(Row rowToProcess, Degree aDegree) throws InvalidCellFormat {
-        Subject subjectToImport;
-        String subjectCode = this.getCellValueAsString(
-                rowToProcess.getCell(this.CODIGO_MATERIA.getRight()),
-                this.CODIGO_CARRERA
-        );
-        boolean hasSubjectMapped = this.subjesctsByCode.containsKey(subjectCode);
-
-        if (!hasSubjectMapped) {
-            subjectToImport = new Subject();
-            subjectToImport.setName(
-                    this.getCellValueAsString(
-                            rowToProcess.getCell(this.NOMBRE_MATERIA.getRight()),
-                            this.NOMBRE_MATERIA
-                    ));
-            subjectToImport.setSubjectCode(subjectCode);
-            subjectToImport.addDegree(aDegree);
-            aDegree.addSubject(subjectToImport);
-            this.subjesctsByCode.put(subjectCode, subjectToImport);
-        } else {
-            subjectToImport = this.subjesctsByCode.get(subjectCode);
-        }
-        return subjectToImport;
-    }
-
-    Degree makeOrGetDegree(Row rowToProcess) throws InvalidCellFormat {
-        Degree aDegree;
+    private RowFileWrapper createRowWrapper(String subjectCode, Row rowToProcess) throws InvalidCellFormat {
         String degreeCode = this.getCellValueAsString(
                 rowToProcess.getCell(this.CODIGO_CARRERA.getRight()),
                 this.CODIGO_CARRERA
         );
-        boolean hasDegreeMapped = this.degreeByCode.containsKey(degreeCode);
-
-        if (!hasDegreeMapped) {
-            aDegree = new Degree();
-            aDegree.setCode(degreeCode);
-            this.degreeByCode.put(degreeCode, aDegree);
-        } else {
-            aDegree = this.degreeByCode.get(degreeCode);
-        }
-
-        return aDegree;
+        String subjectName = this.getCellValueAsString(
+                rowToProcess.getCell(this.NOMBRE_MATERIA.getRight()),
+                this.NOMBRE_MATERIA
+        );
+        String commissionName = this.getCellValueAsString(
+                rowToProcess.getCell(this.NOMBRE_COMISION.getRight()),
+                this.NOMBRE_COMISION
+        );
+        Semester semester = this.getCellValueAsSemesterEnum(
+                rowToProcess.getCell(this.SEMESTRE.getRight()),
+                this.SEMESTRE
+        );
+        LocalTime startTime = this.getCellValueAsLocalTime(
+                rowToProcess.getCell(this.HORA_INICIO.getRight()),
+                this.HORA_INICIO
+        );
+        LocalTime endTime = this.getCellValueAsLocalTime(
+                rowToProcess.getCell(this.HORA_FIN.getRight()),
+                this.HORA_FIN
+        );
+        Day day = this.getCellValueAsDayEnum(
+                rowToProcess.getCell(this.DIA.getRight()),
+                this.DIA
+        );
+        String classroomNumber = this.getCellValueAsString(
+                rowToProcess.getCell(this.AULA.getRight()),
+                this.AULA
+        );
+        return new RowFileWrapper(
+                degreeCode,
+                subjectName,
+                subjectCode,
+                commissionName,
+                semester,
+                LocalDate.now().getYear(),
+                startTime,
+                endTime,
+                day,
+                classroomNumber
+        );
     }
 
     private Day getCellValueAsDayEnum(Cell cell, Pair<String, Integer> aPair) throws InvalidCellFormat {
@@ -347,11 +285,6 @@ public class XSLSFileProcessor {
         return fileNameWithExtension.toUpperCase().contains(formatToCompare.toUpperCase());
     }
 
-    public Map<String, Degree> getDegreeByCode() {  return this.degreeByCode;    }
-    public Map<String, Subject> getSubjesctsByCode() {  return this.subjesctsByCode; }
-    public Map<String, Commission> getCommisionsByNameAndSubjectCode() {    return this.commisionsByNameAndSubjectCode;  }
-    public Map<String, Classroom> getClassroomByNumber() {  return this.classroomByNumber;   }
-
     Pair<String, Integer> getCODIGO_CARRERA() {  return this.CODIGO_CARRERA; }
     Pair<String, Integer> getNOMBRE_MATERIA() { return this.NOMBRE_MATERIA;  }
     Pair<String, Integer> getCODIGO_MATERIA() {  return this.CODIGO_MATERIA;  }
@@ -362,15 +295,10 @@ public class XSLSFileProcessor {
     Pair<String, Integer> getDIA() {    return this.DIA; }
     Pair<String, Integer> getAULA() {    return this.AULA;    }
 
-    public List<String> getDegreeCodes() {
-        return new ArrayList<>(this.getDegreeByCode().keySet());
-    }
-
-    public List<String> getClassroomNumbers() {
-        return new ArrayList<>(this.getClassroomByNumber().keySet());
-    }
-
     public List<String> getSubjectsCodes() {
-        return new ArrayList<>(this.getSubjesctsByCode().keySet());
+        return new ArrayList<>(this.getRowsWrapperBySubjectCode().keySet());
     }
+    public Set<String> getDegreeCodes() {   return this.degreeCodes;    }
+    public Set<String> getClassroomNumbers() {  return this.classroomNumbers;   }
+    public Map<String, List<RowFileWrapper>> getRowsWrapperBySubjectCode() {    return rowsWrapperBySubjectCode;    }
 }

@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -94,7 +96,7 @@ public class ClassroomRepositoryTest {
         classroomRepository.saveAll(List.of(aClassroom,aClassroom1,aClassroom2,aClassroom3,aClassroom4));
 
         //Exercise(When)
-        List<Classroom> classroomRetrieved = classroomRepository.findAllByNumberInOrderByNumberAsc(List.of("55","76"));
+        List<Classroom> classroomRetrieved = classroomRepository.findAllByNumberInOrderByNumberAsc(Set.of("55","76"));
 
         //Test(Then)
         assertEquals(2, classroomRetrieved.size());

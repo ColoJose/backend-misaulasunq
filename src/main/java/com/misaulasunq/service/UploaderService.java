@@ -10,7 +10,6 @@ import com.misaulasunq.persistance.SubjectRepository;
 import com.misaulasunq.utils.XSLSFileProcessor;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +25,14 @@ public class UploaderService {
     private ClassroomRepository classroomRepository;
     @Autowired
     private SubjectRepository subjectRepository;
+    private XSLSFileProcessor xslsProcessor;
+
+    public UploaderService(){
+        this.xslsProcessor = new XSLSFileProcessor();
+    }
 
     public String processSubjectHoursFile(MultipartFile fileToProcess) throws IOException, InvalidCellFormat {
-        XSLSFileProcessor xslsProcessor = new XSLSFileProcessor();
+        xslsProcessor = new XSLSFileProcessor();
 
         Sheet worksheet = (
                 new XSSFWorkbook(fileToProcess.getInputStream())
@@ -37,20 +41,9 @@ public class UploaderService {
         if(xslsProcessor.isColumnsHeaderTheFirstRow(worksheet)) {
 
             xslsProcessor.processFile(worksheet);
-            List<Degree> degreesInDB =
-                degreeRepository.findAllByCodeInOrderByCodeAsc(
-                    xslsProcessor.getDegreeCodes()
-                );
-            List<Classroom> classroomsInDB =
-                classroomRepository.findAllByNumberInOrderByNumberAsc(
-                    xslsProcessor.getClassroomNumbers()
-                );
-            List<Subject> sunjectInDB =
-                subjectRepository.findAllBySubjectCodeInOrderBySubjectCodeAsc(
-                    xslsProcessor.getSubjectsCodes()
-            );
+            this.makeRelationships();
 
-            //se procesa los datos y se los mergean
+        //se procesa los datos y se los mergean
             return "Procesado";
         } else {
             return "No procesado";
@@ -65,6 +58,23 @@ public class UploaderService {
 //            }
 //        }
 //        return "Procesado";
+    }
+
+    private void makeRelationships() {
+        List<Degree> degreesInDB =
+                degreeRepository.findAllByCodeInOrderByCodeAsc(
+                        xslsProcessor.getDegreeCodes()
+                );
+        List<Classroom> classroomsInDB =
+                classroomRepository.findAllByNumberInOrderByNumberAsc(
+                        xslsProcessor.getClassroomNumbers()
+                );
+        List<Subject> sunjectInDB =
+                subjectRepository.findAllBySubjectCodeInOrderBySubjectCodeAsc(
+                        xslsProcessor.getSubjectsCodes()
+                );
+
+
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ClassroomRepository extends JpaRepository<Classroom,Integer> {
@@ -18,5 +19,5 @@ public interface ClassroomRepository extends JpaRepository<Classroom,Integer> {
             + "GROUP BY classroom.number")
     List<String> getAllClassroomsNumbers();
 
-    List<Classroom> findAllByNumberInOrderByNumberAsc(List<String> classroomNumbers);
+    List<Classroom> findAllByNumberInOrderByNumberAsc(Set<String> classroomNumbers);
 }

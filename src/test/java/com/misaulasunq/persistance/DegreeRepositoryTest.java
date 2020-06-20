@@ -10,6 +10,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +34,7 @@ public class DegreeRepositoryTest {
         degreeRepository.saveAll(List.of(aDegree,aDegree1,aDegree2,aDegree3,aDegree4));
 
         //Exercise(When)
-        List<Degree> degreesRetrieved = degreeRepository.findAllByCodeInOrderByCodeAsc(List.of("102","105"));
+        List<Degree> degreesRetrieved = degreeRepository.findAllByCodeInOrderByCodeAsc(Set.of("102","105"));
 
         //Test(Then)
         assertEquals(2, degreesRetrieved.size());

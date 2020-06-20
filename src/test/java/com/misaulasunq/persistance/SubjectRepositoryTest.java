@@ -305,49 +305,4 @@ public class SubjectRepositoryTest {
 
         subjectRepository.saveAll(List.of(desap,BBD,BDDII));
     }
-
-   /* @Test
-    public void whenRequestForSubjectsForTheCurrentDayTheseSubjectShouldBeBrought() {
-
-        Day currentDAy = DayConverter.getDay(LocalDate.now().getDayOfWeek());
-
-        // degree
-        Degree testDegree = DegreeBuilder.buildADegree().withMockData().build();
-
-        //Subjects
-        Subject concurrente = SubjectBuilder.buildASubject().withName("Programación concurrente")
-                .withSubjectCode("88")
-                .withDegrees(new ArrayList<>(List.of(testDegree)))
-                .build();
-
-        testDegree.addSubject(concurrente);
-
-        // classroom
-        Classroom aula60 = ClassroomBuilder.buildAClassroom().withName("60").build();
-
-        // schedule
-        Schedule concurrenteSchedule = ScheduleBuilder.buildASchedule().withMockData()
-                .withClassroom(aula60)
-                .withStartTime(LocalTime.of(1,30))
-                .withEndTime(LocalTime.of(4,30))
-                .withDay(currentDAy)
-                .build();
-
-        aula60.addSchedule(concurrenteSchedule);
-
-        // Commissions
-        Commission concurrenteC1 = CommissionBuilder.buildACommission().withMockData()
-                .withSchedules(new ArrayList<>(List.of(concurrenteSchedule)))
-                .withSubject(concurrente)
-                .build();
-
-        concurrente.addCommission(concurrenteC1);
-        concurrenteSchedule.setCommission(concurrenteC1);
-
-        // exrcise
-        subjectRepository.save(concurrente);
-        List<Subject> currentDaySubjects = this.subjectRepository.findCurrentDaySubjects(currentDAy);
-
-        assertNotEquals(0,currentDaySubjects.size());
-    }*/
 }
