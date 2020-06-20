@@ -100,7 +100,7 @@ public class BootstrapRunner implements ApplicationRunner {
     }
 
     private void introALaEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
-        Subject macro = this.createSubject(comercio, "Didáctica y pedagogía", "1999");
+        Subject macro = this.createSubject(comercio, "Introducción a la Economía", "1999");
         Commission commission = this.createCommission(macro, "Comision 1",2020,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
@@ -112,7 +112,7 @@ public class BootstrapRunner implements ApplicationRunner {
     }
 
     private void createMacroEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
-        Subject macro = this.createSubject(comercio, "Didáctica y pedagogía", "1010");
+        Subject macro = this.createSubject(comercio, "Macroeconomía", "1010");
         Commission commission = this.createCommission(macro, "Comision 1",2020,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
@@ -124,7 +124,7 @@ public class BootstrapRunner implements ApplicationRunner {
     }
 
     private void createMicroEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
-        Subject micro = this.createSubject(comercio, "Didáctica y pedagogía", "1800");
+        Subject micro = this.createSubject(comercio, "Microeconomía", "1800");
         Commission commission = this.createCommission(micro, "Comision 1",2020,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
@@ -136,7 +136,7 @@ public class BootstrapRunner implements ApplicationRunner {
     }
 
     private void createPsicologia(Degree liceducacion, Map<String, Classroom> classroomByNumber) {
-        Subject psicologia = this.createSubject(liceducacion, "Didáctica y pedagogía", "1005");
+        Subject psicologia = this.createSubject(liceducacion, "Psicología", "1005");
         Commission commission = this.createCommission(psicologia, "Comision 1",2020,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
@@ -210,8 +210,8 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createAlgebraLineal(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
 
-        Subject algebraLineal = this.createSubject(automatizacion, "Algenbra Lineal", "999");
-        Commission commission = this.createCommission(algebraLineal, "Comision 1",2020,Semester.PRIMER);
+        Subject algebraLineal = this.createSubject(automatizacion, "Álgebra Lineal", "999");
+        Commission commission = this.createCommission(algebraLineal, "Comisión 1",2020,Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
                 commission,
