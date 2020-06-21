@@ -1,5 +1,6 @@
 package com.misaulasunq;
 
+import com.misaulasunq.controller.api.UploaderController;
 import com.misaulasunq.service.ClassroomService;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
@@ -10,6 +11,10 @@ import org.springframework.context.annotation.*;
 @TestConfiguration // Esta annotation le dice a los test que es una clase de configuracion y no lo agrega al escaneo.
 public class TestConfig {
 
+    @Bean
+    public UploaderController UploaderController() {
+        return new UploaderController();
+    }
     @Bean
     public UploaderService UploaderService() {
         return new UploaderService();

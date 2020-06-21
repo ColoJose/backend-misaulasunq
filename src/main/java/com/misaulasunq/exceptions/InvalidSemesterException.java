@@ -1,8 +1,8 @@
 package com.misaulasunq.exceptions;
 
-public class InvalidSemester extends Exception {
+public class InvalidSemesterException extends Exception {
 
-    public InvalidSemester(String aString) {
+    public InvalidSemesterException(String aString) {
         super(
             String.format(
                 "No se puede convertir el semestre seleccionado. "

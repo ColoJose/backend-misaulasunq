@@ -1,11 +1,11 @@
 package com.misaulasunq.utils;
 
-import com.misaulasunq.exceptions.InvalidSemester;
+import com.misaulasunq.exceptions.InvalidSemesterException;
 import com.misaulasunq.model.Semester;
 
 public class SemesterConverter {
 
-    public static Semester stringToSemester(String aString) throws InvalidSemester {
+    public static Semester stringToSemester(String aString) throws InvalidSemesterException {
         Semester aSemester;
         switch (aString.toUpperCase()) {
             case "PRIMER":
@@ -18,7 +18,7 @@ public class SemesterConverter {
                 aSemester = Semester.ANUAL;
                 break;
             default:
-                throw new InvalidSemester(aString);
+                throw new InvalidSemesterException(aString);
         }
         return aSemester;
     }

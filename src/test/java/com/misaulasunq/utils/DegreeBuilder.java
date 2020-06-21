@@ -29,6 +29,11 @@ public class DegreeBuilder {
         return this;
     }
 
+    public DegreeBuilder withName(String name){
+        this.degree.setName(name);;
+        return  this;
+    }
+
     public Degree build(){
         return this.degree;
     }

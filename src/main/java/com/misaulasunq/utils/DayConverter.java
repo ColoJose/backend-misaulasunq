@@ -1,7 +1,6 @@
 package com.misaulasunq.utils;
 
-import com.misaulasunq.exceptions.InvalidDay;
-import com.misaulasunq.exceptions.InvalidSemester;
+import com.misaulasunq.exceptions.InvalidDayException;
 import com.misaulasunq.model.Day;
 
 import java.time.DayOfWeek;
@@ -30,7 +29,7 @@ public final class DayConverter {
         return day;
     }
 
-    public static Day stringToDay(String stringToConvert) throws InvalidDay {
+    public static Day stringToDay(String stringToConvert) throws InvalidDayException {
         Day day;
         switch (stringToConvert.toUpperCase()) {
             case "LUNES":
@@ -52,7 +51,7 @@ public final class DayConverter {
                 day = Day.SABADO;
                 break;
             default:
-                throw new InvalidDay(stringToConvert);
+                throw new InvalidDayException(stringToConvert);
         }
         return day;
     }

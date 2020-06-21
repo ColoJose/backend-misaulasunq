@@ -1,10 +1,12 @@
-package com.misaulasunq.utils;
+package com.misaulasunq.utils.fileProcessor;
 
-import com.misaulasunq.exceptions.InvalidCellFormat;
-import com.misaulasunq.exceptions.InvalidDay;
-import com.misaulasunq.exceptions.InvalidSemester;
+import com.misaulasunq.exceptions.InconsistentRowException;
+import com.misaulasunq.exceptions.InvalidCellFormatException;
+import com.misaulasunq.exceptions.InvalidDayException;
+import com.misaulasunq.exceptions.InvalidSemesterException;
 import com.misaulasunq.model.*;
-import com.misaulasunq.utils.fileProcessor.RowFileWrapper;
+import com.misaulasunq.utils.DayConverter;
+import com.misaulasunq.utils.SemesterConverter;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,9 +18,8 @@ import java.time.LocalTime;
 import java.util.*;
 
 // TODO: estaria bueno hacer un cell processor y un row processor para separar las responsabilidades
-public class XSLSFileProcessor {
+public class ExcelFileProcessor {
 
-    private final List<String> validFormats = List.of(".xslx", ".xsl", ".csv");
     private final Pair<String, Integer> CODIGO_CARRERA = new MutablePair<>("Código Carrera", 0);
     private final Pair<String, Integer> NOMBRE_MATERIA = new MutablePair<>("Nombre Materia", 0);
     private final Pair<String, Integer> CODIGO_MATERIA = new MutablePair<>("Código Materia", 0);
@@ -33,7 +34,7 @@ public class XSLSFileProcessor {
     private Set<String> classroomNumbers;
     private Map<String, List<RowFileWrapper>> rowsWrapperBySubjectCode;
 
-    public XSLSFileProcessor() {
+    public ExcelFileProcessor() {
         this.initialize();
     }
 
@@ -46,7 +47,7 @@ public class XSLSFileProcessor {
     /**
      * Se asume que se recibe un sheet con los headers y al menos una celda para importar
      */
-    public void processFile(Sheet worksheet) throws InvalidCellFormat {
+    public void processFile(Sheet worksheet) throws InvalidCellFormatException, InconsistentRowException {
         //itero sobre la primera fila paraquedarme con la posicion de cada dato a impotar
         Iterator<Row> rowIterator = worksheet.iterator();
         this.recordDataPositions(rowIterator);
@@ -57,57 +58,65 @@ public class XSLSFileProcessor {
         RowFileWrapper rowFileWrapper;
         while (rowIterator.hasNext()) {
             rowToProcess = rowIterator.next();
-
             String subjectCode = this.getCellValueAsString(
-                    rowToProcess.getCell(this.CODIGO_MATERIA.getRight()),
+                    this.getCellOfNumberOfRow(this.CODIGO_MATERIA.getRight(),rowToProcess),
                     this.CODIGO_CARRERA
             );
 
             // Si ya hay una lista mapeada la traigo, sino la creo
-            if(this.rowsWrapperBySubjectCode.containsKey(subjectCode)){
+            if (this.rowsWrapperBySubjectCode.containsKey(subjectCode)) {
                 rowsMapped = this.rowsWrapperBySubjectCode.get(subjectCode);
             } else {
                 rowsMapped = new ArrayList<>();
             }
-            rowFileWrapper = this.createRowWrapper(subjectCode,rowToProcess);
+            rowFileWrapper = this.createRowWrapper(subjectCode, rowToProcess);
             this.degreeCodes.add(rowFileWrapper.getDegreeCode());
             this.classroomNumbers.add(rowFileWrapper.getClassroom());
             rowsMapped.add(rowFileWrapper);
-            this.rowsWrapperBySubjectCode.put(subjectCode,rowsMapped);
+            this.rowsWrapperBySubjectCode.put(subjectCode, rowsMapped);
+
         }
     }
 
-    private RowFileWrapper createRowWrapper(String subjectCode, Row rowToProcess) throws InvalidCellFormat {
+    private Cell getCellOfNumberOfRow(Integer cellNumber, Row row) throws InconsistentRowException {
+        Cell cellToReturn = row.getCell(cellNumber);
+        if(cellToReturn == null){
+            throw new InconsistentRowException(row.getRowNum(),cellNumber.intValue());
+        }
+        return cellToReturn;
+    }
+
+    private RowFileWrapper createRowWrapper(String subjectCode, Row rowToProcess) throws InvalidCellFormatException, InconsistentRowException {
         String degreeCode = this.getCellValueAsString(
-                rowToProcess.getCell(this.CODIGO_CARRERA.getRight()),
+                this.getCellOfNumberOfRow(this.CODIGO_CARRERA.getRight(),rowToProcess),
                 this.CODIGO_CARRERA
         );
         String subjectName = this.getCellValueAsString(
-                rowToProcess.getCell(this.NOMBRE_MATERIA.getRight()),
+                this.getCellOfNumberOfRow(this.NOMBRE_MATERIA.getRight(),rowToProcess),
                 this.NOMBRE_MATERIA
         );
         String commissionName = this.getCellValueAsString(
-                rowToProcess.getCell(this.NOMBRE_COMISION.getRight()),
+                this.getCellOfNumberOfRow(this.NOMBRE_COMISION.getRight(),rowToProcess),
                 this.NOMBRE_COMISION
         );
         Semester semester = this.getCellValueAsSemesterEnum(
-                rowToProcess.getCell(this.SEMESTRE.getRight()),
+                this.getCellOfNumberOfRow(this.SEMESTRE.getRight(),rowToProcess),
                 this.SEMESTRE
         );
         LocalTime startTime = this.getCellValueAsLocalTime(
-                rowToProcess.getCell(this.HORA_INICIO.getRight()),
+                this.getCellOfNumberOfRow(this.HORA_INICIO.getRight(),rowToProcess),
                 this.HORA_INICIO
         );
         LocalTime endTime = this.getCellValueAsLocalTime(
-                rowToProcess.getCell(this.HORA_FIN.getRight()),
+                this.getCellOfNumberOfRow(this.HORA_FIN.getRight(),rowToProcess),
                 this.HORA_FIN
         );
         Day day = this.getCellValueAsDayEnum(
-                rowToProcess.getCell(this.DIA.getRight()),
+                this.getCellOfNumberOfRow(this.DIA.getRight(),rowToProcess),
                 this.DIA
         );
         String classroomNumber = this.getCellValueAsString(
-                rowToProcess.getCell(this.AULA.getRight()),
+                this.getCellOfNumberOfRow(this.AULA.getRight(),rowToProcess),
                 this.AULA
         );
         return new RowFileWrapper(
@@ -124,7 +133,7 @@ public class XSLSFileProcessor {
         );
     }
 
-    private Day getCellValueAsDayEnum(Cell cell, Pair<String, Integer> aPair) throws InvalidCellFormat {
+    Day getCellValueAsDayEnum(Cell cell, Pair<String, Integer> aPair) throws InvalidCellFormatException {
         Day dayToReturn = null;
 
         boolean hasErrorOrInvalidType = !cell.getCellType().equals(CellType.STRING);
@@ -133,12 +142,12 @@ public class XSLSFileProcessor {
             if (! hasErrorOrInvalidType) {
                 dayToReturn = DayConverter.stringToDay(cell.getStringCellValue());
             }
-        } catch (InvalidDay invalidFormat){
+        } catch (InvalidDayException invalidFormat){
             hasErrorOrInvalidType = true;
         }
 
         if(hasErrorOrInvalidType){
-            throw new InvalidCellFormat(
+            throw new InvalidCellFormatException(
                     cell.getCellType(),
                     cell.toString(),
                     "Texto entre \"Lunes\",\"Martes\",\"Miercoles\","
@@ -151,14 +160,14 @@ public class XSLSFileProcessor {
         return dayToReturn;
     }
 
-    private LocalTime getCellValueAsLocalTime(Cell cell, Pair<String, Integer> aPair) throws InvalidCellFormat {
+    LocalTime getCellValueAsLocalTime(Cell cell, Pair<String, Integer> aPair) throws InvalidCellFormatException {
         LocalTime timeToReturn;
         boolean hasErrorOrInvalidType = !cell.getCellType().equals(CellType.NUMERIC);
 
         if(! hasErrorOrInvalidType) {
             timeToReturn = cell.getLocalDateTimeCellValue().toLocalTime();
         } else {
-            throw new InvalidCellFormat(
+            throw new InvalidCellFormatException(
                         cell.getCellType(),
                         cell.toString(),
                         "Hora (Ej: 20:00)",
@@ -168,7 +177,7 @@ public class XSLSFileProcessor {
         return timeToReturn;
     }
 
-    private Semester getCellValueAsSemesterEnum(Cell cell, Pair<String, Integer> aPair) throws InvalidCellFormat {
+    Semester getCellValueAsSemesterEnum(Cell cell, Pair<String, Integer> aPair) throws InvalidCellFormatException {
         Semester semesterToReturn = null;
         boolean hasErrorOrInvalidType = !cell.getCellType().equals(CellType.STRING);
 
@@ -176,12 +185,12 @@ public class XSLSFileProcessor {
             if (! hasErrorOrInvalidType) {
                 semesterToReturn = SemesterConverter.stringToSemester(cell.getStringCellValue());
             }
-        } catch (InvalidSemester invalidFormat){
+        } catch (InvalidSemesterException invalidFormat){
             hasErrorOrInvalidType = true;
         }
 
         if(hasErrorOrInvalidType){
-            throw new InvalidCellFormat(
+            throw new InvalidCellFormatException(
                     cell.getCellType(),
                     cell.toString(),
                     "Texto entre Primer, Segundo o Anual",
@@ -193,7 +202,7 @@ public class XSLSFileProcessor {
         return semesterToReturn;
     }
 
-    private String getCellValueAsString(Cell cell,Pair<String, Integer> aPair) throws InvalidCellFormat {
+    String getCellValueAsString(Cell cell,Pair<String, Integer> aPair) throws InvalidCellFormatException {
         String valueToReturn;
         switch (cell.getCellType()){
             case NUMERIC:
@@ -203,7 +212,7 @@ public class XSLSFileProcessor {
                 valueToReturn = cell.getStringCellValue();
                 break;
             default:
-                throw new InvalidCellFormat(
+                throw new InvalidCellFormatException(
                     cell.getCellType(),
                     "Número o Texto",
                     cell.getRowIndex(),
@@ -270,33 +279,10 @@ public class XSLSFileProcessor {
         );
     }
 
-    public Boolean isValidFileExtension(String originalFilename) {
-        return this.validFormats
-                .stream()
-                .reduce(false,
-                        (Boolean partialResult, String validFormat) -> {
-                                return partialResult
-                                       || this.isValidFormat(originalFilename,validFormat);
-                        },
-                        Boolean::logicalOr);
-    }
-
-    private Boolean isValidFormat(String fileNameWithExtension, String formatToCompare){
-        return fileNameWithExtension.toUpperCase().contains(formatToCompare.toUpperCase());
-    }
-
-    Pair<String, Integer> getCODIGO_CARRERA() {  return this.CODIGO_CARRERA; }
-    Pair<String, Integer> getNOMBRE_MATERIA() { return this.NOMBRE_MATERIA;  }
-    Pair<String, Integer> getCODIGO_MATERIA() {  return this.CODIGO_MATERIA;  }
-    Pair<String, Integer> getNOMBRE_COMISION() { return this.NOMBRE_COMISION; }
-    Pair<String, Integer> getSEMESTRE() {    return this.SEMESTRE;    }
-    Pair<String, Integer> getHORA_INICIO() { return this.HORA_INICIO; }
-    Pair<String, Integer> getHORA_FIN() {   return this.HORA_FIN;    }
-    Pair<String, Integer> getDIA() {    return this.DIA; }
-    Pair<String, Integer> getAULA() {    return this.AULA;    }
-
     public List<String> getSubjectsCodes() {
-        return new ArrayList<>(this.getRowsWrapperBySubjectCode().keySet());
+        List<String> subjectCodes = new ArrayList<>();
+        subjectCodes.addAll(this.getRowsWrapperBySubjectCode().keySet());
+        return subjectCodes;
     }
     public Set<String> getDegreeCodes() {   return this.degreeCodes;    }
     public Set<String> getClassroomNumbers() {  return this.classroomNumbers;   }

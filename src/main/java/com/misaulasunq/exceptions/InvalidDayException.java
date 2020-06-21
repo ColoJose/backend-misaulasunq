@@ -1,8 +1,8 @@
 package com.misaulasunq.exceptions;
 
-public class InvalidDay extends Exception {
+public class InvalidDayException extends Exception {
 
-    public InvalidDay(String aString) {
+    public InvalidDayException(String aString) {
         super(
             String.format(
                 "No se puede convertir el Día. "

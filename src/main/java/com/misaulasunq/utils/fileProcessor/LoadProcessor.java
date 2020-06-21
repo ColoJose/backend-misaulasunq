@@ -1,16 +1,12 @@
 package com.misaulasunq.utils.fileProcessor;
 
-import com.misaulasunq.exceptions.ClassroomNotFound;
+import com.misaulasunq.exceptions.ClassroomNotFoundException;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.model.*;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-//TODO: Seria bueno tener un procesador de comisiones para ir mapeando las comisiones
 
 public class LoadProcessor {
 
@@ -19,6 +15,10 @@ public class LoadProcessor {
     private Map<String, Classroom> classroomInDbByNumber;
     private List<Subject> subjectsToUpsert;
     private Map<String, List<RowFileWrapper>> rowsToProcess;
+
+    public LoadProcessor() {
+        this.initialize();
+    }
 
     public LoadProcessor(
             Map<String, Degree> degreesMapInDb,
@@ -40,7 +40,7 @@ public class LoadProcessor {
         this.classroomInDbByNumber = new HashMap<>();
     }
 
-    public void makeRelationships() throws DegreeNotFoundException, ClassroomNotFound {
+    public void makeRelationships() throws DegreeNotFoundException, ClassroomNotFoundException {
         Subject subjectToImport;
         Map<String,Commission> commissionBySubjectCodeAndCommisionName = new HashMap<>();
 
@@ -57,7 +57,7 @@ public class LoadProcessor {
                         eachRow
                     );
                 commissionBySubjectCodeAndCommisionName.put(
-                        subjectToImport.getName()+"|"+currentComission.getName(),
+                        subjectToImport.getSubjectCode()+"|"+currentComission.getName(),
                         currentComission
                 );
                 this.createSchedule(currentComission, eachRow);
@@ -66,9 +66,9 @@ public class LoadProcessor {
         }
     }
 
-    private void createSchedule(Commission comission, RowFileWrapper row) throws ClassroomNotFound {
+    private void createSchedule(Commission comission, RowFileWrapper row) throws ClassroomNotFoundException {
         if(!this.classroomInDbByNumber.containsKey(row.getClassroom())){
-            throw new ClassroomNotFound(row.getClassroom());
+            throw new ClassroomNotFoundException(row.getClassroom());
         }
         Classroom classroom = this.classroomInDbByNumber.get(row.getClassroom());
         Schedule scheduleToAdd = new Schedule();
@@ -76,6 +76,7 @@ public class LoadProcessor {
         scheduleToAdd.setStartTime(row.getStartTime());
         scheduleToAdd.setEndTime(row.getEndTime());
         scheduleToAdd.setClassroom(classroom);
+        scheduleToAdd.setCommission(comission);
         classroom.addSchedule(scheduleToAdd);
         comission.addSchedule(scheduleToAdd);
     }
@@ -111,26 +112,30 @@ public class LoadProcessor {
         if(!this.degreesInDbByCode.containsKey(row.getDegreeCode())){
             throw new DegreeNotFoundException(row.getDegreeCode());
         }
-        subjectToImport.addDegree(this.degreesInDbByCode.get(row.getSubjectCode()));
+        Degree aDegree = this.degreesInDbByCode.get(row.getDegreeCode());
+        subjectToImport.addDegree(aDegree);
+        aDegree.addSubject(subjectToImport);
     }
 
     private Subject createSubject(RowFileWrapper eachRow) {
         Subject subject = new Subject();
         subject.setName(eachRow.getSubjectName());
-        subject.setSubjectCode(eachRow.getSubjectName());
+        subject.setSubjectCode(eachRow.getSubjectCode());
 
         return subject;
-    }
-
-    private Subject getSubjectMapped(RowFileWrapper row) {
-        return this.subjectsByCode.get(row.getSubjectCode());
     }
 
     private boolean subjectToImportItsInMap(RowFileWrapper row) {
         return this.subjectsByCode.containsKey(row.getSubjectCode());
     }
 
-    public Map<String, Degree> getDegreesInDbByCode() { return degreesInDbByCode;   }
-    public Map<String, Subject> getSubjectsByCode() {   return subjectsByCode;  }
-    public Map<String, Classroom> getClassroomInDbByNumber() {  return classroomInDbByNumber;   }
+    private Subject getSubjectMapped(RowFileWrapper row) {
+        return this.subjectsByCode.get(row.getSubjectCode());
+    }
+
+    public List<Subject> getSubjectsToUpsert() {    return subjectsToUpsert;    }
+    public void setDegreesInDbByCode(Map<String, Degree> degreesInDbByCode) {   this.degreesInDbByCode = degreesInDbByCode; }
+    public void setSubjectsByCode(Map<String, Subject> subjectsByCode) {    this.subjectsByCode = subjectsByCode;   }
+    public void setClassroomInDbByNumber(Map<String, Classroom> classroomInDbByNumber) {    this.classroomInDbByNumber = classroomInDbByNumber; }
+    public void setRowsToProcess(Map<String, List<RowFileWrapper>> rowsToProcess) { this.rowsToProcess = rowsToProcess; }
 }

@@ -40,6 +40,7 @@ public class ClassroomRepositoryTest {
     @Test
     public void ifHaveClassroomInTheDataBaseTheirNumbersAreRetrieved(){
         //Setup(Given)
+        classroomRepository.deleteAll();
         classroomRepository.saveAll(List.of(
                 ClassroomBuilder.buildAClassroom().withName("CyT-1").build(),
                 ClassroomBuilder.buildAClassroom().withName("52").build()

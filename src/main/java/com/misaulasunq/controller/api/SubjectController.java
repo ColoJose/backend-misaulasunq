@@ -5,7 +5,7 @@ import com.misaulasunq.controller.dto.DegreeDTO;
 import com.misaulasunq.controller.dto.GeneralInfo;
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
-import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
@@ -57,7 +57,7 @@ public class SubjectController {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
     public ResponseEntity<List<SubjectDTO>> getSubjectsDictatedOnTheDay(
             @ApiParam(required = true, value = "Es el Nombre Del Dia a Buscar (Ej: Lunes,Martes,Sabado, etc)", example = "Lunes")
-            @PathVariable String aDay) throws SubjectNotfoundException {
+            @PathVariable String aDay) throws SubjectNotFoundException {
         LOGGER.info("Got a GET request to retrieve subjects that are dictated in the day: {}",aDay);
 
         return this.makeResponseEntityWithGoodStatus(
@@ -82,7 +82,7 @@ public class SubjectController {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in the classroom {classroomNumber}.")})
     public ResponseEntity<List<SubjectDTO>> getSubjectsByClassroomNumber(
                         @ApiParam(required = true, value = "Es el numero del aula por la cual se va a buscar", example = "CyT-1")
-                        @PathVariable String classroomNumber ) throws SubjectNotfoundException {
+                        @PathVariable String classroomNumber ) throws SubjectNotFoundException {
         LOGGER.info("Got a GET request to retrieve subjects that are dictated in the classroom {}",classroomNumber);
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsInClassroom(classroomNumber)
@@ -94,7 +94,7 @@ public class SubjectController {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects with the Name {name}.")})
     public ResponseEntity<List<SubjectDTO>> getSubjectsByName(
                     @ApiParam(required = true, value = "Nombre de la materia a buscar",example = "Matematica I")
-                    @PathVariable String name ) throws SubjectNotfoundException {
+                    @PathVariable String name ) throws SubjectNotFoundException {
         LOGGER.info("Got a GET request to retrieve subjects with the name {}",name);
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsWithName(name)
@@ -108,7 +108,7 @@ public class SubjectController {
                     @ApiParam(required = true, value = "Hora de inicio de franja horaria de la busqueda.",example = "13:00")
                     @PathVariable String start,
                     @ApiParam(required = true, value = "Hora de fin de franja horaria de la busqueda.",example = "22:00")
-                    @PathVariable String end) throws SubjectNotfoundException {
+                    @PathVariable String end) throws SubjectNotFoundException {
         LOGGER.info("Got a GET request to retrieve subjects that are dictated between {} and {}",start,end);
         LocalTime startTime = LocalTime.parse(start, DateTimeFormatter.ISO_LOCAL_TIME);
         LocalTime endTime = LocalTime.parse(end, DateTimeFormatter.ISO_LOCAL_TIME);
@@ -122,7 +122,7 @@ public class SubjectController {
     @GetMapping("/currentDaySubjects")
     @ApiOperation(value = "Devuelve las materias que se dictan en el dia.")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
-    public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay() throws SubjectNotfoundException {
+    public ResponseEntity<List<SubjectDTO>> getSubjectsCurrentDay() throws SubjectNotFoundException {
         LOGGER.info("Got a GET request to retrieve subjects that are dictated in the current day");
         DayOfWeek currentDay =  LocalDate.now().getDayOfWeek();
         return this.makeResponseEntityWithGoodStatus(
@@ -165,7 +165,7 @@ public class SubjectController {
     @PutMapping(value = "/edit-general-info/{id}", consumes = "application/json")
     public ResponseEntity<SubjectDTO> editGeneralInfoSubject(@PathVariable Integer id,
                                                              @RequestBody GeneralInfo generalInfo)
-                                                             throws SubjectNotfoundException {
+                                                             throws SubjectNotFoundException {
         Subject retrievedSubject = this.subjectService.editGeneralInfo(id, generalInfo);
         SubjectDTO subjectDTO = new SubjectDTO(retrievedSubject);
 
@@ -173,7 +173,7 @@ public class SubjectController {
     }
 
     @GetMapping("/commissions/{id}")
-    public ResponseEntity<List<CommissionDTO>> getCommissionById(@PathVariable Integer id) throws SubjectNotfoundException {
+    public ResponseEntity<List<CommissionDTO>> getCommissionById(@PathVariable Integer id) throws SubjectNotFoundException {
         List<CommissionDTO> commissionsById = this.subjectService.getCommissionsById(id)
                                                                  .stream()
                                                                  .map(CommissionDTO::new)
@@ -185,7 +185,7 @@ public class SubjectController {
     @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json")
     public ResponseEntity<String> updateCommission(@PathVariable Integer id,
                                              @RequestBody List<CommissionDTO> commissions)
-                                             throws SubjectNotfoundException{
+                                             throws SubjectNotFoundException {
 
         Subject subjectById = this.subjectService.findSubjectById(id);
         this.subjectService.updateCommissions(subjectById, CommissionParser.parseCommissions(commissions, subjectById));

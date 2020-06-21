@@ -1,8 +1,7 @@
 package com.misaulasunq.service;
 
-import com.misaulasunq.controller.dto.CommissionDTO;
 import com.misaulasunq.controller.dto.GeneralInfo;
-import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.Commission;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
@@ -23,28 +22,28 @@ public class SubjectService {
         return this.subjectRepository.getAllSubjectsNames();
     }
 
-    public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) throws SubjectNotfoundException {
+    public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) throws SubjectNotFoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectsBetweenHours(startTime, endTime),
-                SubjectNotfoundException.SubjectNotFoundBetween(startTime,endTime)
+                SubjectNotFoundException.SubjectNotFoundBetween(startTime,endTime)
             );
     }
 
-    public List<Subject> retreiveSubjectsWithName(String name) throws SubjectNotfoundException {
+    public List<Subject> retreiveSubjectsWithName(String name) throws SubjectNotFoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectByName(name),
-                SubjectNotfoundException.SubjectNotFoundByName(name)
+                SubjectNotFoundException.SubjectNotFoundByName(name)
             );
     }
 
-    public List<Subject> retreiveSubjectsInClassroom(String classroomnumber) throws SubjectNotfoundException {
+    public List<Subject> retreiveSubjectsInClassroom(String classroomnumber) throws SubjectNotFoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectThatAreInClassroom(classroomnumber),
-                SubjectNotfoundException.SubjectNotFoundByNumber(classroomnumber)
+                SubjectNotFoundException.SubjectNotFoundByNumber(classroomnumber)
             );
     }
 
-    private List<Subject> returnSubjectsOrExceptionIfEmpty(List<Subject> subjects, SubjectNotfoundException exception) throws SubjectNotfoundException {
+    private List<Subject> returnSubjectsOrExceptionIfEmpty(List<Subject> subjects, SubjectNotFoundException exception) throws SubjectNotFoundException {
         if (subjects.isEmpty()){
             throw exception;
         }
@@ -55,8 +54,8 @@ public class SubjectService {
         subjectRepository.save(subject);
     }
 
-    public Subject findSubjectById(Integer id) throws SubjectNotfoundException {
-        return subjectRepository.findById(id).orElseThrow(() -> new SubjectNotfoundException(id));
+    public Subject findSubjectById(Integer id) throws SubjectNotFoundException {
+        return subjectRepository.findById(id).orElseThrow(() -> new SubjectNotFoundException(id));
     }
 
     public List<Subject> getAll() {
@@ -65,14 +64,14 @@ public class SubjectService {
 
     public void deleteAll() { subjectRepository.deleteAll(); }
 
-    public List<Subject> retreiveSubjectsDictatedOnDay(Day currentDay) throws SubjectNotfoundException {
+    public List<Subject> retreiveSubjectsDictatedOnDay(Day currentDay) throws SubjectNotFoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.getAllSubjectsDictatedInTheDay(currentDay),
-                SubjectNotfoundException.SubjectNotFoundCurrentDay()
+                SubjectNotFoundException.SubjectNotFoundCurrentDay()
         );
     }
 
-    public Subject editGeneralInfo(Integer id, GeneralInfo generalInfo) throws SubjectNotfoundException {
+    public Subject editGeneralInfo(Integer id, GeneralInfo generalInfo) throws SubjectNotFoundException {
         Subject retrievedSubjectById = this.findSubjectById(id);
         retrievedSubjectById.setName(generalInfo.getName());
         retrievedSubjectById.setSubjectCode(generalInfo.getSubjectCode());
@@ -82,11 +81,11 @@ public class SubjectService {
         return retrievedSubjectById;
     }
 
-    public List<Commission> getCommissionsById(Integer id) throws SubjectNotfoundException {
+    public List<Commission> getCommissionsById(Integer id) throws SubjectNotFoundException {
         return this.findSubjectById(id).getCommissions();
     }
 
-    public void updateCommissions(Subject subject, List<Commission> commissions) throws SubjectNotfoundException{
+    public void updateCommissions(Subject subject, List<Commission> commissions) throws SubjectNotFoundException {
         subject.setCommissions(commissions);
         this.saveSubject(subject);
     }
