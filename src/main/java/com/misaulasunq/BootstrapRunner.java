@@ -31,7 +31,6 @@ public class BootstrapRunner implements ApplicationRunner {
         LOGGER.info("BootstrapRunner End");
     }
 
-    
     private void loadSampleData() {
         LOGGER.info("Creating and loading sample data");
         //Creacion de Carrera
