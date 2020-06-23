@@ -1,6 +1,6 @@
 package com.misaulasunq.service;
 
-import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.persistance.SubjectRepository;
@@ -50,7 +50,7 @@ public class SubjectServiceTestBis {
     }
 
     @Test
-    public void whenAskServiceForSubjectOfTheCurrentDayItShoueldRetrieveIt() throws SubjectNotfoundException {
+    public void whenAskServiceForSubjectOfTheCurrentDayItShouldRetrieveIt() throws SubjectNotFoundException {
 
         // exercise
         List<Subject> currentDaySubject = subjectService.retreiveSubjectsDictatedOnDay(DayConverter.getDay(LocalDate.now().getDayOfWeek()));

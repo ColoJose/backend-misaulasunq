@@ -76,6 +76,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.10</version>
+		</dependency>
+
 		<!-- Swagger 2 -->
 		<!-- http://localhost:8090/v2/api-docs url de conexion-->
 		<!-- http://localhost:8090/swagger-ui.html url de conexion ui -->
@@ -100,7 +107,22 @@
 			<version>2.9.2</version>
 		</dependency>
 		<!-- /Swagger 2 -->
-    </dependencies>
+
+<!-- APACHE POI DEPENDENCIES TO READ XSL & XSLX-->
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -116,6 +138,14 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<reuseForks>false</reuseForks>
+					<forkCount>1</forkCount>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

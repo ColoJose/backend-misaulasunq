@@ -4,21 +4,22 @@ import com.misaulasunq.model.*;
 import com.misaulasunq.utils.*;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalTime;
 import java.util.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 @Rollback
-@Transactional //Para que no commitee a la base!
+@DataJpaTest
+@Transactional
+@RunWith(SpringRunner.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SubjectRepositoryTest {
 
     @Autowired
@@ -46,10 +47,11 @@ public class SubjectRepositoryTest {
         //Test(Then)
         assertFalse("Tiene que traer algunos nombres de materias!",
                 subjectsName.isEmpty());
+        assertEquals(3,subjectsName.size());
         assertTrue("Tiene que contener el nombre de la materia",
-                subjectsName.contains("Matematica I"));
+                subjectsName.contains("Desarrollo de Aplicaciones"));
         assertTrue("Tiene que contener el nombre de la materia",
-                subjectsName.contains("TIP"));
+                subjectsName.contains("Base De Datos"));
         assertFalse("No tiene que contener un numero de aula",
                 subjectsName.contains("CyT-1"));
     }
@@ -67,17 +69,13 @@ public class SubjectRepositoryTest {
         );
 
         // Test (then)
-        assertEquals("Tiene que haber solo nueve materias entre esos horarios!", 19, subjectsRetrieved.size());
-        LocalTime startTime;
-        LocalTime endTime;
-        for (Subject each : subjectsRetrieved){
-            startTime = each.getCommissions().get(0).getSchedules().get(0).getStartTime();
-            endTime = each.getCommissions().get(0).getSchedules().get(0).getEndTime();
-            assertTrue("No esta entre los horarios de la Query!",
-                    (startTime.isAfter(startTimeToSearch) && startTime.isBefore(endTimeToSearch))
-                            || (endTime.isAfter(startTimeToSearch) && endTime.isBefore(endTimeToSearch))
-            );
-        }
+        assertEquals("Tiene que haber solo una materia entre esos horarios!",1, subjectsRetrieved.size());
+        LocalTime startTime = subjectsRetrieved.get(0).getCommissions().get(0).getSchedules().get(0).getStartTime();
+        LocalTime endTime = subjectsRetrieved.get(0).getCommissions().get(0).getSchedules().get(0).getEndTime();
+        assertTrue("No esta entre los horarios de la Query!",
+                (startTime.isAfter(startTimeToSearch) && startTime.isBefore(endTimeToSearch))
+                        || (endTime.isAfter(startTimeToSearch) && endTime.isBefore(endTimeToSearch))
+        );
     }
 
     @Test
@@ -93,7 +91,7 @@ public class SubjectRepositoryTest {
                                                         );
 
         // Test (then)
-        assertEquals("Tiene que haber solo dos materias entre esos horarios!", 2, subjectsRetrieved.size());
+        assertEquals("Tiene que haber solo dos materias entre esos horarios!",2, subjectsRetrieved.size());
         LocalTime startTime;
         LocalTime endTime;
         for (Subject each : subjectsRetrieved){
@@ -114,7 +112,7 @@ public class SubjectRepositoryTest {
         List<Subject> subjectsRetrieved = subjectRepository.findSubjectByName("Base De Datos");
 
         // Test (then)
-        assertEquals("Solo existe una materia con el nombre exacto", 1, subjectsRetrieved.size());
+        assertEquals("Solo existe una materia con el nombre exacto",1, subjectsRetrieved.size());
         assertEquals("Tiene que tener la materia Base De Datos. La query esta mal o el nombre del dato de prueba erroneo",
                 "Base De Datos",
                 subjectsRetrieved.get(0).getName());
@@ -166,7 +164,7 @@ public class SubjectRepositoryTest {
         aCommission.addSchedule(aSchedule);
         Subject FPSubject = SubjectBuilder.buildASubject()
                                         .withName("Programacion Funcional")
-                                        .withSubjectCode("20111")
+                                        .withSubjectCode("201")
                                         .build();
         FPSubject.addDegree(aDegree);
         FPSubject.addCommission(aCommission);
@@ -178,7 +176,7 @@ public class SubjectRepositoryTest {
         aCommission1.addSchedule(aSchedule1);
         Subject OOP1ProgSubject = SubjectBuilder.buildASubject()
                                         .withName("Programacion Orientada A Objetos 1")
-                                        .withSubjectCode("100411")
+                                        .withSubjectCode("1004")
                                         .build();
         OOP1ProgSubject.addDegree(aDegree);
         OOP1ProgSubject.addCommission(aCommission1);
@@ -190,7 +188,7 @@ public class SubjectRepositoryTest {
         aCommission2.addSchedule(aSchedule2);
         Subject OOP2ProgSubject = SubjectBuilder.buildASubject()
                                             .withName("Programacion Orientada A Objetos 2")
-                                            .withSubjectCode("100512")
+                                            .withSubjectCode("1005")
                                             .build();
         OOP2ProgSubject.addDegree(aDegree);
         OOP2ProgSubject.addCommission(aCommission2);
@@ -224,6 +222,17 @@ public class SubjectRepositoryTest {
                     subjectsRetrieved.get(i).getSubjectCode()
             );
         }
+    }
+
+    @Test
+    public void ifFindBySubjectCodeOfTwoSubjects_OnlyTheseAreRetrieved() {
+        //Exercise(When)
+        List<Subject> subjectRetrieved = subjectRepository.findAllBySubjectCodeInOrderBySubjectCodeAsc(List.of("33","333"));
+
+        //Test(Then)
+        assertEquals(2, subjectRetrieved.size());
+        assertEquals("33", subjectRetrieved.get(0).getSubjectCode());
+        assertEquals("333", subjectRetrieved.get(1).getSubjectCode());
     }
 
     @Before
@@ -296,49 +305,4 @@ public class SubjectRepositoryTest {
 
         subjectRepository.saveAll(List.of(desap,BBD,BDDII));
     }
-
-   /* @Test
-    public void whenRequestForSubjectsForTheCurrentDayTheseSubjectShouldBeBrought() {
-
-        Day currentDAy = DayConverter.getDay(LocalDate.now().getDayOfWeek());
-
-        // degree
-        Degree testDegree = DegreeBuilder.buildADegree().withMockData().build();
-
-        //Subjects
-        Subject concurrente = SubjectBuilder.buildASubject().withName("Programación concurrente")
-                .withSubjectCode("88")
-                .withDegrees(new ArrayList<>(List.of(testDegree)))
-                .build();
-
-        testDegree.addSubject(concurrente);
-
-        // classroom
-        Classroom aula60 = ClassroomBuilder.buildAClassroom().withName("60").build();
-
-        // schedule
-        Schedule concurrenteSchedule = ScheduleBuilder.buildASchedule().withMockData()
-                .withClassroom(aula60)
-                .withStartTime(LocalTime.of(1,30))
-                .withEndTime(LocalTime.of(4,30))
-                .withDay(currentDAy)
-                .build();
-
-        aula60.addSchedule(concurrenteSchedule);
-
-        // Commissions
-        Commission concurrenteC1 = CommissionBuilder.buildACommission().withMockData()
-                .withSchedules(new ArrayList<>(List.of(concurrenteSchedule)))
-                .withSubject(concurrente)
-                .build();
-
-        concurrente.addCommission(concurrenteC1);
-        concurrenteSchedule.setCommission(concurrenteC1);
-
-        // exrcise
-        subjectRepository.save(concurrente);
-        List<Subject> currentDaySubjects = this.subjectRepository.findCurrentDaySubjects(currentDAy);
-
-        assertNotEquals(0,currentDaySubjects.size());
-    }*/
 }

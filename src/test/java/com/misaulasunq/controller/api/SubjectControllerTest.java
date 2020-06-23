@@ -1,18 +1,22 @@
 package com.misaulasunq.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.misaulasunq.TestConfig;
 import com.misaulasunq.controller.dto.SubjectDTO;
-import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.SubjectRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -54,7 +58,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifTryToGetSubjectsByDayAndHaveOneGetAGoodResponse() throws SubjectNotfoundException {
+    public void ifTryToGetSubjectsByDayAndHaveOneGetAGoodResponse() throws SubjectNotFoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -77,7 +81,7 @@ public class SubjectControllerTest {
         //Exercise(When)
         try {
             subjectController.getSubjectsDictatedOnTheDay("Domingo");
-        } catch (SubjectNotfoundException subjectNotfoundException){
+        } catch (SubjectNotFoundException subjectNotfoundException){
             exceptionMessage = subjectNotfoundException.getMessage();
         }
         //Test(Then)
@@ -126,7 +130,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectASubjectBetweenHoursGetAGoodResponse() throws SubjectNotfoundException {
+    public void ifGetSubjectASubjectBetweenHoursGetAGoodResponse() throws SubjectNotFoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -149,7 +153,7 @@ public class SubjectControllerTest {
         //Exercise(When)
         try {
             subjectController.getSubjectsBetweenHours("00:00","01:00");
-        } catch (SubjectNotfoundException subjectNotfoundException){
+        } catch (SubjectNotFoundException subjectNotfoundException){
             exceptionMessage = subjectNotfoundException.getMessage();
         }
         //Test(Then)
@@ -157,7 +161,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectByName_getAGoodResponse() throws SubjectNotfoundException {
+    public void ifGetSubjectByName_getAGoodResponse() throws SubjectNotFoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -196,7 +200,7 @@ public class SubjectControllerTest {
         //Exercise(When)
         try {
             subjectController.getSubjectsByName("Unreachable Name");
-        } catch (SubjectNotfoundException subjectNotfoundException){
+        } catch (SubjectNotFoundException subjectNotfoundException){
             exceptionMessage = subjectNotfoundException.getMessage();
         }
         //Test(Then)
@@ -204,7 +208,7 @@ public class SubjectControllerTest {
     }
 
     @Test
-    public void ifGetSubjectGetAGoodResponse() throws SubjectNotfoundException {
+    public void ifGetSubjectGetAGoodResponse() throws SubjectNotFoundException {
         //Setup(Given)
         ResponseEntity<List<SubjectDTO>> response;
 
@@ -228,7 +232,7 @@ public class SubjectControllerTest {
         //Exercise(When)
         try {
             subjectController.getSubjectsByClassroomNumber("999");
-        } catch (SubjectNotfoundException subjectNotfoundException){
+        } catch (SubjectNotFoundException subjectNotfoundException){
             exceptionMessage = subjectNotfoundException.getMessage();
         }
         //Test(Then)
