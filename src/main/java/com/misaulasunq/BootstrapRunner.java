@@ -47,9 +47,11 @@ public class BootstrapRunner implements ApplicationRunner {
         automatizacion.setName("Ingeniería en automatización");
 
         Degree liceducacion = new Degree();
+        liceducacion.setCode("105");
         liceducacion.setName("Licenciatura en educacion");
 
         Degree comercio = new Degree();
+        comercio.setCode("106");
         comercio.setName("Licenciatura en Comercio Internacional");
 
         // Creacion de aulas
