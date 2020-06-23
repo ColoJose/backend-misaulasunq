@@ -7,6 +7,7 @@ import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
 import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.*;
+import com.misaulasunq.service.ClassroomService;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import com.misaulasunq.utils.CommissionParser;
@@ -15,6 +16,10 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +30,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 @Transactional
 @RestController(value = "SubjectAPI")
@@ -48,9 +56,11 @@ public class SubjectController {
     @Autowired
     private SubjectService subjectService;
 
-
     @Autowired
     private DegreeService degreeService;
+
+    @Autowired
+    private ClassroomService classroomService;
 
     @GetMapping("/byDay/{aDay}")
     @ApiOperation(value = "Devuelve las materias que son dictadas en el dia {aDay}")
@@ -134,8 +144,12 @@ public class SubjectController {
     public ResponseEntity createNewSubject( @RequestBody SubjectToParse subjectToParse) throws DegreeNotFoundException {
 
         Degree degreeReceived = this.degreeService.findDegreeById(subjectToParse.getDegreeId());
+        List<Classroom> classroomsNewSubject = this.classroomService
+                                                   .findClassroomsByNumber(
+                                                        subjectToParse.getClassroomNumbers()
+                                                   );
 
-        Subject subject = subjectToParse.parse(degreeReceived);
+        Subject subject = subjectToParse.parse(degreeReceived, classroomsNewSubject);
 
         this.subjectService.saveSubject(subject);
         return new ResponseEntity<>("Materia creada correctamente",HttpStatus.OK);
@@ -154,13 +168,16 @@ public class SubjectController {
     }
 
     @GetMapping("/all-subjects")
-    public ResponseEntity<List<SubjectDTO>> getAllSubjects() {
-        return this.makeResponseEntityWithGoodStatus(
-                this.subjectService.getAll()
-        );
+    public ResponseEntity<Page<SubjectDTO>> getAllSubjects(
+            @RequestParam(name="page") Integer page,
+            @RequestParam(name="elems") Integer elems
+    ) {
+        Pageable pageable = PageRequest.of(page, elems);
+        List<SubjectDTO> subjectPage =  this.subjectService.getPageSubject(pageable).stream()
+                                                                                   .map(SubjectDTO::new)
+                                                                                   .collect(Collectors.toList());
+        return new ResponseEntity<Page<SubjectDTO>>(new PageImpl<>(subjectPage),HttpStatus.OK);
     }
-
-
 
     @PutMapping(value = "/edit-general-info/{id}", consumes = "application/json")
     public ResponseEntity<SubjectDTO> editGeneralInfoSubject(@PathVariable Integer id,

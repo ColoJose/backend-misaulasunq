@@ -7,6 +7,8 @@ import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.persistance.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -58,8 +60,8 @@ public class SubjectService {
         return subjectRepository.findById(id).orElseThrow(() -> new SubjectNotFoundException(id));
     }
 
-    public List<Subject> getAll() {
-        return subjectRepository.findAll();
+    public Page<Subject> getPageSubject(Pageable pageable) {
+        return subjectRepository.findAllByOrderByNameAsc(pageable);
     }
 
     public void deleteAll() { subjectRepository.deleteAll(); }

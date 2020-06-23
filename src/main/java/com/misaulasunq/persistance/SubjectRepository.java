@@ -2,6 +2,8 @@ package com.misaulasunq.persistance;
 
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -46,6 +48,8 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
          + "FROM subject subject "
          + "GROUP BY subject.name")
     List<String> getAllSubjectsNames();
+
+    Page<Subject> findAllByOrderByNameAsc(Pageable pageable);
 
     List<Subject> findAllBySubjectCodeInOrderBySubjectCodeAsc(List<String> subjectCodes);
 }
