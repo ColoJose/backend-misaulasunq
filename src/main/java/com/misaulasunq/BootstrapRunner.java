@@ -31,23 +31,27 @@ public class BootstrapRunner implements ApplicationRunner {
         LOGGER.info("BootstrapRunner End");
     }
 
-    
     private void loadSampleData() {
         LOGGER.info("Creating and loading sample data");
         //Creacion de Carreras
         Degree tpi = new Degree();
+        tpi.setCode("102");
         tpi.setName("Tecnicatura Universitaria en Programacion Informatica");
 
         Degree biotecnologia = new Degree();
+        biotecnologia.setCode("103");
         biotecnologia.setName("Lic. en Biotecnología");
 
         Degree automatizacion = new Degree();
+        automatizacion.setCode("104");
         automatizacion.setName("Ingeniería en automatización");
 
         Degree liceducacion = new Degree();
+        liceducacion.setCode("105");
         liceducacion.setName("Licenciatura en educacion");
 
         Degree comercio = new Degree();
+        comercio.setCode("106");
         comercio.setName("Licenciatura en Comercio Internacional");
 
         // Creacion de aulas

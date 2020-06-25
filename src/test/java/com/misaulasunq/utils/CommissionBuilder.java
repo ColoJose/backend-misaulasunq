@@ -34,6 +34,21 @@ public class CommissionBuilder {
         return this;
     }
 
+    public CommissionBuilder withName(String name) {
+        this.commission.setName(name);
+        return this;
+    }
+
+    public CommissionBuilder withSemester(Semester semester) {
+        this.commission.setSemester(semester);
+        return this;
+    }
+
+    public CommissionBuilder withYear(Integer year) {
+        this.commission.setYear(year);
+        return this;
+    }
+
     public Commission build(){
         return this.commission;
     }

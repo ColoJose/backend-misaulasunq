@@ -50,4 +50,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
     List<String> getAllSubjectsNames();
 
     Page<Subject> findAllByOrderByNameAsc(Pageable pageable);
+
+    List<Subject> findAllBySubjectCodeInOrderBySubjectCodeAsc(List<String> subjectCodes);
 }

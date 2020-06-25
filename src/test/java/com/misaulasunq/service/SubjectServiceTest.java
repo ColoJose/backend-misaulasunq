@@ -1,6 +1,6 @@
 package com.misaulasunq.service;
 
-import com.misaulasunq.exceptions.SubjectNotfoundException;
+import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.*;
 import com.misaulasunq.utils.*;
@@ -40,7 +40,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToGetASubjectBetweenAnHoursAndThereIsOne_ItsRetrieved() throws SubjectNotfoundException {
+    public void ifTryToGetASubjectBetweenAnHoursAndThereIsOne_ItsRetrieved() throws SubjectNotFoundException {
         //Setup(Given)
         LocalTime start = LocalTime.of(2,0);
         LocalTime end = LocalTime.of(5,0);
@@ -72,7 +72,7 @@ public class SubjectServiceTest {
                                                 LocalTime.of(0,0),
                                                 LocalTime.of(0,30)
                                             );
-        } catch (SubjectNotfoundException subjectNotfoundException){
+        } catch (SubjectNotFoundException subjectNotfoundException){
             exceptionMessage = subjectNotfoundException.getMessage();
         }
 
@@ -84,7 +84,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifTryToGetASubjectWithANameAndThereIsOneItsRetrieved() throws SubjectNotfoundException {
+    public void ifTryToGetASubjectWithANameAndThereIsOneItsRetrieved() throws SubjectNotFoundException {
         //Setup(Given)
 
         //exercise
@@ -105,7 +105,7 @@ public class SubjectServiceTest {
         //Exercise(When)
         try {
             subjectService.retreiveSubjectsWithName("Redes");
-        } catch (SubjectNotfoundException subjectNotfoundException){
+        } catch (SubjectNotFoundException subjectNotfoundException){
             exceptionMessage = subjectNotfoundException.getMessage();
         }
 
@@ -117,7 +117,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifHaveSubjectInClassroomFiveIfSearchWithClassroomNumberWeGetOne() throws SubjectNotfoundException {
+    public void ifHaveSubjectInClassroomFiveIfSearchWithClassroomNumberWeGetOne() throws SubjectNotFoundException {
         //Setup(Given)
 
         //exercise
@@ -151,7 +151,7 @@ public class SubjectServiceTest {
         //Exercise(When)
         try {
             subjectService.retreiveSubjectsInClassroom("666");
-        } catch (SubjectNotfoundException subjectNotfoundException){
+        } catch (SubjectNotFoundException subjectNotfoundException){
             exceptionMessage = subjectNotfoundException.getMessage();
         }
 
