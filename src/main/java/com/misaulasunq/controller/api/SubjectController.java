@@ -12,6 +12,7 @@ import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import com.misaulasunq.utils.CommissionParser;
 import com.misaulasunq.utils.DayConverter;
+import com.misaulasunq.utils.PagesInfo;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ import static java.util.stream.Collectors.toMap;
 @Transactional
 @RestController(value = "SubjectAPI")
 @CrossOrigin(//Se puede configurar para que sea a travez de una clase
-        origins = "http://localhost:3000",
+        origins = "*",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT},
         maxAge = 60
 )
@@ -168,7 +169,7 @@ public class SubjectController {
     }
 
     @GetMapping("/all-subjects")
-    public ResponseEntity<Page<SubjectDTO>> getAllSubjects(
+    public ResponseEntity<PagesInfo> getAllSubjects(
             @RequestParam(name="page") Integer page,
             @RequestParam(name="elems") Integer elems
     ) {
@@ -176,7 +177,13 @@ public class SubjectController {
         List<SubjectDTO> subjectPage =  this.subjectService.getPageSubject(pageable).stream()
                                                                                    .map(SubjectDTO::new)
                                                                                    .collect(Collectors.toList());
-        return new ResponseEntity<Page<SubjectDTO>>(new PageImpl<>(subjectPage),HttpStatus.OK);
+
+        Pageable pagebleNext = PageRequest.of(page + 1, elems);
+        Page<Subject> next = this.subjectService.getPageSubject(pagebleNext);
+        Integer nextContentSize = next.getContent().size();
+
+        PagesInfo pagesInfo = new PagesInfo(subjectPage,nextContentSize);
+        return new ResponseEntity<>(pagesInfo,HttpStatus.OK);
     }
 
     @PutMapping(value = "/edit-general-info/{id}", consumes = "application/json")
