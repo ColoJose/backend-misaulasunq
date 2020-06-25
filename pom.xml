@@ -106,6 +106,7 @@
 			<artifactId>springfox-bean-validators</artifactId>
 			<version>2.9.2</version>
 		</dependency>
+		
 		<!-- /Swagger 2 -->
 
 <!-- APACHE POI DEPENDENCIES TO READ XSL & XSLX-->
