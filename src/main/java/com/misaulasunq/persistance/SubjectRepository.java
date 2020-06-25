@@ -52,4 +52,12 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
     Page<Subject> findAllByOrderByNameAsc(Pageable pageable);
 
     List<Subject> findAllBySubjectCodeInOrderBySubjectCodeAsc(List<String> subjectCodes);
+
+    @Query("SELECT subject "
+            + "FROM subject subject "
+            + "JOIN subject.commissions AS commisions "
+            + "JOIN commisions.schedules AS schedule "
+            + "WHERE schedule.notices.size > 0 "
+            + "GROUP BY subject")
+    Page<Subject> findOverlappingSubjects(Pageable pageable);
 }

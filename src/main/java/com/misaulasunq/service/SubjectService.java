@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -90,5 +91,9 @@ public class SubjectService {
     public void updateCommissions(Subject subject, List<Commission> commissions) throws SubjectNotFoundException {
         subject.setCommissions(commissions);
         this.saveSubject(subject);
+    }
+
+    public Page<Subject> getOverlappingSubjects(Pageable pageable) {
+        return this.subjectRepository.findOverlappingSubjects(pageable);
     }
 }
