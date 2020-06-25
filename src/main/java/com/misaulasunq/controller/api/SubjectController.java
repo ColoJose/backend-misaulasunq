@@ -63,6 +63,17 @@ public class SubjectController {
     @Autowired
     private ClassroomService classroomService;
 
+    @GetMapping("/OverlappingSubjects")
+    public ResponseEntity<Page<SubjectDTO>> getOverlappingSubjects(
+            @RequestParam(name="page") Integer page,
+            @RequestParam(name="elements") Integer elements
+    ) {
+        return this.makeResponseEntityWithGoodStatusForPage(
+                this.subjectService.getOverlappingSubjects(PageRequest.of(page, elements))
+        );
+    }
+
+
     @GetMapping("/byDay/{aDay}")
     @ApiOperation(value = "Devuelve las materias que son dictadas en el dia {aDay}")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
@@ -156,7 +167,7 @@ public class SubjectController {
         return new ResponseEntity<>("Materia creada correctamente",HttpStatus.OK);
     }
 
-    @GetMapping(value = "/all-degrees")
+    @GetMapping(value = "/all-degrees") //TODO: Esto tendria que estar ser parte de un Degree Controller
     public ResponseEntity<List<DegreeDTO>> getAllDegrees() {
 
         List<Degree> allDegrees = this.degreeService.findAll();
@@ -196,7 +207,7 @@ public class SubjectController {
         return new ResponseEntity<SubjectDTO>(subjectDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/commissions/{id}")
+    @GetMapping("/commissions/{id}") //TODO: Esto tendria que estar ser parte de un Commission Controller
     public ResponseEntity<List<CommissionDTO>> getCommissionById(@PathVariable Integer id) throws SubjectNotFoundException {
         List<CommissionDTO> commissionsById = this.subjectService.getCommissionsById(id)
                                                                  .stream()
@@ -206,7 +217,7 @@ public class SubjectController {
         return new ResponseEntity<>(commissionsById,HttpStatus.OK);
     }
 
-    @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json")
+    @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json") //TODO: Esto tendria que estar ser parte de un Commission Controller
     public ResponseEntity<String> updateCommission(@PathVariable Integer id,
                                              @RequestBody List<CommissionDTO> commissions)
                                              throws SubjectNotFoundException {
@@ -226,6 +237,18 @@ public class SubjectController {
 
         LOGGER.info("Responding the request with: {}", response);
 
+        return response;
+    }
+
+    private ResponseEntity<Page<SubjectDTO>> makeResponseEntityWithGoodStatusForPage(Page<Subject> subjects){
+        List<SubjectDTO> dtoList = subjects.stream()
+                                        .map(SubjectDTO::new)
+                                        .collect(Collectors.toList());
+        Page aPage = new PageImpl<SubjectDTO>(dtoList, subjects.getPageable(), subjects.getTotalElements());
+
+        ResponseEntity<Page<SubjectDTO>> response = new ResponseEntity<>(aPage,HttpStatus.OK);
+
+        LOGGER.info("Responding the request with: {}", response);
         return response;
     }
 }
