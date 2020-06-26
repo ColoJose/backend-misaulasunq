@@ -26,6 +26,11 @@ public interface ClassroomRepository extends JpaRepository<Classroom,Integer> {
     Classroom findByNumber(String id);
 
     @Query("SELECT classroom "
+        + "FROM Classroom classroom "
+        + "WHERE classroom.number = :id")
+    Classroom findClassroomByNumber(String id);
+
+    @Query("SELECT classroom "
         +  "FROM Classroom classroom "
         +  "WHERE classroom.number in :classroomNumbers"
     )
