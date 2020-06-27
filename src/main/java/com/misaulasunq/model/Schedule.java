@@ -13,13 +13,13 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotNull(message = "A Comission Should Be Setted")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Commission commission;
     @NotNull(message = "A Start Time Should Be Setted")
     private LocalTime startTime;
     @NotNull(message = "A End Time Should Be Setted")
     private LocalTime endTime;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Classroom classroom;
     @NotNull(message = "A Day Should Be Put It")
     @Enumerated(EnumType.STRING)

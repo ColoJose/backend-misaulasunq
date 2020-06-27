@@ -1,16 +1,11 @@
 package com.misaulasunq.controller.api;
 
-import com.misaulasunq.controller.dto.CommissionDTO;
-import com.misaulasunq.controller.dto.DegreeDTO;
-import com.misaulasunq.controller.dto.GeneralInfo;
-import com.misaulasunq.controller.dto.SubjectDTO;
-import com.misaulasunq.exceptions.DegreeNotFoundException;
-import com.misaulasunq.exceptions.SubjectNotFoundException;
+import com.misaulasunq.controller.dto.*;
+import com.misaulasunq.exceptions.*;
 import com.misaulasunq.model.*;
 import com.misaulasunq.service.ClassroomService;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
-import com.misaulasunq.utils.CommissionParser;
 import com.misaulasunq.utils.DayConverter;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -29,8 +24,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+
 
 @Transactional
 @RestController(value = "SubjectAPI")
@@ -218,12 +218,17 @@ public class SubjectController {
 
     @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json") //TODO: Esto tendria que estar ser parte de un Commission Controller
     public ResponseEntity<String> updateCommission(@PathVariable Integer id,
-                                             @RequestBody List<CommissionDTO> commissions)
-                                             throws SubjectNotFoundException {
+                                                   @RequestBody List<CommissionDTO> commissionsDTO)
+            throws SubjectNotFoundException, ClassroomNotFoundException, InvalidDayException, InvalidSemesterException {
 
+        Map<String, Classroom> classroomMap = this.classroomService.getClassroomMap(this.getAllClassroomsNumbers(commissionsDTO));
         Subject subjectById = this.subjectService.findSubjectById(id);
-        this.subjectService.updateCommissions(subjectById, CommissionParser.parseCommissions(commissions, subjectById));
-        return new ResponseEntity<>("Comissiones materia actualizada",HttpStatus.OK);
+        List<Commission> subjectCommission = this.subjectService.getCommissionsById(id);
+        this.subjectService.updateCommissions( subjectById,subjectCommission, commissionsDTO, classroomMap);
+
+//        List<Commission> parsedCommissions = commissionParser.parseCommissions(commissions,subjectById,classroomMap); TODO borrar
+
+        return new ResponseEntity<>("Comisiones materia actualizada",HttpStatus.OK);
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){
@@ -239,6 +244,28 @@ public class SubjectController {
         return response;
     }
 
+
+    // aux methods
+
+    private Set<String> getAllClassroomsNumbers(List<CommissionDTO> commissions) {
+
+        Set<String> result = new HashSet<String>();
+
+        for ( CommissionDTO com : commissions ) {
+            result.addAll( this.getClassroomsSchedules(com.getSchedules()) );
+        }
+
+        return result;
+    }
+
+    private Set<String> getClassroomsSchedules(List<ScheduleDTO> schedules) {
+        Set<String> res = new HashSet<String>();
+        for (ScheduleDTO sch: schedules) {
+            res.add(sch.getClassroom().getNumber());
+        }
+        return res;
+    }
+
     private ResponseEntity<Page<SubjectDTO>> makeResponseEntityWithGoodStatusForPage(Page<Subject> subjects){
         List<SubjectDTO> dtoList = subjects.stream()
                                         .map(SubjectDTO::new)
@@ -249,5 +276,6 @@ public class SubjectController {
 
         LOGGER.info("Responding the request with: {}", response);
         return response;
+
     }
 }

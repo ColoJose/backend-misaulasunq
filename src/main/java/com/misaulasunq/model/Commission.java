@@ -23,7 +23,7 @@ public class Commission {
     @NotNull(message = "The Semester Should Be Put It")
     @Enumerated(EnumType.STRING)
     private Semester semester;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private Subject subject;
     @Size(min= 1, message = "You have to add a schedule at least")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "commission")

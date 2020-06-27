@@ -1,25 +1,33 @@
 package com.misaulasunq.service;
 
+import com.misaulasunq.controller.dto.CommissionDTO;
 import com.misaulasunq.controller.dto.GeneralInfo;
+import com.misaulasunq.exceptions.InvalidDayException;
+import com.misaulasunq.exceptions.InvalidSemesterException;
 import com.misaulasunq.exceptions.SubjectNotFoundException;
+import com.misaulasunq.model.Classroom;
 import com.misaulasunq.model.Commission;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
 import com.misaulasunq.persistance.SubjectRepository;
+import com.misaulasunq.utils.CommissionUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SubjectService {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
+    @Autowired
+    private CommissionUpdater commissionUpdater;
 
     public List<String> retrieveSubjectsSuggestions() {
         return this.subjectRepository.getAllSubjectsNames();
@@ -88,9 +96,14 @@ public class SubjectService {
         return this.findSubjectById(id).getCommissions();
     }
 
-    public void updateCommissions(Subject subject, List<Commission> commissions) throws SubjectNotFoundException {
-        subject.setCommissions(commissions);
-        this.saveSubject(subject);
+
+
+    public void updateCommissions(Subject subjectById,
+                                  List<Commission> subjectCommission,
+                                  List<CommissionDTO> commissionsDTO,
+                                  Map<String, Classroom> classroomMap) throws InvalidDayException, InvalidSemesterException {
+        commissionUpdater.update(subjectCommission, commissionsDTO, classroomMap);
+        this.saveSubject(subjectById);
     }
 
     public Page<Subject> getOverlappingSubjects(Pageable pageable) {

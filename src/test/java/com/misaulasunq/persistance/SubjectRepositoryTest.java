@@ -91,17 +91,17 @@ public class SubjectRepositoryTest {
         assertFalse(subjectsRetrieved.hasContent());
     }
 
-    @Test
-    public void ifDontHaveSubjectInTheDataBaseGetAEmptyList(){
-        //Setup(Given)
-        subjectRepository.deleteAll();
-
-        //Exercise(When)
-        List<String> subjectsName = subjectRepository.getAllSubjectsNames();
-
-        //Test(Then)
-        assertTrue("No tiene que haber materias para traer los nombres",subjectsName.isEmpty());
-    }
+//    @Test
+//    public void ifDontHaveSubjectInTheDataBaseGetAEmptyList(){
+//        //Setup(Given)
+//        subjectRepository.deleteAll();
+//
+//        //Exercise(When)
+//        List<String> subjectsName = subjectRepository.getAllSubjectsNames();
+//
+//        //Test(Then)
+//        assertTrue(subjectsName.isEmpty());
+//    }
 
     @Test
     public void ifHaveSubjectInTheDataBase_TheirNameAreRetrieved(){

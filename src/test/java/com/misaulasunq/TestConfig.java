@@ -5,6 +5,7 @@ import com.misaulasunq.service.ClassroomService;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import com.misaulasunq.service.UploaderService;
+import com.misaulasunq.utils.CommissionUpdater;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
 
@@ -31,4 +32,6 @@ public class TestConfig {
     public ClassroomService ClassroomService(){
         return new ClassroomService();
     }
+    @Bean
+    public CommissionUpdater CommissionUpdater() { return  new CommissionUpdater(); }
 }
