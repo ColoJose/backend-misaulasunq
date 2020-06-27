@@ -5,7 +5,14 @@ import com.misaulasunq.TestConfig;
 import com.misaulasunq.controller.dto.SubjectDTO;
 import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.*;
+import com.misaulasunq.persistance.ClassroomRepository;
+import com.misaulasunq.persistance.DegreeRepository;
+import com.misaulasunq.persistance.OverlapNoticeRepository;
 import com.misaulasunq.persistance.SubjectRepository;
+import com.misaulasunq.utils.CommissionBuilder;
+import com.misaulasunq.utils.OverlapNoticeBuilder;
+import com.misaulasunq.utils.ScheduleBuilder;
+import com.misaulasunq.utils.SubjectBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
@@ -39,14 +48,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class SubjectControllerTest {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private SubjectController subjectController;
-
-    @Autowired
-    private SubjectRepository subjectRepository;
+    @Autowired private ObjectMapper objectMapper;
+    @Autowired private SubjectController subjectController;
+    @Autowired private SubjectRepository subjectRepository;
+    @Autowired private DegreeRepository degreeRepository;
+    @Autowired private ClassroomRepository classroomRepository;
+    @Autowired private OverlapNoticeRepository overlapNoticeRepository;
 
     private MockMvc mockMvc;
 
@@ -55,6 +62,49 @@ public class SubjectControllerTest {
         mockMvc = MockMvcBuilders
                 .standaloneSetup(subjectController)
                 .build();
+    }
+
+    @Test
+    public void getOverlappingSubjects() throws Exception {
+        //Setup(Given)
+        Degree aDegree = this.degreeRepository.findAll().get(0);
+        Optional<Classroom> optionalClassroom = this.classroomRepository.findClassroomsByNumberEquals("52");
+        Classroom aClassroom = optionalClassroom.get();
+        Subject aSubject = SubjectBuilder.buildASubject().withMockData().withDegree(aDegree).withSubjectCode("444").build();
+        Subject aSubject1 = SubjectBuilder.buildASubject().withMockData().withDegree(aDegree).withSubjectCode("445").build();
+        aDegree.addSubject(aSubject);
+        aDegree.addSubject(aSubject1);
+
+        Commission commission1 = CommissionBuilder.buildACommission().withMockData().withSubject(aSubject).build();
+        aSubject.addCommission(commission1);
+        Commission commission2 = CommissionBuilder.buildACommission().withMockData().withSubject(aSubject1).build();
+        aSubject1.addCommission(commission2);
+
+        Schedule schedule1 = ScheduleBuilder.buildASchedule().withMockData().withCommission(commission1).withClassroom(aClassroom).build();
+        commission1.addSchedule(schedule1);
+        aClassroom.addSchedule(schedule1);
+        Schedule schedule2 = ScheduleBuilder.buildASchedule().withMockData().withCommission(commission2).withClassroom(aClassroom).build();
+        commission2.addSchedule(schedule2);
+        aClassroom.addSchedule(schedule2);
+
+        OverlapNotice aOverlap = OverlapNoticeBuilder.buildAOverlapNotice().withClassroom(aClassroom).withScheduleAffected(schedule1).withScheduleConflicted(schedule2).build();
+
+        this.subjectRepository.saveAll(List.of(aSubject1, aSubject));
+        this.overlapNoticeRepository.save(aOverlap);
+
+        //Exercise(When)
+        ResponseEntity<Page<SubjectDTO>> subjects = this.subjectController.getOverlappingSubjects(0, 5);
+
+        //Test(Then)
+        assertEquals(2,subjects.getBody().getTotalElements());
+        assertEquals(1,subjects.getBody().getTotalPages());
+        assertEquals(2,subjects.getBody().getNumberOfElements());
+        this.mockMvc
+            .perform(
+                MockMvcRequestBuilders.get("/subjectAPI/OverlappingSubjects")
+                    .param("page","0")
+                    .param("elements","5")
+           ).andExpect(status().isOk());
     }
 
     @Test
@@ -285,6 +335,4 @@ public class SubjectControllerTest {
 
         return validSubject;
     }
-
-
 }

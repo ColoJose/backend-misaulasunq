@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -103,5 +104,9 @@ public class SubjectService {
                                   Map<String, Classroom> classroomMap) throws InvalidDayException, InvalidSemesterException {
         commissionUpdater.update(subjectCommission, commissionsDTO, classroomMap);
         this.saveSubject(subjectById);
+    }
+
+    public Page<Subject> getOverlappingSubjects(Pageable pageable) {
+        return this.subjectRepository.findOverlappingSubjects(pageable);
     }
 }

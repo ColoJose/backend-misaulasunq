@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +24,72 @@ import static org.junit.Assert.*;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SubjectRepositoryTest {
 
-    @Autowired
-    private SubjectRepository subjectRepository;
+    @Autowired private SubjectRepository subjectRepository;
+    @Autowired private DegreeRepository degreeRepository;
+    @Autowired private ClassroomRepository classroomRepository;
+    @Autowired private OverlapNoticeRepository overlapNoticeRepository;
+
+    @Test
+    public void ifFindeTheFirst2OverlappingSubjectsAndHave3_OnlyGetsTwoSubjects() {
+        //Setup(Given)
+        Degree aDegree = this.degreeRepository.findAll().get(0);
+        Optional<Classroom> optionalClassroom = this.classroomRepository.findClassroomsByNumberEquals("20");
+        Classroom aClassroom = optionalClassroom.get();
+        Subject aSubject = SubjectBuilder.buildASubject().withMockData().withDegree(aDegree).withSubjectCode("444").build();
+        Subject aSubject1 = SubjectBuilder.buildASubject().withMockData().withDegree(aDegree).withSubjectCode("445").build();
+        Subject aSubject2 = SubjectBuilder.buildASubject().withMockData().withDegree(aDegree).withSubjectCode("446").build();
+        Subject aSubject3 = SubjectBuilder.buildASubject().withMockData().withDegree(aDegree).withSubjectCode("447").build();
+        aDegree.addSubject(aSubject);
+        aDegree.addSubject(aSubject1);
+        aDegree.addSubject(aSubject2);
+        aDegree.addSubject(aSubject3);
+
+        Commission commission1 = CommissionBuilder.buildACommission().withMockData().withSubject(aSubject).build();
+        aSubject.addCommission(commission1);
+        Commission commission2 = CommissionBuilder.buildACommission().withMockData().withSubject(aSubject1).build();
+        aSubject1.addCommission(commission2);
+        Commission commission3 = CommissionBuilder.buildACommission().withMockData().withSubject(aSubject2).build();
+        aSubject2.addCommission(commission3);
+        Commission commission4 = CommissionBuilder.buildACommission().withMockData().withSubject(aSubject3).build();
+        aSubject3.addCommission(commission4);
+
+        Schedule schedule1 = ScheduleBuilder.buildASchedule().withMockData().withCommission(commission1).withClassroom(aClassroom).build();
+        commission1.addSchedule(schedule1);
+        aClassroom.addSchedule(schedule1);
+        Schedule schedule2 = ScheduleBuilder.buildASchedule().withMockData().withCommission(commission2).withClassroom(aClassroom).build();
+        commission2.addSchedule(schedule2);
+        aClassroom.addSchedule(schedule2);
+        Schedule schedule3 = ScheduleBuilder.buildASchedule().withMockData().withCommission(commission3).withClassroom(aClassroom).build();
+        commission3.addSchedule(schedule3);
+        aClassroom.addSchedule(schedule3);
+        Schedule schedule4 = ScheduleBuilder.buildASchedule().withMockData().withCommission(commission4).withClassroom(aClassroom).build();
+        commission4.addSchedule(schedule4);
+        aClassroom.addSchedule(schedule4);
+
+        OverlapNotice aOverlap = OverlapNoticeBuilder.buildAOverlapNotice().withClassroom(aClassroom).withScheduleAffected(schedule1).withScheduleConflicted(schedule2).build();
+        OverlapNotice aOverlap1 = OverlapNoticeBuilder.buildAOverlapNotice().withClassroom(aClassroom).withScheduleAffected(schedule2).withScheduleConflicted(schedule3).build();
+        OverlapNotice aOverlap2 = OverlapNoticeBuilder.buildAOverlapNotice().withClassroom(aClassroom).withScheduleAffected(schedule3).withScheduleConflicted(schedule4).build();
+
+        this.subjectRepository.saveAll(List.of(aSubject1, aSubject2, aSubject3, aSubject));
+        this.overlapNoticeRepository.saveAll(List.of(aOverlap,aOverlap1,aOverlap2));
+
+        //Exercise(When)
+        Page<Subject> subjectsRetrieved = this.subjectRepository.findOverlappingSubjects(PageRequest.of(0,2));
+
+        //Test(Then)
+        assertEquals(2,subjectsRetrieved.getNumberOfElements());
+        assertEquals(2,subjectsRetrieved.getTotalPages());
+        assertEquals(3,subjectsRetrieved.getTotalElements());
+    }
+
+    @Test
+    public void ifFindOverlappingSubjectAndNotHaveOne_ReturnEmptyList() {
+        //Exercise(When)
+        Page<Subject>subjectsRetrieved = this.subjectRepository.findOverlappingSubjects(PageRequest.of(4,2));
+
+        //Test(Then)
+        assertFalse(subjectsRetrieved.hasContent());
+    }
 
 //    @Test
 //    public void ifDontHaveSubjectInTheDataBaseGetAEmptyList(){
@@ -238,7 +304,7 @@ public class SubjectRepositoryTest {
     @Before
     public void setUp(){
         //Degree
-        Degree testDegree = DegreeBuilder.buildADegree().withMockData().build();
+        Degree testDegree = DegreeBuilder.buildADegree().withMockData().withDegreeCode("958").build();
 
         //Subjects
         Subject desap = SubjectBuilder.buildASubject().withName("Desarrollo de Aplicaciones")
@@ -305,4 +371,6 @@ public class SubjectRepositoryTest {
 
         subjectRepository.saveAll(List.of(desap,BBD,BDDII));
     }
+
+
 }

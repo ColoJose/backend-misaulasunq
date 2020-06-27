@@ -17,10 +17,10 @@ public class OverlapNotice {
     @NotNull(message = "Should Be assign an schedule")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Schedule scheduleAffected;
-    @NotNull(message = "Should Be assign the schedule affected")
+    @NotNull(message = "Should Be assign the Schedule Affected")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Schedule scheduleConflcited;
-    @NotNull(message = "Should Be assign the schedule in conflict")
+    @NotNull(message = "Should Be assign an Classroom")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Classroom classroom;
 

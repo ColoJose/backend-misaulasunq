@@ -34,6 +34,11 @@ public class SubjectBuilder {
         return this;
     }
 
+    public SubjectBuilder withDegree(Degree degree){
+        this.subject.addDegree(degree);
+        return this;
+    }
+
     public SubjectBuilder withSubjectCode(String code){
         this.subject.setSubjectCode(code);
         return this;

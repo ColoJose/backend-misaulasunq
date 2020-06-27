@@ -7,14 +7,13 @@ import com.misaulasunq.service.ClassroomService;
 import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import com.misaulasunq.utils.DayConverter;
-import com.misaulasunq.utils.PagesInfo;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +57,17 @@ public class SubjectController {
 
     @Autowired
     private ClassroomService classroomService;
+
+    @GetMapping("/OverlappingSubjects")
+    public ResponseEntity<Page<SubjectDTO>> getOverlappingSubjects(
+            @RequestParam(name="page") Integer page,
+            @RequestParam(name="elements") Integer elements
+    ) {
+        return this.makeResponseEntityWithGoodStatusForPage(
+                this.subjectService.getOverlappingSubjects(PageRequest.of(page, elements))
+        );
+    }
+
 
     @GetMapping("/byDay/{aDay}")
     @ApiOperation(value = "Devuelve las materias que son dictadas en el dia {aDay}")
@@ -152,7 +162,7 @@ public class SubjectController {
         return new ResponseEntity<>("Materia creada correctamente",HttpStatus.OK);
     }
 
-    @GetMapping(value = "/all-degrees")
+    @GetMapping(value = "/all-degrees") //TODO: Esto tendria que estar ser parte de un Degree Controller
     public ResponseEntity<List<DegreeDTO>> getAllDegrees() {
 
         List<Degree> allDegrees = this.degreeService.findAll();
@@ -165,21 +175,24 @@ public class SubjectController {
     }
 
     @GetMapping("/all-subjects")
-    public ResponseEntity<PagesInfo> getAllSubjects(
+    public ResponseEntity<Page<SubjectDTO>> getAllSubjects(
             @RequestParam(name="page") Integer page,
             @RequestParam(name="elems") Integer elems
     ) {
-        Pageable pageable = PageRequest.of(page, elems);
-        List<SubjectDTO> subjectPage =  this.subjectService.getPageSubject(pageable).stream()
-                                                                                   .map(SubjectDTO::new)
-                                                                                   .collect(Collectors.toList());
+        Page aPageRequested = this.subjectService.getPageSubject(PageRequest.of(page, elems));
+        List<Subject> subjects = aPageRequested.getContent();
+        List<SubjectDTO> subjectPage =  subjects.stream()
+                                               .map(SubjectDTO::new)
+                                               .collect(Collectors.toList());
 
-        Pageable pagebleNext = PageRequest.of(page + 1, elems);
-        Page<Subject> next = this.subjectService.getPageSubject(pagebleNext);
-        Integer nextContentSize = next.getContent().size();
-
-        PagesInfo pagesInfo = new PagesInfo(subjectPage,nextContentSize);
-        return new ResponseEntity<>(pagesInfo,HttpStatus.OK);
+        PagedListHolder aPage = new PagedListHolder<SubjectDTO>(subjectPage);
+        return new ResponseEntity<Page<SubjectDTO>>(
+                                new PageImpl<SubjectDTO>(
+                                        subjectPage,
+                                        aPageRequested.getPageable(),
+                                        aPageRequested.getTotalElements()
+                                )
+                                ,HttpStatus.OK);
     }
 
     @PutMapping(value = "/edit-general-info/{id}", consumes = "application/json")
@@ -192,7 +205,7 @@ public class SubjectController {
         return new ResponseEntity<SubjectDTO>(subjectDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/commissions/{id}")
+    @GetMapping("/commissions/{id}") //TODO: Esto tendria que estar ser parte de un Commission Controller
     public ResponseEntity<List<CommissionDTO>> getCommissionById(@PathVariable Integer id) throws SubjectNotFoundException {
         List<CommissionDTO> commissionsById = this.subjectService.getCommissionsById(id)
                                                                  .stream()
@@ -202,7 +215,7 @@ public class SubjectController {
         return new ResponseEntity<>(commissionsById,HttpStatus.OK);
     }
 
-    @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json")
+    @PutMapping(value = "/edit/commissions/{id}", consumes = "application/json") //TODO: Esto tendria que estar ser parte de un Commission Controller
     public ResponseEntity<String> updateCommission(@PathVariable Integer id,
                                                    @RequestBody List<CommissionDTO> commissionsDTO)
             throws SubjectNotFoundException, ClassroomNotFoundException, InvalidDayException, InvalidSemesterException {
@@ -230,6 +243,7 @@ public class SubjectController {
         return response;
     }
 
+
     // aux methods
 
     private Set<String> getAllClassroomsNumbers(List<CommissionDTO> commissions) {
@@ -249,5 +263,17 @@ public class SubjectController {
             res.add(sch.getClassroom().getNumber());
         }
         return res;
+
+    private ResponseEntity<Page<SubjectDTO>> makeResponseEntityWithGoodStatusForPage(Page<Subject> subjects){
+        List<SubjectDTO> dtoList = subjects.stream()
+                                        .map(SubjectDTO::new)
+                                        .collect(Collectors.toList());
+        Page aPage = new PageImpl<SubjectDTO>(dtoList, subjects.getPageable(), subjects.getTotalElements());
+
+        ResponseEntity<Page<SubjectDTO>> response = new ResponseEntity<>(aPage,HttpStatus.OK);
+
+        LOGGER.info("Responding the request with: {}", response);
+        return response;
+
     }
 }
