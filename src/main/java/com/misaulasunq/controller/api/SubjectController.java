@@ -12,15 +12,14 @@ import com.misaulasunq.service.DegreeService;
 import com.misaulasunq.service.SubjectService;
 import com.misaulasunq.utils.CommissionParser;
 import com.misaulasunq.utils.DayConverter;
-import com.misaulasunq.utils.PagesInfo;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toMap;
 
 @Transactional
 @RestController(value = "SubjectAPI")
@@ -180,21 +176,24 @@ public class SubjectController {
     }
 
     @GetMapping("/all-subjects")
-    public ResponseEntity<PagesInfo> getAllSubjects(
+    public ResponseEntity<Page<SubjectDTO>> getAllSubjects(
             @RequestParam(name="page") Integer page,
             @RequestParam(name="elems") Integer elems
     ) {
-        Pageable pageable = PageRequest.of(page, elems);
-        List<SubjectDTO> subjectPage =  this.subjectService.getPageSubject(pageable).stream()
-                                                                                   .map(SubjectDTO::new)
-                                                                                   .collect(Collectors.toList());
+        Page aPageRequested = this.subjectService.getPageSubject(PageRequest.of(page, elems));
+        List<Subject> subjects = aPageRequested.getContent();
+        List<SubjectDTO> subjectPage =  subjects.stream()
+                                               .map(SubjectDTO::new)
+                                               .collect(Collectors.toList());
 
-        Pageable pagebleNext = PageRequest.of(page + 1, elems);
-        Page<Subject> next = this.subjectService.getPageSubject(pagebleNext);
-        Integer nextContentSize = next.getContent().size();
-
-        PagesInfo pagesInfo = new PagesInfo(subjectPage,nextContentSize);
-        return new ResponseEntity<>(pagesInfo,HttpStatus.OK);
+        PagedListHolder aPage = new PagedListHolder<SubjectDTO>(subjectPage);
+        return new ResponseEntity<Page<SubjectDTO>>(
+                                new PageImpl<SubjectDTO>(
+                                        subjectPage,
+                                        aPageRequested.getPageable(),
+                                        aPageRequested.getTotalElements()
+                                )
+                                ,HttpStatus.OK);
     }
 
     @PutMapping(value = "/edit-general-info/{id}", consumes = "application/json")
