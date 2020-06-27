@@ -17,6 +17,12 @@ public class SemesterConverter {
             case "ANUAL":
                 aSemester = Semester.ANUAL;
                 break;
+            case "PRIMER CUATRIMESTRE":
+                aSemester = Semester.PRIMER;
+                break;
+            case "SEGUNDO CUATRIMESTRE":
+                aSemester = Semester.SEGUNDO;
+                break;
             default:
                 throw new InvalidSemesterException(aString);
         }
