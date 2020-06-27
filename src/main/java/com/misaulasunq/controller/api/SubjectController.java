@@ -263,6 +263,7 @@ public class SubjectController {
             res.add(sch.getClassroom().getNumber());
         }
         return res;
+    }
 
     private ResponseEntity<Page<SubjectDTO>> makeResponseEntityWithGoodStatusForPage(Page<Subject> subjects){
         List<SubjectDTO> dtoList = subjects.stream()
