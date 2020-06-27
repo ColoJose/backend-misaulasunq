@@ -20,7 +20,6 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,15 +30,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toMap;
 
 @Transactional
 @RestController(value = "SubjectAPI")
 @CrossOrigin(//Se puede configurar para que sea a travez de una clase
-        origins = "http://localhost:3000",
+        origins = "*",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT},
         maxAge = 60
 )
