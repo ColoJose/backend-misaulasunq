@@ -11,6 +11,8 @@ notifications:
 language: java
 jdk: openjdk11
 
+before_cache:
+  - rm -rf $HOME/.m2/repository/org/apache/logging/log4j
 #Se Define guardar en cache la carpeta de maven
 cache:
   directories:
