@@ -3,7 +3,6 @@ package com.misaulasunq.persistance;
 import com.misaulasunq.model.*;
 import com.misaulasunq.utils.*;
 import com.misaulasunq.controller.wrapper.SubjectFilterRequestWrapper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
