@@ -1,5 +1,6 @@
 package com.misaulasunq.service;
 
+import com.misaulasunq.controller.wrapper.SubjectFilterRequestWrapper;
 import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.*;
@@ -29,6 +30,26 @@ public class SubjectServiceTest {
 
     @Autowired
     public SubjectService subjectService;
+
+    @Test
+    public void ifHaveSubjectInTheDataBaeThatMatchWithTheCriteria_ItsRetrieved() throws SubjectNotFoundException {
+        //Setup(Given)
+        List<SearchFilter> filters = List.of(SearchFilter.BY_DAY,SearchFilter.BY_SUBJECT);
+
+        SubjectFilterRequestWrapper wrapper = new SubjectFilterRequestWrapper();
+        wrapper.setSearchFilters(filters);
+        wrapper.setDay(Day.LUNES);
+        wrapper.setSubjectName("Sistemas Operativos");
+
+        //Exercise(When)
+        List<Subject> result = subjectService.retreiveSubjectsByFilterCriteria(wrapper);
+
+        //Test(Then)
+        assertEquals(1, result.size());
+        assertEquals("Tiene que traer una materia por el filtro aplicado!",
+                "Sistemas Operativos",
+                result.get(0).getName());
+    }
 
     @Test
     public void ifHaveSubjectInTheDataBase_TheirNameAreRetrieved(){
