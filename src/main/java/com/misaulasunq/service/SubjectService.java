@@ -2,6 +2,7 @@ package com.misaulasunq.service;
 
 import com.misaulasunq.controller.dto.CommissionDTO;
 import com.misaulasunq.controller.dto.GeneralInfo;
+import com.misaulasunq.controller.wrapper.SubjectFilterRequestWrapper;
 import com.misaulasunq.exceptions.InvalidDayException;
 import com.misaulasunq.exceptions.InvalidSemesterException;
 import com.misaulasunq.exceptions.SubjectNotFoundException;
@@ -9,6 +10,7 @@ import com.misaulasunq.model.Classroom;
 import com.misaulasunq.model.Commission;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.model.Subject;
+import com.misaulasunq.persistance.SubjectDAO;
 import com.misaulasunq.persistance.SubjectRepository;
 import com.misaulasunq.utils.CommissionUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,12 +28,23 @@ public class SubjectService {
     private SubjectRepository subjectRepository;
 
     @Autowired
+    private SubjectDAO subjectDAO;
+
+    @Autowired
     private CommissionUpdater commissionUpdater;
 
     public List<String> retrieveSubjectsSuggestions() {
         return this.subjectRepository.getAllSubjectsNames();
     }
 
+    public List<Subject> retreiveSubjectsByFilterCriteria(SubjectFilterRequestWrapper subjectFilterRequestWrapper) throws SubjectNotFoundException {
+        return this.returnSubjectsOrExceptionIfEmpty(
+                this.subjectDAO.getSubjectByFilterRequest(subjectFilterRequestWrapper),
+                SubjectNotFoundException.SubjectNotFoundByCriteria()
+        );
+    }
+
+    @Deprecated
     public List<Subject> retreiveSubjectsWithSchedulesBetween(LocalTime startTime, LocalTime endTime) throws SubjectNotFoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectsBetweenHours(startTime, endTime),
@@ -40,6 +52,7 @@ public class SubjectService {
             );
     }
 
+    @Deprecated
     public List<Subject> retreiveSubjectsWithName(String name) throws SubjectNotFoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectByName(name),
@@ -47,11 +60,20 @@ public class SubjectService {
             );
     }
 
+    @Deprecated
     public List<Subject> retreiveSubjectsInClassroom(String classroomnumber) throws SubjectNotFoundException {
         return this.returnSubjectsOrExceptionIfEmpty(
                 this.subjectRepository.findSubjectThatAreInClassroom(classroomnumber),
                 SubjectNotFoundException.SubjectNotFoundByNumber(classroomnumber)
             );
+    }
+
+    @Deprecated
+    public List<Subject> retreiveSubjectsDictatedOnDay(Day currentDay) throws SubjectNotFoundException {
+        return this.returnSubjectsOrExceptionIfEmpty(
+                this.subjectRepository.getAllSubjectsDictatedInTheDay(currentDay),
+                SubjectNotFoundException.SubjectNotFoundCurrentDay()
+        );
     }
 
     private List<Subject> returnSubjectsOrExceptionIfEmpty(List<Subject> subjects, SubjectNotFoundException exception) throws SubjectNotFoundException {
@@ -60,7 +82,8 @@ public class SubjectService {
         }
         return subjects;
     }
-    // TODO: Aca habria que agregar un chequeo para que revise si no hay un horario que se solape y generar la nota si es necesario
+
+
     public void saveSubject(Subject subject) {
         subjectRepository.save(subject);
     }
@@ -75,13 +98,6 @@ public class SubjectService {
 
     public void deleteAll() { subjectRepository.deleteAll(); }
 
-    public List<Subject> retreiveSubjectsDictatedOnDay(Day currentDay) throws SubjectNotFoundException {
-        return this.returnSubjectsOrExceptionIfEmpty(
-                this.subjectRepository.getAllSubjectsDictatedInTheDay(currentDay),
-                SubjectNotFoundException.SubjectNotFoundCurrentDay()
-        );
-    }
-
     public Subject editGeneralInfo(Integer id, GeneralInfo generalInfo) throws SubjectNotFoundException {
         Subject retrievedSubjectById = this.findSubjectById(id);
         retrievedSubjectById.setName(generalInfo.getName());
@@ -92,12 +108,13 @@ public class SubjectService {
         return retrievedSubjectById;
     }
 
+    // OBS: Esto deberia ser del commission service!
     public List<Commission> getCommissionsById(Integer id) throws SubjectNotFoundException {
         return this.findSubjectById(id).getCommissions();
     }
 
 
-
+    // OBS: Esto deberia ser del commission service!
     public void updateCommissions(Subject subjectById,
                                   List<Commission> subjectCommission,
                                   List<CommissionDTO> commissionsDTO,

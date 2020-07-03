@@ -1,6 +1,7 @@
 package com.misaulasunq.controller.api;
 
 import com.misaulasunq.controller.dto.*;
+import com.misaulasunq.controller.wrapper.SubjectFilterRequestWrapper;
 import com.misaulasunq.exceptions.*;
 import com.misaulasunq.model.*;
 import com.misaulasunq.service.ClassroomService;
@@ -59,9 +60,23 @@ public class SubjectController {
     @Autowired
     private ClassroomService classroomService;
 
+    @GetMapping(value = "/byCriteria", consumes = "application/json")
+    @ApiOperation(value = "Devuelve una lista de materias evaluadas por un criterio de busqueda.")
+    public ResponseEntity<List<SubjectDTO>> getSubjectsByCriteria(
+            @ApiParam(required = true, value = "El Criterio de busqueda", example = "'{\"searchFilters\":[\"bySubject\"],\"subjectName\":\"Matematica I\"}'")
+            @RequestParam(name="criteria")SubjectFilterRequestWrapper criteria
+            ) throws SubjectNotFoundException {
+        return this.makeResponseEntityWithGoodStatus(
+                this.subjectService.retreiveSubjectsByFilterCriteria(criteria)
+        );
+    }
+
     @GetMapping("/OverlappingSubjects")
+    @ApiOperation(value = "Devuelve una lista Paginada de las materias que se ven afectadas con una superposicion de horario.")
     public ResponseEntity<Page<SubjectDTO>> getOverlappingSubjects(
+            @ApiParam(required = true, value = "El numero de pagina que se quiere ver", example = "0")
             @RequestParam(name="page") Integer page,
+            @ApiParam(required = true, value = "La cantidad de elementos por pagina", example = "10")
             @RequestParam(name="elements") Integer elements
     ) {
         return this.makeResponseEntityWithGoodStatusForPage(
@@ -69,7 +84,18 @@ public class SubjectController {
         );
     }
 
+    @GetMapping("/suggestions")
+    @ApiOperation(value = "Devuelve una lista de sugerencia de las materias disponibles para buscar.")
+    public ResponseEntity<List<String>> getSuggestions(){
+        LOGGER.info("Got a GET request to retrieve subject suggestions");
+        ResponseEntity<List<String>> response = new ResponseEntity<>(
+                this.subjectService.retrieveSubjectsSuggestions(),
+                HttpStatus.OK);
+        LOGGER.info("Responding the request with suggestions: {}", response);
+        return response;
+    }
 
+    @Deprecated
     @GetMapping("/byDay/{aDay}")
     @ApiOperation(value = "Devuelve las materias que son dictadas en el dia {aDay}")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in that day")})
@@ -83,18 +109,7 @@ public class SubjectController {
         );
     }
 
-
-    @GetMapping("/suggestions")
-    @ApiOperation(value = "Devuelve una lista de sugerencia de las materias disponibles para buscar.")
-    public ResponseEntity<List<String>> getSuggestions(){
-        LOGGER.info("Got a GET request to retrieve subject suggestions");
-        ResponseEntity<List<String>> response = new ResponseEntity<>(
-                this.subjectService.retrieveSubjectsSuggestions(),
-                HttpStatus.OK);
-        LOGGER.info("Responding the request with suggestions: {}", response);
-        return response;
-    }
-
+    @Deprecated
     @GetMapping("/byClassroomNumber/{classroomNumber}")
     @ApiOperation(value = "Realiza una busqueda de materias por el numero de aula.")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects in the classroom {classroomNumber}.")})
@@ -107,6 +122,7 @@ public class SubjectController {
             );
     }
 
+    @Deprecated
     @GetMapping("/byName/{name}")
     @ApiOperation(value = "Realiza una busqueda de materias por el nombre de la materia.")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects with the Name {name}.")})
@@ -119,6 +135,7 @@ public class SubjectController {
             );
     }
 
+    @Deprecated
     @GetMapping("/betweenHours/{start}/{end}")
     @ApiOperation(value = "Realiza una busqueda de materias donde dicten clases entre una determinada franja horaria")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No subjects Between Hours {start} - {end}.")})
@@ -278,4 +295,4 @@ public class SubjectController {
         return response;
 
     }
-}
+}   

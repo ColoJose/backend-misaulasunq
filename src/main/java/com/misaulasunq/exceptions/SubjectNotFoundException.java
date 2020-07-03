@@ -27,4 +27,8 @@ public class SubjectNotFoundException extends Exception {
     public static SubjectNotFoundException SubjectNotFoundCurrentDay() {
         return new SubjectNotFoundException(String.format("No subjects in the current day"));
     }
+
+    public static SubjectNotFoundException SubjectNotFoundByCriteria() {
+        return new SubjectNotFoundException("No subjects by that criteria.");
+    }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Integer> {
-    
+    @Deprecated
     @Query("SELECT subject "
          + "FROM subject subject "
          + "JOIN subject.commissions AS commisions "
@@ -24,8 +24,10 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
          + "GROUP BY subject")
     List<Subject> findSubjectThatAreInClassroom(@Param("classroomNumber") String classroomNumber);
 
+    @Deprecated
     List<Subject> findSubjectByName(@Param("name") String name);
 
+    @Deprecated
     @Query("SELECT subject "
             + "FROM subject subject "
             + "JOIN subject.commissions AS commisions "
@@ -35,6 +37,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
             + "GROUP BY subject")
     List<Subject> findSubjectsBetweenHours(@Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
 
+    @Deprecated
     @Query("SELECT subject "
         + "FROM subject subject "
         + "JOIN subject.commissions AS commissions "
