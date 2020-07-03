@@ -49,5 +49,8 @@
             <AppenderRef ref="RollingFile"/>
         </root>
     </Loggers>
+    <logger name="org.apache.metamodel">
+        <level value="warn" />
+    </logger>
 
 </Configuration>
