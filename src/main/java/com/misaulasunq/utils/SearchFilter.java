@@ -1,11 +1,12 @@
 package com.misaulasunq.utils;
 
-public enum SearchFilter {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    BY_SUBJECT("bySubject"),
-    BY_SCHEDULE("bySchedule"),
-    BY_CLASSROOM("byClassroom"),
-    BY_DAY("byDay");
+public enum SearchFilter {
+    @JsonProperty("bySubject") BY_SUBJECT("bySubject"),
+    @JsonProperty("bySchedule") BY_SCHEDULE("bySchedule"),
+    @JsonProperty("byClassroom") BY_CLASSROOM("byClassroom"),
+    @JsonProperty("byDay") BY_DAY("byDay");
 
     private final String searchFilter;
 
