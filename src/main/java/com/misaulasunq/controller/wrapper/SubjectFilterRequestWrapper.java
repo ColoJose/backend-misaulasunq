@@ -1,14 +1,11 @@
 package com.misaulasunq.controller.wrapper;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotation;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import com.misaulasunq.exceptions.InvalidDayException;
 import com.misaulasunq.model.Day;
 import com.misaulasunq.utils.DayConverter;
 import com.misaulasunq.utils.SearchFilter;
 import net.minidev.json.annotate.JsonIgnore;
-
 import java.time.LocalTime;
 import java.util.List;
 
