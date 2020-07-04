@@ -3,9 +3,7 @@ package com.misaulasunq.persistance.utils;
 import com.misaulasunq.model.*;
 import com.misaulasunq.utils.SearchFilter;
 import com.misaulasunq.controller.wrapper.SubjectFilterRequestWrapper;
-
 import javax.persistence.criteria.*;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
