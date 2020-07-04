@@ -1,5 +1,6 @@
 package com.misaulasunq.persistance;
 
+import com.misaulasunq.exceptions.InvalidDayException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.utils.*;
 import com.misaulasunq.controller.wrapper.SubjectFilterRequestWrapper;
@@ -35,7 +36,7 @@ public class SubjectDAOTest {
     private SubjectDAO subjectDAO;
 
     @Test
-    public void whenFilterByDayAndNameAndMatchAnySubject_ItsRetrieved(){
+    public void whenFilterByDayAndNameAndMatchAnySubject_ItsRetrieved() throws InvalidDayException {
         //Seto(Given)
         this.loadSampleDataForTest();
         List<SearchFilter> filters =
@@ -46,7 +47,7 @@ public class SubjectDAOTest {
 
         SubjectFilterRequestWrapper wrapper = new SubjectFilterRequestWrapper();
         wrapper.setSearchFilters(filters);
-        wrapper.setDay(Day.LUNES);
+        wrapper.setDay("Lunes");
         wrapper.setSubjectName("Desarrollo de Aplicaciones");
 
         //Exercise(When)
@@ -57,7 +58,7 @@ public class SubjectDAOTest {
     }
 
     @Test
-    public void whenFilterByAllFilterTypesAndOneSubjectMatch_ItsRetrieved(){
+    public void whenFilterByAllFilterTypesAndOneSubjectMatch_ItsRetrieved() throws InvalidDayException {
         //Setup(Given)
         this.loadSampleDataForTest();
         List<SearchFilter> filters =
@@ -70,7 +71,7 @@ public class SubjectDAOTest {
 
         SubjectFilterRequestWrapper wrapper = new SubjectFilterRequestWrapper();
         wrapper.setSearchFilters(filters);
-        wrapper.setDay(Day.JUEVES);
+        wrapper.setDay("Jueves");
         wrapper.setClassroomNumber("20");
         wrapper.setSubjectName("Base de Datos II");
         wrapper.setStartTime(LocalTime.of(13,0));
@@ -98,7 +99,7 @@ public class SubjectDAOTest {
         SubjectFilterRequestWrapper wrapper =
                 new SubjectFilterRequestWrapper(
                         filters,
-                        Day.LUNES,
+                        "Lunes",
                         "52",
                         "Matematica I",
                         LocalTime.of(12,0),
@@ -113,13 +114,13 @@ public class SubjectDAOTest {
     }
 
     @Test
-    public void whenFilterByDayAndClassroomAndAnyMatch_ItsRetrieved(){
+    public void whenFilterByDayAndClassroomAndAnyMatch_ItsRetrieved() throws InvalidDayException {
         //Seto(Given)
         this.loadSampleDataForTest();
         List<SearchFilter> filters = List.of(SearchFilter.BY_CLASSROOM,SearchFilter.BY_DAY);
 
         SubjectFilterRequestWrapper wrapper = new SubjectFilterRequestWrapper();
-        wrapper.setDay(Day.JUEVES);
+        wrapper.setDay("Jueves");
         wrapper.setClassroomNumber("20");
         wrapper.setSearchFilters(filters);
 
@@ -196,13 +197,13 @@ public class SubjectDAOTest {
     }
 
     @Test
-    public void whenByDayAndAnyoneMatch_ItsRetreived(){
+    public void whenByDayAndAnyoneMatch_ItsRetreived() throws InvalidDayException {
         //Seto(Given)
         this.loadSampleDataForTest();
         List<SearchFilter> filters = List.of(SearchFilter.BY_DAY);
 
         SubjectFilterRequestWrapper wrapper = new SubjectFilterRequestWrapper();
-        wrapper.setDay(Day.LUNES);
+        wrapper.setDay("Lunes");
         wrapper.setSearchFilters(filters);
 
         //Exercise(When)

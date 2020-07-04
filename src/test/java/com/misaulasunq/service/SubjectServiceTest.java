@@ -1,6 +1,7 @@
 package com.misaulasunq.service;
 
 import com.misaulasunq.controller.wrapper.SubjectFilterRequestWrapper;
+import com.misaulasunq.exceptions.InvalidDayException;
 import com.misaulasunq.exceptions.SubjectNotFoundException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.*;
@@ -32,13 +33,13 @@ public class SubjectServiceTest {
     public SubjectService subjectService;
 
     @Test
-    public void ifHaveSubjectInTheDataBaeThatMatchWithTheCriteria_ItsRetrieved() throws SubjectNotFoundException {
+    public void ifHaveSubjectInTheDataBaeThatMatchWithTheCriteria_ItsRetrieved() throws SubjectNotFoundException, InvalidDayException {
         //Setup(Given)
         List<SearchFilter> filters = List.of(SearchFilter.BY_DAY,SearchFilter.BY_SUBJECT);
 
         SubjectFilterRequestWrapper wrapper = new SubjectFilterRequestWrapper();
         wrapper.setSearchFilters(filters);
-        wrapper.setDay(Day.LUNES);
+        wrapper.setDay("Lunes");
         wrapper.setSubjectName("Sistemas Operativos");
 
         //Exercise(When)

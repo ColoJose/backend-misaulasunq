@@ -60,12 +60,15 @@ public class SubjectController {
     @Autowired
     private ClassroomService classroomService;
 
-    @GetMapping(value = "/byCriteria", consumes = "application/json")
+    //@RequestParam(name="criteria")
+    //@RequestBody
+    @PostMapping(value = "/byCriteria")
     @ApiOperation(value = "Devuelve una lista de materias evaluadas por un criterio de busqueda.")
     public ResponseEntity<List<SubjectDTO>> getSubjectsByCriteria(
             @ApiParam(required = true, value = "El Criterio de busqueda", example = "'{\"searchFilters\":[\"bySubject\"],\"subjectName\":\"Matematica I\"}'")
-            @RequestParam(name="criteria")SubjectFilterRequestWrapper criteria
+            @RequestBody SubjectFilterRequestWrapper criteria
             ) throws SubjectNotFoundException {
+        LOGGER.info("Got a GET request to retrieve subject by criteria");
         return this.makeResponseEntityWithGoodStatus(
                 this.subjectService.retreiveSubjectsByFilterCriteria(criteria)
         );
@@ -79,6 +82,7 @@ public class SubjectController {
             @ApiParam(required = true, value = "La cantidad de elementos por pagina", example = "10")
             @RequestParam(name="elements") Integer elements
     ) {
+        LOGGER.info("Got a GET request to retrieve subject with overlapping");
         return this.makeResponseEntityWithGoodStatusForPage(
                 this.subjectService.getOverlappingSubjects(PageRequest.of(page, elements))
         );

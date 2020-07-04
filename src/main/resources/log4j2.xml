@@ -17,9 +17,9 @@
                     <PatternMatch key="INFO"
                                   pattern="%style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%highlight{%-5level}{bright}] %style{Clase: %c{1}}{yellow} | %style{Metodo: %M}{blue} = %style{%msg}{green}%n%throwable"/>
                     <PatternMatch key="WARN"
-                                  pattern="%%style{[!]}{bright,yellow} %style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%-5level] %style{Class: %C{1}}{yellow} | %style{Method: %M}{yellow} = %style{%msg}{bright,yellow}%style{[!]}{bright,yellow}%n%throwable"/>
+                                  pattern="%style{[!]}{bright,yellow} %style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%-5level] %style{Class: %C{1}}{yellow} | %style{Method: %M}{yellow} = %style{%msg}{bright,yellow}%style{[!]}{bright,yellow}%n%throwable"/>
                     <PatternMatch key="ERROR"
-                                  pattern="%%style{[!!]}{bright,magenta} %style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%-5level] %style{Class: %c{1}}{magenta} | %style{Method: %M}{magenta} | %style{Line: %L}{magenta} = %style{%msg}{bright,magenta}%style{[!!]}{bright,magenta}%n%style{%throwable}{bright,magenta}"/>
+                                  pattern="%style{[!!]}{bright,magenta} %style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%-5level] %style{Class: %c{1}}{magenta} | %style{Method: %M}{magenta} | %style{Line: %L}{magenta} = %style{%msg}{bright,magenta}%style{[!!]}{bright,magenta}%n%style{%throwable}{bright,magenta}"/>
                     <PatternMatch key="FATAL"
                                   pattern="%style{[!!!]}{Bright,red} %style{%d{yyyy-MM-dd HH:mm:ss}}{black} [%-5level] %style{Class: %c{1}}{Bright,red} | %style{Method: %M}{Bright,red} | %style{Line: %L}{Bright,red} = %style{%msg}{Bright,red}%style{[!!!]}{Bright,red}%n%style{%throwable}{Bright,red}"/>
                 </ScriptPatternSelector>

@@ -56,14 +56,39 @@ public class QueryBuilder {
         }
 
         if(byHours){
-            Predicate startLessThanEndHour = criteriaBuilder.greaterThanOrEqualTo(schedules.get("endTime"), filterRequestWrapper.getStartTime());
-            Predicate startGreatherTanStartHour = criteriaBuilder.lessThanOrEqualTo(schedules.get("startTime"), filterRequestWrapper.getStartTime());
-            Predicate endLessThanEndHour = criteriaBuilder.greaterThanOrEqualTo(schedules.get("endTime"), filterRequestWrapper.getEndTime());
-            Predicate endGreatherTanStartHour = criteriaBuilder.lessThanOrEqualTo(schedules.get("startTime"),  filterRequestWrapper.getEndTime());
+            Predicate startLessThanOrEqualFilterStart =
+                    criteriaBuilder.lessThanOrEqualTo(
+                            schedules.get("startTime"),
+                            filterRequestWrapper.getStartTime()
+                    );
+            Predicate endGreaterThanOrEqualFilterEnd =
+                        criteriaBuilder.greaterThanOrEqualTo(
+                                schedules.get("endTime"),
+                                filterRequestWrapper.getEndTime()
+                        );
+            Predicate filterHoursInsideScheduleHours =
+                criteriaBuilder.and(
+                    startLessThanOrEqualFilterStart,
+                    endGreaterThanOrEqualFilterEnd
+                );
+
+            Predicate startBetweenFilterHours =
+                    criteriaBuilder.between(
+                            schedules.get("startTime"),
+                            filterRequestWrapper.getStartTime(),
+                            filterRequestWrapper.getEndTime()
+                    );
+            Predicate endBetweenFilterHours =
+                    criteriaBuilder.between(
+                            schedules.get("endTime"),
+                            filterRequestWrapper.getStartTime(),
+                            filterRequestWrapper.getEndTime()
+                    );
             criteriaAndList.add(
                 criteriaBuilder.or(
-                    criteriaBuilder.and(startGreatherTanStartHour,startLessThanEndHour),
-                    criteriaBuilder.and(endLessThanEndHour,endGreatherTanStartHour)
+                    startBetweenFilterHours,
+                    endBetweenFilterHours,
+                    filterHoursInsideScheduleHours
                 )
             );
         }
@@ -72,7 +97,7 @@ public class QueryBuilder {
             criteriaAndList.add(
                 criteriaBuilder.equal(
                     schedules.get("day"),
-                    filterRequestWrapper.getDay()
+                    filterRequestWrapper.getEnumDay()
                 )
             );
         }
