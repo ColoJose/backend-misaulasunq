@@ -231,6 +231,11 @@ public class SubjectController {
         return new ResponseEntity<>("Comisiones materia actualizada",HttpStatus.OK);
     }
 
+    @GetMapping(value = "/get-all-subject-codes")
+    public ResponseEntity<List<String>> getAllSubjectCodes() {
+        return new ResponseEntity<>(this.subjectService.getAllSubjectCodes(), HttpStatus.OK);
+    }
+
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){
         ResponseEntity<List<SubjectDTO>> response = new ResponseEntity<>(
                 subjects.stream()

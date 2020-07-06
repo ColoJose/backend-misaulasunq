@@ -60,4 +60,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
             + "WHERE schedule.notices.size > 0 "
             + "GROUP BY subject")
     Page<Subject> findOverlappingSubjects(Pageable pageable);
+
+    @Query("SELECT subject.subjectCode FROM subject subject")
+    List<String> getAllSubjectCodes();
 }
