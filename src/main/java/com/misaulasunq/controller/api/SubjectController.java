@@ -226,8 +226,6 @@ public class SubjectController {
         List<Commission> subjectCommission = this.subjectService.getCommissionsById(id);
         this.subjectService.updateCommissions( subjectById,subjectCommission, commissionsDTO, classroomMap);
 
-//        List<Commission> parsedCommissions = commissionParser.parseCommissions(commissions,subjectById,classroomMap); TODO borrar
-
         return new ResponseEntity<>("Comisiones materia actualizada",HttpStatus.OK);
     }
 
