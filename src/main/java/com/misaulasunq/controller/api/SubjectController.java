@@ -247,9 +247,12 @@ public class SubjectController {
         List<Commission> subjectCommission = this.subjectService.getCommissionsById(id);
         this.subjectService.updateCommissions( subjectById,subjectCommission, commissionsDTO, classroomMap);
 
-//        List<Commission> parsedCommissions = commissionParser.parseCommissions(commissions,subjectById,classroomMap); TODO borrar
-
         return new ResponseEntity<>("Comisiones materia actualizada",HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-all-subject-codes")
+    public ResponseEntity<List<String>> getAllSubjectCodes() {
+        return new ResponseEntity<>(this.subjectService.getAllSubjectCodes(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<SubjectDTO>> makeResponseEntityWithGoodStatus(List<Subject> subjects){

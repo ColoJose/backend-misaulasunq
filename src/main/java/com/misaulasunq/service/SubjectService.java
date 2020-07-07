@@ -16,6 +16,7 @@ import com.misaulasunq.utils.CommissionUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.util.List;
@@ -125,5 +126,9 @@ public class SubjectService {
 
     public Page<Subject> getOverlappingSubjects(Pageable pageable) {
         return this.subjectRepository.findOverlappingSubjects(pageable);
+    }
+
+    public List<String> getAllSubjectCodes() {
+        return this.subjectRepository.getAllSubjectCodes();
     }
 }

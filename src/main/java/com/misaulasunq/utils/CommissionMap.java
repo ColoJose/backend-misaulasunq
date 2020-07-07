@@ -42,6 +42,33 @@ public class CommissionMap {
         for( ScheduleMap scheduleMap : scheduleMaps) {
             scheduleMap.update();
         }
+        // si el size de los schedulesDTO es mayor, quiere decir que el usuario agrego un schedule desde el back
+        if( schedulesDTO.size() > schedules.size()) {
+            Integer sizeSchedules = schedules.size();
+            Integer sizeScheduleDTO = schedulesDTO.size();
+
+            List<ScheduleDTO> addedSchedules = schedulesDTO.subList(sizeSchedules, sizeScheduleDTO);
+            this.addSchedules(addedSchedules);
+        }
+    }
+
+    private void addSchedules(List<ScheduleDTO> addedSchedules) throws InvalidDayException {
+        for( ScheduleDTO schDTO : addedSchedules ) {
+            this.createSchedule(schDTO);
+        }
+    }
+
+    private void createSchedule(ScheduleDTO scheduleDTO) throws InvalidDayException {
+        Schedule newSchedule = new Schedule();
+        newSchedule.setStartTime(scheduleDTO.getStartTime());
+        newSchedule.setEndTime(scheduleDTO.getEndTime());
+        newSchedule.setDay(DayConverter.stringToDay(scheduleDTO.getDay()));
+
+        Classroom newClassroomSchedule = classroomMap.get(scheduleDTO.getClassroom().getNumber());
+        newSchedule.setClassroom(newClassroomSchedule);
+        newClassroomSchedule.addSchedule(newSchedule);
+        newSchedule.setCommission(commission);
+        commission.addSchedule(newSchedule);
     }
 
     private ScheduleMap createScheduleMaps(Schedule schedule, List<ScheduleDTO> schedulesDTO) {
