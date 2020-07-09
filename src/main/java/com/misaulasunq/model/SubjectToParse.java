@@ -131,9 +131,13 @@ public class SubjectToParse {
     private String toEnumSemesterString(String semester) {
         String res = new String();
         switch (semester) {
-            case "Primer cuatrimestre": res = "PRIMER";
+            case "Primer":
+            case "Primer cuatrimestre":
+                res = "PRIMER";
                 break;
-            case "Segundo cuatrimestre": res = "SEGUNDO";
+            case "Segundo":
+            case "Segundo cuatrimestre":
+                res = "SEGUNDO";
                 break;
             case "Anual": res = "ANUAL";
                 break;
