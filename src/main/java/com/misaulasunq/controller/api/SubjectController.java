@@ -171,7 +171,7 @@ public class SubjectController {
 
     @PostMapping(value = "/new-subject", consumes = "application/json")
     public ResponseEntity createNewSubject( @RequestBody SubjectToParse subjectToParse) throws DegreeNotFoundException {
-
+        LOGGER.info("Got a Post request to make a new subjects with body: {}", subjectToParse);
         Degree degreeReceived = this.degreeService.findDegreeById(subjectToParse.getDegreeId());
         List<Classroom> classroomsNewSubject = this.classroomService
                                                    .findClassroomsByNumber(
