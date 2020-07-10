@@ -2,6 +2,8 @@ package com.misaulasunq.controller.advice;
 
 import com.misaulasunq.controller.api.SubjectController;
 import com.misaulasunq.exceptions.SubjectNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice(assignableTypes = SubjectController.class)
 public class SubjectAdviceController extends ResponseEntityExceptionHandler {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
     @ExceptionHandler({SubjectNotFoundException.class})
     public ResponseEntity<String> handleEventNotFoundException(SubjectNotFoundException exception) {
+        LOGGER.error("We Get an unhandle excpetion! \n {}\n {}\n {}", exception.getClass(), exception.getMessage(), exception.getCause());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
