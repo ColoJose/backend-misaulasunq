@@ -96,9 +96,9 @@ public class SubjectControllerTest {
         ResponseEntity<Page<SubjectDTO>> subjects = this.subjectController.getOverlappingSubjects(0, 5);
 
         //Test(Then)
-        assertEquals(2,subjects.getBody().getTotalElements());
+        assertEquals(1,subjects.getBody().getTotalElements());
         assertEquals(1,subjects.getBody().getTotalPages());
-        assertEquals(2,subjects.getBody().getNumberOfElements());
+        assertEquals(1,subjects.getBody().getNumberOfElements());
         this.mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/subjectAPI/OverlappingSubjects")

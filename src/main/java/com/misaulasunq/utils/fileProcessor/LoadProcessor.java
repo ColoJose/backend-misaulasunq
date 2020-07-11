@@ -2,7 +2,10 @@ package com.misaulasunq.utils.fileProcessor;
 
 import com.misaulasunq.exceptions.ClassroomNotFoundException;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
+import com.misaulasunq.exceptions.DuplicateScheduleException;
 import com.misaulasunq.model.*;
+
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +43,7 @@ public class LoadProcessor {
         this.classroomInDbByNumber = new HashMap<>();
     }
 
-    public void makeRelationships() throws DegreeNotFoundException, ClassroomNotFoundException {
+    public void makeRelationships() throws DegreeNotFoundException, ClassroomNotFoundException, DuplicateScheduleException {
         Subject subjectToImport;
         Map<String,Commission> commissionBySubjectCodeAndCommisionName = new HashMap<>();
 
@@ -66,11 +69,16 @@ public class LoadProcessor {
         }
     }
 
-    private void createSchedule(Commission comission, RowFileWrapper row) throws ClassroomNotFoundException {
+    private void createSchedule(Commission comission, RowFileWrapper row) throws ClassroomNotFoundException, DuplicateScheduleException {
         if(!this.classroomInDbByNumber.containsKey(row.getClassroom())){
             throw new ClassroomNotFoundException(row.getClassroom());
         }
         Classroom classroom = this.classroomInDbByNumber.get(row.getClassroom());
+
+        if(this.checkIfHaveSameSchedule(comission,row.getDay(),row.getStartTime(),row.getEndTime(),row.getClassroom())){
+            throw new DuplicateScheduleException(comission.getSubject().getName(),row.getClassroom(),row.getDay(),row.getStartTime(),row.getEndTime());
+        }
+
         Schedule scheduleToAdd = new Schedule();
         scheduleToAdd.setDay(row.getDay());
         scheduleToAdd.setStartTime(row.getStartTime());
@@ -81,19 +89,46 @@ public class LoadProcessor {
         comission.addSchedule(scheduleToAdd);
     }
 
+    private boolean checkIfHaveSameSchedule(Commission comissions, Day day, LocalTime startTime, LocalTime endTime, String classroom){
+        for (Schedule existentSchedule : comissions.getSchedules()){
+            if( existentSchedule.getClassroom().getNumber().equalsIgnoreCase(classroom)
+                && existentSchedule.getDay() == day
+                && existentSchedule.getStartTime().equals(startTime)
+                && existentSchedule.getEndTime().equals(endTime)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Commission getOrCreateCommission(Map<String, Commission> commissionMap, Subject subject, RowFileWrapper row) {
         Commission commission;
         String commissionKey = subject.getSubjectCode()+"|"+row.getCommissionName();
         if(commissionMap.containsKey(commissionKey)) {
             commission = commissionMap.get(commissionKey);
         } else {
-            commission = new Commission();
-            commission.setName(row.getCommissionName());
-            commission.setYear(row.getYear());
-            commission.setSemester(row.getSemster());
-            commission.setSubject(subject);
-            subject.addCommission(commission);
+            commission = this.getOrCreateCommisionFrom(subject,row);
+
         }
+        return commission;
+    }
+
+    private Commission getOrCreateCommisionFrom(Subject subject, RowFileWrapper row){
+        Commission commission;
+
+        for (Commission com : subject.getCommissions()){
+            if(com.getYear().equals(row.getYear())
+                && com.getSemester() == row.getSemster()
+                && com.getName().equalsIgnoreCase(row.getCommissionName())){
+                return com;
+            }
+        }
+        commission = new Commission();
+        commission.setName(row.getCommissionName());
+        commission.setYear(row.getYear());
+        commission.setSemester(row.getSemster());
+        commission.setSubject(subject);
+        subject.addCommission(commission);
         return commission;
     }
 

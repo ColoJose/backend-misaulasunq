@@ -35,7 +35,7 @@ public class UploaderController {
 
     @PostMapping("/massive")
     @ApiOperation(value = "Devuelve una lista de sugerencia de las materias disponibles para buscar.")
-    public ResponseEntity<String> uploadSubjectFile(@RequestBody MultipartFile file) throws InvalidCellFormatException, DegreeNotFoundException, NoDataHeaderException, IOException, InconsistentRowException, ClassroomNotFoundException, InvalidFileExtensionException, NoSheetFoundException {
+    public ResponseEntity<String> uploadSubjectFile(@RequestBody MultipartFile file) throws InvalidCellFormatException, DegreeNotFoundException, NoDataHeaderException, IOException, InconsistentRowException, ClassroomNotFoundException, InvalidFileExtensionException, NoSheetFoundException, DuplicateScheduleException {
         LOGGER.info("Got a POST request to Upload a file with name {}", file.getName());
 
         this.uploaderService.processSubjectHoursFile(file);
