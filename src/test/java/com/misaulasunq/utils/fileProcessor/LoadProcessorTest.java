@@ -2,6 +2,7 @@ package com.misaulasunq.utils.fileProcessor;
 
 import com.misaulasunq.exceptions.ClassroomNotFoundException;
 import com.misaulasunq.exceptions.DegreeNotFoundException;
+import com.misaulasunq.exceptions.DuplicateScheduleException;
 import com.misaulasunq.model.*;
 import com.misaulasunq.persistance.ClassroomRepository;
 import com.misaulasunq.persistance.DegreeRepository;
@@ -72,7 +73,7 @@ public class LoadProcessorTest {
     }
 
     @Test(expected = ClassroomNotFoundException.class)
-    public void whenTryToMakeRelationshipForImportedRowsThatHaveNonexistentClassroom_ThrowException() throws DegreeNotFoundException, ClassroomNotFoundException {
+    public void whenTryToMakeRelationshipForImportedRowsThatHaveNonexistentClassroom_ThrowException() throws DegreeNotFoundException, ClassroomNotFoundException, DuplicateScheduleException {
         //Setup(given)
         Map<String, Degree> degreesInDb     = this.getDbDegreesMapped();
         Map<String, Subject> subjectsInDb   = this.getDbSubjectsMapped();
@@ -103,7 +104,7 @@ public class LoadProcessorTest {
     }
 
     @Test(expected = DegreeNotFoundException.class)
-    public void whenTryToMakeRelationshipsForIMportedRowsThatHaveNonexistentDegree_ThrowException() throws DegreeNotFoundException, ClassroomNotFoundException {
+    public void whenTryToMakeRelationshipsForIMportedRowsThatHaveNonexistentDegree_ThrowException() throws DegreeNotFoundException, ClassroomNotFoundException, DuplicateScheduleException {
         //Setup(given)
         Map<String, Subject> subjectsInDb   = this.getDbSubjectsMapped();
         Map<String, Classroom> classroomInDb= this.getDbClassroomsMapped();
@@ -134,7 +135,7 @@ public class LoadProcessorTest {
     }
 
     @Test
-    public void whenMakeRelationshipsForImportedRowsIfAsSubjectsInDbAreLinkedAndIfNotAreCreated() throws DegreeNotFoundException, ClassroomNotFoundException {
+    public void whenMakeRelationshipsForImportedRowsIfAsSubjectsInDbAreLinkedAndIfNotAreCreated() throws DegreeNotFoundException, ClassroomNotFoundException, DuplicateScheduleException {
         //Setup(Given)
         Map<String, Degree> degreesInDb     = this.getDbDegreesMapped();
         Map<String, Subject> subjectsInDb   = this.getDbSubjectsMapped();

@@ -9,8 +9,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** Clase encargada de proporsionar datos de prueba para la aplicacion*/
@@ -20,6 +23,8 @@ public class BootstrapRunner implements ApplicationRunner {
 
     @Autowired
     private DegreeRepository degreeRepository;
+    @Autowired
+    private ClassroomRepository classroomRepository;
 
     @Autowired
     private OverlapNoticeRepository overlapNoticeRepository;
@@ -58,10 +63,12 @@ public class BootstrapRunner implements ApplicationRunner {
         Map<String, Classroom> classroomByNumber = new HashMap<>();
         Classroom room52 = new Classroom();
         room52.setNumber("52");
-        classroomByNumber.put(room52.getNumber(),room52);
 
         Classroom roomCyT1 = new Classroom();
         roomCyT1.setNumber("CyT-1");
+
+        classroomByNumber = this.loadClassrroms(classroomByNumber);
+        classroomByNumber.put(room52.getNumber(),room52);
         classroomByNumber.put(roomCyT1.getNumber(),roomCyT1);
 
         //Creacion de materias
@@ -95,9 +102,9 @@ public class BootstrapRunner implements ApplicationRunner {
         degreeRepository.save(biotecnologia);
         degreeRepository.save(automatizacion);
 
-        //Creacion de nota de solapado para Qumica e Ingles II
-        OverlapNotice aOverlapNotice = this.createScheduleOverlap(qumicaOrganica,inglesII);
-        overlapNoticeRepository.save(aOverlapNotice);
+        //Creacion de nota de solapado para Qumica e Ingles II (DEPRECADO, no se llego a completar la funcionalidad)
+//        OverlapNotice aOverlapNotice = this.createScheduleOverlap(qumicaOrganica,inglesII);
+//        overlapNoticeRepository.save(aOverlapNotice);
 
         LOGGER.info("Sample data inserted");
         LOGGER.info("Sample data created and loaded");
@@ -105,7 +112,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void introALaEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
         Subject macro = this.createSubject(comercio, "Introducción a la Economía", "1999");
-        Commission commission = this.createCommission(macro, "Comision 1",2020,Semester.PRIMER);
+        Commission commission = this.createCommission(macro, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
                 commission,
@@ -117,7 +124,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createMacroEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
         Subject macro = this.createSubject(comercio, "Macroeconomía", "1010");
-        Commission commission = this.createCommission(macro, "Comision 1",2020,Semester.PRIMER);
+        Commission commission = this.createCommission(macro, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
                 commission,
@@ -129,7 +136,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createMicroEconomia(Degree comercio, Map<String, Classroom> classroomByNumber) {
         Subject micro = this.createSubject(comercio, "Microeconomía", "1800");
-        Commission commission = this.createCommission(micro, "Comision 1",2020,Semester.PRIMER);
+        Commission commission = this.createCommission(micro, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 commission,
@@ -141,7 +148,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createPsicologia(Degree liceducacion, Map<String, Classroom> classroomByNumber) {
         Subject psicologia = this.createSubject(liceducacion, "Psicología", "1005");
-        Commission commission = this.createCommission(psicologia, "Comision 1",2020,Semester.PRIMER);
+        Commission commission = this.createCommission(psicologia, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 commission,
@@ -152,8 +159,8 @@ public class BootstrapRunner implements ApplicationRunner {
     }
 
     private void createDidacticaYPedadogia(Degree liceducacion, Map<String, Classroom> classroomByNumber) {
-        Subject didacticaYPedagogia = this.createSubject(liceducacion, "Didáctica y pedagogía", "1000");
-        Commission commission = this.createCommission(didacticaYPedagogia, "Comision 1",2020,Semester.PRIMER);
+        Subject didacticaYPedagogia = this.createSubject(liceducacion, "Didáctica y pedagogía", "1002");
+        Commission commission = this.createCommission(didacticaYPedagogia, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
                 commission,
@@ -163,10 +170,9 @@ public class BootstrapRunner implements ApplicationRunner {
         );
     }
 
-
     private void createHistoriaArgentina(Degree liceducacion, Map<String, Classroom> classroomByNumber) {
         Subject historiaArgetina = this.createSubject(liceducacion, "Historia Argentina", "77");
-        Commission commission = this.createCommission(historiaArgetina, "Comision 1",2020,Semester.SEGUNDO);
+        Commission commission = this.createCommission(historiaArgetina, "Comision 1",LocalDate.now().getYear(),Semester.SEGUNDO);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 commission,
@@ -178,7 +184,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createBioquimica(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
         Subject analisisI = this.createSubject(biotecnologia, "Bioquímica I", "405");
-        Commission commission = this.createCommission(analisisI, "Comision 1",2020,Semester.SEGUNDO);
+        Commission commission = this.createCommission(analisisI, "Comision 1",LocalDate.now().getYear(),Semester.SEGUNDO);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 commission,
@@ -190,7 +196,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createMicrobioGeneral(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
         Subject microBioGeneral = this.createSubject(biotecnologia, "Microbiología general", "404");
-        Commission commission = this.createCommission(microBioGeneral, "Comision 1",2020,Semester.SEGUNDO);
+        Commission commission = this.createCommission(microBioGeneral, "Comision 1",LocalDate.now().getYear(),Semester.SEGUNDO);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 commission,
@@ -202,7 +208,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createBiologiaGeneral(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
         Subject biologiaGeneral = this.createSubject(biotecnologia, "Biología general", "1251");
-        Commission commission = this.createCommission(biologiaGeneral, "Comision 1",2020,Semester.SEGUNDO);
+        Commission commission = this.createCommission(biologiaGeneral, "Comision 1",LocalDate.now().getYear(),Semester.SEGUNDO);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 commission,
@@ -214,8 +220,8 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private void createAlgebraLineal(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
 
-        Subject algebraLineal = this.createSubject(automatizacion, "Álgebra Lineal", "999");
-        Commission commission = this.createCommission(algebraLineal, "Comisión 1",2020,Semester.PRIMER);
+        Subject algebraLineal = this.createSubject(automatizacion, "Álgebra Lineal", "1001");
+        Commission commission = this.createCommission(algebraLineal, "Comisión 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("52"),
                 commission,
@@ -225,11 +231,10 @@ public class BootstrapRunner implements ApplicationRunner {
         );
     }
 
-
     private Subject createAnalisisI(Degree automatizacion, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Análisis matemático I Sample data");
         Subject analisisI = this.createSubject(automatizacion, "Análisis matemático I", "105");
-        Commission commission = this.createCommission(analisisI, "Comision 1",2020,Semester.PRIMER);
+        Commission commission = this.createCommission(analisisI, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 commission,
@@ -244,7 +249,7 @@ public class BootstrapRunner implements ApplicationRunner {
     private Subject createQuimicaOrganica(Degree biotecnologia, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Química Orgánica Sample data");
         Subject quimicaOrganica = this.createSubject(biotecnologia, "Química Orgánica", "89");
-        Commission quimicaOrganicaC1Miercoles = this.createCommission(quimicaOrganica, "Comision 1",2020,Semester.PRIMER);
+        Commission quimicaOrganicaC1Miercoles = this.createCommission(quimicaOrganica, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 quimicaOrganicaC1Miercoles,
@@ -259,7 +264,7 @@ public class BootstrapRunner implements ApplicationRunner {
     private Subject createProgramacionObjetos3(Degree aDegree, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Programacion Orientada a Objetos 3 Sample data");
         Subject progObjectos3 = this.createSubject(aDegree, "Programacion Orientada a Objetos 3", "15");
-        Commission progObjetos3C1Viernes = this.createCommission(progObjectos3, "Comision 1",2019,Semester.PRIMER);
+        Commission progObjetos3C1Viernes = this.createCommission(progObjectos3, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 progObjetos3C1Viernes,
@@ -274,7 +279,8 @@ public class BootstrapRunner implements ApplicationRunner {
     public Subject createSistemasOperativos(Degree aDegree, Map<String,Classroom> classroomByNumber){
         LOGGER.info("Creating Sistemas Operativos Sample data");
         Subject sistemasOperativos = this.createSubject(aDegree, "Sistemas Operativos", "150");
-        Commission sistemasOpC1 = this.createCommission(sistemasOperativos, "Comision 1",2019,Semester.PRIMER);
+        Commission sistemasOpC1 = this.createCommission(sistemasOperativos, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
+
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 sistemasOpC1,
@@ -289,7 +295,7 @@ public class BootstrapRunner implements ApplicationRunner {
     public Subject createSeguridadInformatica(Degree degree, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Seguridad Informatica Sample data");
         Subject seguridadInformatica = this.createSubject(degree, "Seguridad Informática", "420");
-        Commission seguridadC1 = this.createCommission(seguridadInformatica,"Comision 1",2019,Semester.PRIMER);
+        Commission seguridadC1 = this.createCommission(seguridadInformatica,"Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(classroomByNumber.get("CyT-1"),
                 seguridadC1,
                 Day.SABADO,
@@ -303,7 +309,7 @@ public class BootstrapRunner implements ApplicationRunner {
     public Subject createTIP(Degree degree, Map<String, Classroom> clasroomByNumber) {
         LOGGER.info("Creating TIP Sample data");
         Subject tip = this.createSubject(degree, "TIP", "231");
-        Commission seguridadC1 = this.createCommission(tip,"Comision 1",2019,Semester.PRIMER);
+        Commission seguridadC1 = this.createCommission(tip,"Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(clasroomByNumber.get("52"),
                 seguridadC1,
                 Day.SABADO,
@@ -319,7 +325,7 @@ public class BootstrapRunner implements ApplicationRunner {
         Subject matematica1 = this.createSubject(aDegree,"Matematica I", "223");
 
         //COMISION 1
-        Commission matematica1C1 = this.createCommission(matematica1, "Comision 1",2019,Semester.PRIMER);
+        Commission matematica1C1 = this.createCommission(matematica1, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 matematica1C1,
@@ -375,7 +381,7 @@ public class BootstrapRunner implements ApplicationRunner {
     private Subject createInglesII(Degree aDegree, Map<String, Classroom> classroomByNumber) {
         LOGGER.info("Creating Ingles II Sample data");
         Subject inglesII = this.createSubject(aDegree, "Ingles II", "611");
-        Commission inglesIIC1Viernes = this.createCommission(inglesII, "Comision 1",2020,Semester.PRIMER);
+        Commission inglesIIC1Viernes = this.createCommission(inglesII, "Comision 1",LocalDate.now().getYear(),Semester.PRIMER);
         this.createSchedule(
                 classroomByNumber.get("CyT-1"),
                 inglesIIC1Viernes,
@@ -435,5 +441,29 @@ public class BootstrapRunner implements ApplicationRunner {
         Schedule aSchedule = aSubject.getCommissions().get(0).getSchedules().get(0);
         Schedule anotherSchedule = anotherSubject.getCommissions().get(0).getSchedules().get(0);
         return OverlapNotice.makeOverlapNotice(aSchedule,anotherSchedule);
+    }
+
+    private Map<String, Classroom> loadClassrroms(Map<String, Classroom> classroomByNumber){
+        List<String> classroomNumbers = List.of("1","2","3","4","5","6","7","8","9","10","11","12","13","21","22","23","24",
+                "25","26","27","28","29","30","31","32","33","36","38","39","40","41","42","43","44","45","46","48","49","50",
+                "51","54","60","61","62","63","64","65","66","67","68","69","101","102","103","104","105","106","107",
+                "108","109","110","111","112","113","120","121","122","123","124","125","126","127","128","129","130","131",
+                "132","133","200","201","202","203","204","205","206","207","208","209","210","211","212","213","226","227",
+                "228","230","231","232","233","234","235","326","327","328","330","331","333","334","335","002","003","004",
+                "005","006","007","008","009","010","011","012","37B","38B","CyT-2");
+        List<Classroom> classrooms = new ArrayList<>();
+        Classroom classroom;
+        for (String eachClassroomNumber : classroomNumbers){
+            classroom = new Classroom();
+            classroom.setNumber(eachClassroomNumber);
+            classroomByNumber.put(
+                eachClassroomNumber,
+                classroom
+            );
+            classrooms.add(classroom);
+        }
+        classroomRepository.saveAll(classrooms);
+
+        return classroomByNumber;
     }
 }

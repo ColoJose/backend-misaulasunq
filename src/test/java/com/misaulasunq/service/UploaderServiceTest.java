@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class UploaderServiceTest {
     @Autowired private ScheduleRepository scheduleRepository;
 
     @Test
-    public void ifProcessAMultipartOfANewExcelFileWithOutError_AlObjectsAreImportedCorrectly() throws IOException, InvalidCellFormatException, InconsistentRowException, ClassroomNotFoundException, NoDataHeaderException, DegreeNotFoundException, InvalidFileExtensionException, NoSheetFoundException {
+    public void ifProcessAMultipartOfANewExcelFileWithOutError_AlObjectsAreImportedCorrectly() throws IOException, InvalidCellFormatException, InconsistentRowException, ClassroomNotFoundException, NoDataHeaderException, DegreeNotFoundException, InvalidFileExtensionException, NoSheetFoundException, DuplicateScheduleException {
         //Setup(Given)
         Degree aDegree = DegreeBuilder.buildADegree().withMockData().withDegreeCode("102").build();
         degreeRepository.save(aDegree);
@@ -71,7 +72,7 @@ public class UploaderServiceTest {
     }
 
     @Test(expected = NoDataHeaderException.class)
-    public void ifTryToImportAFileWithOutHeaders_GetAnException() throws IOException, InconsistentRowException, InvalidCellFormatException, NoDataHeaderException, DegreeNotFoundException, ClassroomNotFoundException, InvalidFileExtensionException, NoSheetFoundException {
+    public void ifTryToImportAFileWithOutHeaders_GetAnException() throws IOException, InconsistentRowException, InvalidCellFormatException, NoDataHeaderException, DegreeNotFoundException, ClassroomNotFoundException, InvalidFileExtensionException, NoSheetFoundException, DuplicateScheduleException {
         //Setup(Given)
         MultipartFile fileXslxToValidate =
                 new MockMultipartFile(
@@ -112,7 +113,7 @@ public class UploaderServiceTest {
     }
 
     @Test
-    public void ifProcessAMultipartOfAOldExcelFileWithOutError_AlObjectsAreImportedCorrectly() throws IOException, InvalidCellFormatException, InconsistentRowException, ClassroomNotFoundException, NoDataHeaderException, DegreeNotFoundException, InvalidFileExtensionException, NoSheetFoundException {
+    public void ifProcessAMultipartOfAOldExcelFileWithOutError_AlObjectsAreImportedCorrectly() throws IOException, InvalidCellFormatException, InconsistentRowException, ClassroomNotFoundException, NoDataHeaderException, DegreeNotFoundException, InvalidFileExtensionException, NoSheetFoundException, DuplicateScheduleException {
         //Setup(Given)
         Degree aDegree = DegreeBuilder.buildADegree().withMockData().withDegreeCode("102").build();
         Classroom aClassroom = ClassroomBuilder.buildAClassroom().withName("52").build();
@@ -158,4 +159,48 @@ public class UploaderServiceTest {
         assertEquals(3,scheduleRepository.count(), "Tiene que haberse importado un horario");
     }
 
+    @Test(expected = DuplicateScheduleException.class)
+    public void ifProcessAMultipartAndHaveADuplicateSchedule_GetAndException() throws IOException, InvalidCellFormatException, InconsistentRowException, ClassroomNotFoundException, NoDataHeaderException, DegreeNotFoundException, InvalidFileExtensionException, NoSheetFoundException, DuplicateScheduleException {
+        //Setup(Given)
+        Degree aDegree = DegreeBuilder.buildADegree().withMockData().withDegreeCode("102").build();
+        degreeRepository.save(aDegree);
+        Classroom aClassroom = ClassroomBuilder.buildAClassroom().withName("52").build();
+        classroomRepository.save(aClassroom);
+        Subject mateII = SubjectBuilder.buildASubject()
+                .withName("Matematica II")
+                .withSubjectCode("223")
+                .withDegrees(new ArrayList<>(List.of(aDegree)))
+                .build();
+        aDegree.addSubject(mateII);
+        Schedule mateIISchedule = ScheduleBuilder.buildASchedule()
+                .withDay(Day.LUNES)
+                .withClassroom(aClassroom)
+                .withStartTime(LocalTime.of(12,0))
+                .withEndTime(LocalTime.of(15,0))
+                .build();
+        aClassroom.addSchedule(mateIISchedule);
+        Commission mateIIC1 = CommissionBuilder.buildACommission()
+                .withSemester(Semester.PRIMER)
+                .withName("Comision 1")
+                .withYear(LocalDate.now().getYear())
+                .withSchedules(new ArrayList<>(List.of(mateIISchedule)))
+                .withSubject(mateII)
+                .build();
+        mateII.addCommission(mateIIC1);
+        mateIISchedule.setCommission(mateIIC1);
+        degreeRepository.save(aDegree);
+
+        MultipartFile fileXslxToValidate =
+                new MockMultipartFile(
+                        "Import Sample Test",
+                        "Import Sample Test.xlsx",
+                        String.valueOf(MediaType.MULTIPART_FORM_DATA),
+                        this.getClass().getClassLoader().getResourceAsStream("Import Sample Test.xlsx")
+                );
+
+        //Exercise(When)
+        this.uploaderService.processSubjectHoursFile(fileXslxToValidate);
+
+        //Test(Test)
+    }
 }

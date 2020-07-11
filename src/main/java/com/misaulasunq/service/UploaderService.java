@@ -32,7 +32,7 @@ public class UploaderService {
     @Autowired private ClassroomRepository classroomRepository;
     @Autowired private SubjectRepository subjectRepository;
 
-    public void processSubjectHoursFile(MultipartFile fileToProcess) throws IOException, InvalidCellFormatException, InconsistentRowException, DegreeNotFoundException, ClassroomNotFoundException, NoDataHeaderException, InvalidFileExtensionException, NoSheetFoundException {
+    public void processSubjectHoursFile(MultipartFile fileToProcess) throws IOException, InvalidCellFormatException, InconsistentRowException, DegreeNotFoundException, ClassroomNotFoundException, NoDataHeaderException, InvalidFileExtensionException, NoSheetFoundException, DuplicateScheduleException {
         LoadProcessor loadProcessor = new LoadProcessor();
         ExcelFileProcessor xslsProcessor = new ExcelFileProcessor();
 

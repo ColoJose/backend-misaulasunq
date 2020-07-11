@@ -139,22 +139,22 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void ifHaveSubjectInClassroomFiveIfSearchWithClassroomNumberWeGetOne() throws SubjectNotFoundException {
+    public void ifHaveSubjectInClassroom525IfSearchWithClassroomNumberWeGetOne() throws SubjectNotFoundException {
         //Setup(Given)
 
         //exercise
-        List<Subject> subjectsInClassroom5 = subjectService.retreiveSubjectsInClassroom("5");
+        List<Subject> subjectsInClassroom525 = subjectService.retreiveSubjectsInClassroom("525");
 
         //test
-        assertEquals("Debe tener solo una materia!",1,subjectsInClassroom5.size());
+        assertEquals("Debe tener solo una materia!",1,subjectsInClassroom525.size());
 
-        Subject subjectRetrieved = subjectsInClassroom5.get(0);
+        Subject subjectRetrieved = subjectsInClassroom525.get(0);
         assertEquals("Debe traer la materia Concurrente!",
                 "Concurrente",
                 subjectRetrieved.getName());
         assertEquals("Debe traer la materia Concurrente!",
                 1,
-                subjectsInClassroom5.size());
+                subjectsInClassroom525.size());
         assertEquals("El Subject debe tener solo una comision!",
                 1,
                 subjectRetrieved.getCommissions().size());
@@ -162,11 +162,11 @@ public class SubjectServiceTest {
         Classroom classroomOfSubject = subjectRetrieved.getCommissions()
                 .get(0).getSchedules()
                 .get(0).getClassroom();
-        assertEquals("Tiene que ser el aula 5!","5",classroomOfSubject.getNumber());
+        assertEquals("Tiene que ser el aula 525!","525",classroomOfSubject.getNumber());
     }
 
     @Test
-    public void ifTryToRetrieveASubjectInClassroomFiveAndThereIsNoneGetASubjectNotFoundException() {
+    public void ifTryToRetrieveASubjectInClassroom666AndThereIsNoneGetASubjectNotFoundException() {
         //Setup(Given)
         String exceptionMessage = "";
 
@@ -202,8 +202,8 @@ public class SubjectServiceTest {
         testDegree.addSubject(concurrente);
 
         // Classrooms
-        Classroom aula5 = ClassroomBuilder.buildAClassroom().withName("5").build();
-        Classroom aula2 = ClassroomBuilder.buildAClassroom().withName("2").build();
+        Classroom aula5 = ClassroomBuilder.buildAClassroom().withName("525").build();
+        Classroom aula2 = ClassroomBuilder.buildAClassroom().withName("522").build();
 
         // Schedules
         Schedule concurrenteSchedule = ScheduleBuilder.buildASchedule().withMockData()
